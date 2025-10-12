@@ -33,6 +33,7 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         itemMedico = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        itemHistorial = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -46,6 +47,14 @@ public class Main extends javax.swing.JFrame {
             }
         });
         itemMedico.add(jMenuItem1);
+
+        itemHistorial.setText("Historial Clinico");
+        itemHistorial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemHistorialActionPerformed(evt);
+            }
+        });
+        itemMedico.add(itemHistorial);
 
         jMenuBar1.add(itemMedico);
 
@@ -73,6 +82,11 @@ public class Main extends javax.swing.JFrame {
         medico.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void itemHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemHistorialActionPerformed
+        FrmHistorialClinico historial = new FrmHistorialClinico(this, false);
+        historial.setVisible(true);
+    }//GEN-LAST:event_itemHistorialActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -99,6 +113,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem itemHistorial;
     private javax.swing.JMenu itemMedico;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;

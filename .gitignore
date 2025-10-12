@@ -1,0 +1,25 @@
+/JavaApplication9/nbproject/private/
+# Archivos y carpetas de NetBeans
+nbproject/private/
+build/
+dist/
+nbbuild/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# Archivos compilados
+*.class
+*.jar
+*.war
+*.ear
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.log
+*.tmp
+*.bak
+

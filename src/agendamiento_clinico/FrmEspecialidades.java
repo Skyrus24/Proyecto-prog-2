@@ -7,7 +7,7 @@ package agendamiento_clinico;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
+import clases.Especialidad;
 /**
  *
  * @author Usuario
@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
 public class FrmEspecialidades extends javax.swing.JDialog {
 
     private final BaseDatos bd = new BaseDatos();
-    private final Grilla grd = new Grilla(); // Usando TU clase Grilla
+    private final Grilla grd = new Grilla();
     private char opc = 'Z';
 
     public FrmEspecialidades(java.awt.Frame parent, boolean modal) {
@@ -29,12 +29,9 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         
         this.setLocationRelativeTo(null);
         
-        // --- CAMBIO IMPORTANTE: Usando tu método configurarmodelo ---
-        // Primero preparamos la estructura de la tabla con los nombres y anchos de columna.
         String[] columnas = {"Código", "Especialidad", "Descripción"};
-        int[] anchos = {80, 200, 350}; // Ajusta los anchos como prefieras
+        int[] anchos = {80, 200, 350};
         grd.configurarmodelo(grdEspecialidades, columnas, anchos);
-        // -----------------------------------------------------------
         
         this.actualizarGrilla();
         this.habilitarBotones(true);
@@ -62,7 +59,6 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         this.txtaDescripcion.setText("");
     }
     
-    // Este método ahora solo se encarga de llamar a tu cargarGrilla
     private void actualizarGrilla() {
         String campos[] = {"id_especialidad", "nombre_especialidad", "descripcion"};
         grd.cargarGrilla(grdEspecialidades, "especialidades", campos);
@@ -139,7 +135,7 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         jLabel1.setText("Nombre de la Especialidad:");
         jPanel1.add(jLabel1);
-        jLabel1.setBounds(10, 320, 227, 30);
+        jLabel1.setBounds(10, 320, 260, 30);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         jLabel3.setText("Descripcion:");
@@ -231,9 +227,9 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         btnAgregar.setBounds(40, 570, 100, 30);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
-        jLabel2.setText("Especialides");
+        jLabel2.setText("Especialidades");
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(70, 60, 140, 80);
+        jLabel2.setBounds(70, 60, 180, 80);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -299,7 +295,7 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         this.habilitarBotones(false);
         this.habilitarCampos(true);
         this.txtCodigo.setEnabled(false);
-        this.txtEspecialidad.requestFocus();
+        this.txtEspecialidad.requestFocus();                                           
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void grdEspecialidadesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_grdEspecialidadesMouseClicked

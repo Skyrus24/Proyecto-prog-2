@@ -2,34 +2,48 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
+    <Component class="javax.swing.JMenuItem" name="jMenuItem1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jMenuItem1"/>
+      </Properties>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="vacio">
+        <Menu class="javax.swing.JMenu" name="itemMedico">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Agendar"/>
+            <Property name="text" type="java.lang.String" value="Medico"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="itemMedico">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Medico"/>
+                <Property name="text" type="java.lang.String" value="Agregar"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemMedicoActionPerformed"/>
-              </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="itemHistorial">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Historial Clinico"/>
+                <Property name="text" type="java.lang.String" value="Modificar"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemHistorialActionPerformed"/>
-              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
+        <Menu class="javax.swing.JMenu" name="itemPacientes">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
+            <Property name="text" type="java.lang.String" value="Pacientes"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="itemEspecialidades">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Especialidades"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="itemCitas">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Citas"/>
+          </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="itemHistorial">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Historial"/>
           </Properties>
         </Menu>
       </SubComponents>

@@ -1,5 +1,7 @@
 package agendamiento_clinico;
 
+import clases.Especialidad;
+
 
 
 /*
@@ -60,6 +62,11 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(itemPacientes);
 
         itemEspecialidades.setText("Especialidades");
+        itemEspecialidades.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemEspecialidadesActionPerformed(evt);
+            }
+        });
         jMenuBar1.add(itemEspecialidades);
 
         itemCitas.setText("Citas");
@@ -83,6 +90,10 @@ public class Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void itemEspecialidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEspecialidadesActionPerformed
+
+    }//GEN-LAST:event_itemEspecialidadesActionPerformed
 
     /**
      * @param args the command line arguments

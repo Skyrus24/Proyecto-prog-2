@@ -33,8 +33,8 @@ public class BaseDatos {
             // Se registra el Driver de MySQL
 //            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 ////            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos,this.usuBD,this.clave);
-            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
-            
+//            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
+conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos,this.usuBD,this.clave);            
 
 
 

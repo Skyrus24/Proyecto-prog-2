@@ -32,36 +32,41 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenuBar1 = new javax.swing.JMenuBar();
         itemMedico = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        itemHistorial = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        itemPacientes = new javax.swing.JMenu();
+        itemEspecialidades = new javax.swing.JMenu();
+        itemCitas = new javax.swing.JMenu();
+        itemHistorial = new javax.swing.JMenu();
+
+        jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        itemMedico.setText("Agendar");
+        itemMedico.setText("Medico");
 
-        jMenuItem1.setText("Medico");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        itemMedico.add(jMenuItem1);
+        jMenuItem2.setText("Agregar");
+        itemMedico.add(jMenuItem2);
 
-        itemHistorial.setText("Historial Clinico");
-        itemHistorial.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemHistorialActionPerformed(evt);
-            }
-        });
-        itemMedico.add(itemHistorial);
+        jMenuItem3.setText("Modificar");
+        itemMedico.add(jMenuItem3);
 
         jMenuBar1.add(itemMedico);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        itemPacientes.setText("Pacientes");
+        jMenuBar1.add(itemPacientes);
+
+        itemEspecialidades.setText("Especialidades");
+        jMenuBar1.add(itemEspecialidades);
+
+        itemCitas.setText("Citas");
+        jMenuBar1.add(itemCitas);
+
+        itemHistorial.setText("Historial");
+        jMenuBar1.add(itemHistorial);
 
         setJMenuBar(jMenuBar1);
 
@@ -78,16 +83,6 @@ public class Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        FrmMedicos medico = new FrmMedicos(this, false);
-        medico.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void itemHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemHistorialActionPerformed
-        FrmHistorialClinico historial = new FrmHistorialClinico(this, false);
-        historial.setVisible(true);
-    }//GEN-LAST:event_itemHistorialActionPerformed
 
     /**
      * @param args the command line arguments
@@ -115,10 +110,14 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem itemHistorial;
+    private javax.swing.JMenu itemCitas;
+    private javax.swing.JMenu itemEspecialidades;
+    private javax.swing.JMenu itemHistorial;
     private javax.swing.JMenu itemMedico;
-    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu itemPacientes;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     // End of variables declaration//GEN-END:variables
 }

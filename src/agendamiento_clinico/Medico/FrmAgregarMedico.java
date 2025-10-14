@@ -8,15 +8,13 @@ import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;
-import java.util.HashMap;
-import java.util.Map;
-
+import agendamiento_clinico.DatosCombo;
 /**
  *
  * @author admin
  */
 public class FrmAgregarMedico extends javax.swing.JDialog {
-    private final Map<String, String> mapaAreas = new HashMap<>();
+
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmAgregarMedico.class.getName());
     BaseDatos bd = new BaseDatos();
@@ -31,8 +29,11 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
         initComponents();
         if(!bd.hayConexion()){
             JOptionPane.showMessageDialog(null, "Error al conectar con la base de datos");
+        }else{
+            bd.cargarCombo(cboEspecialidad, "id_especialidad, nombre_especialidad", "especialidades");
         }
         this.setLocationRelativeTo(null);
+        limpiarCampos();
     }
 
     /**
@@ -242,11 +243,12 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
     }//GEN-LAST:event_txtApellidoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String areaselect = cboEspecialidad.getSelectedItem().toString();
-        String id_especialidad = mapaAreas.get(areaselect);
+        DatosCombo cbo = (DatosCombo) this.cboEspecialidad.getSelectedItem();
+        int codEspecialidad = cbo.getCodigo();
         bd.insertarRegistro("medicos", this.txtID.getText()+",'"+this.txtNombre.getText()+"','"
-                +this.txtApellido.getText()+"',"+id_especialidad+",'"+this.txtLicencia.getText()+"','"
-                +this.txtTel.getText()+"','"+this.txtEmail.getText()+"'");
+                +this.txtApellido.getText()+"',"+codEspecialidad+",'"+this.txtEmail.getText()+"','"
+                +this.txtTel.getText()+"','"+this.txtLicencia.getText()+"'");
+        limpiarCampos();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void cboEspecialidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEspecialidadActionPerformed
@@ -316,5 +318,12 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
     private javax.swing.JTextField txtTel;
     // End of variables declaration//GEN-END:variables
 
-    
+    private void limpiarCampos(){
+        this.txtID.setText(null);
+        this.txtNombre.setText(null);
+        this.txtApellido.setText(null);
+        this.txtLicencia.setText(null);
+        this.txtTel.setText(null);
+        this.txtEmail.setText(null);
+    }
 }

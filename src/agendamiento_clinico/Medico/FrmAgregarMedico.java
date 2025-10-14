@@ -3,16 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package agendamiento_clinico.Medico;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JOptionPane;
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author admin
  */
 public class FrmAgregarMedico extends javax.swing.JDialog {
+    private final Map<String, String> mapaAreas = new HashMap<>();
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmAgregarMedico.class.getName());
     BaseDatos bd = new BaseDatos();
@@ -83,6 +87,17 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         jLabel4.setText("Especialidad");
+
+        cboEspecialidad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboEspecialidadActionPerformed(evt);
+            }
+        });
+        cboEspecialidad.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cboEspecialidadKeyReleased(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 3, 36)); // NOI18N
         jLabel8.setText("Datos del Médico");
@@ -196,7 +211,7 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
                     .addComponent(btnCancelar))
@@ -227,8 +242,22 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
     }//GEN-LAST:event_txtApellidoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        bd.insertarRegistro("areas", this.txtCodigo.getText()+",'"+this.txtArea.getText()+"'");
+        String areaselect = cboEspecialidad.getSelectedItem().toString();
+        String id_especialidad = mapaAreas.get(areaselect);
+        bd.insertarRegistro("medicos", this.txtID.getText()+",'"+this.txtNombre.getText()+"','"
+                +this.txtApellido.getText()+"',"+id_especialidad+",'"+this.txtLicencia.getText()+"','"
+                +this.txtTel.getText()+"','"+this.txtEmail.getText()+"'");
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void cboEspecialidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEspecialidadActionPerformed
+        
+    }//GEN-LAST:event_cboEspecialidadActionPerformed
+
+    private void cboEspecialidadKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEspecialidadKeyReleased
+        if (evt.getKeyChar() == KeyEvent.VK_ENTER){
+            btnGuardar.requestFocus();
+        }
+    }//GEN-LAST:event_cboEspecialidadKeyReleased
 
     /**
      * @param args the command line arguments
@@ -287,4 +316,5 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
     private javax.swing.JTextField txtTel;
     // End of variables declaration//GEN-END:variables
 
+    
 }

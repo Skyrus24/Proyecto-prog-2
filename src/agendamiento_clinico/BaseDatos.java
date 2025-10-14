@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 /**
- *
- * @author Guillermo Villalba
+ 
  */
 public class BaseDatos {
     private String host = "localhost";

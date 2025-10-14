@@ -311,23 +311,38 @@ public class FrmEspecialidades extends javax.swing.JDialog {
     }//GEN-LAST:event_grdEspecialidadesMouseClicked
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String codigo = this.txtCodigo.getText().trim();
-        String especialidad = this.txtEspecialidad.getText().trim();
+        // 1. Validar los campos (igual que antes)
+        String codigoStr = this.txtCodigo.getText().trim();
+        String nombre = this.txtEspecialidad.getText().trim();
         String descripcion = this.txtaDescripcion.getText().trim();
 
-        if (codigo.isEmpty() || especialidad.isEmpty()) {
+        if (codigoStr.isEmpty() || nombre.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe completar el Código y el Nombre de la Especialidad.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
+        int codigo;
+        try {
+            codigo = Integer.parseInt(codigoStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "El código debe ser un número entero válido.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // <<< PASO 2: Crear un objeto de tu clase Especialidad con los datos del formulario
+        Especialidad esp = new Especialidad(codigo, nombre, descripcion);
+
         boolean exito = false;
         if (this.opc == 'N') {
+            // <<< PASO 3: Usar los getters del objeto para construir la consulta
             String campos = "id_especialidad, nombre_especialidad, descripcion";
-            String valores = "'" + codigo + "', '" + especialidad + "', '" + descripcion + "'";
+            String valores = "'" + esp.getId_especialidad() + "', '" + esp.getNombre_especialidad() + "', '" + esp.getDescripcion() + "'";
             exito = bd.insertarRegistro("especialidades", campos, valores);
+            
         } else if (this.opc == 'A') {
-            String campos = "nombre_especialidad='" + especialidad + "', descripcion='" + descripcion + "'";
-            String criterio = "id_especialidad='" + codigo + "'";
+            // <<< PASO 3 (Versión para Actualizar): Usar los getters del objeto
+            String campos = "nombre_especialidad='" + esp.getNombre_especialidad() + "', descripcion='" + esp.getDescripcion() + "'";
+            String criterio = "id_especialidad='" + esp.getId_especialidad() + "'";
             exito = bd.actualizarRegistro("especialidades", campos, criterio);
         }
 
@@ -354,6 +369,7 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         this.habilitarBotones(false);
         this.habilitarCampos(true);
         this.txtCodigo.requestFocus();
+        
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     /**

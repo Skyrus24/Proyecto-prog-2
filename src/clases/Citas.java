@@ -1,6 +1,5 @@
 package clases;
 
-import clases.Usuario;
 import java.time.LocalDateTime;
 
 public class Citas {
@@ -13,10 +12,9 @@ public class Citas {
     private EstadoCita estado_cita;
     private TipoCita tipo_cita;
     private String observaciones;
-    private Usuario usuario_creador;
     private LocalDateTime fecha_creacion;
 
-    public Citas(int id_cita, Paciente paciente, Medico medico, LocalDateTime fecha_hora_inicio, LocalDateTime fecha_hora_fin, String motivo_consulta, EstadoCita estado_cita, TipoCita tipo_cita, String observaciones, Usuario usuario_creador, LocalDateTime fecha_creacion) {
+    public Citas(int id_cita, Paciente paciente, Medico medico, LocalDateTime fecha_hora_inicio, LocalDateTime fecha_hora_fin, String motivo_consulta, EstadoCita estado_cita, TipoCita tipo_cita, String observaciones, LocalDateTime fecha_creacion) {
         this.id_cita = id_cita;
         this.paciente = paciente;
         this.medico = medico;
@@ -26,7 +24,6 @@ public class Citas {
         this.estado_cita = estado_cita;
         this.tipo_cita = tipo_cita;
         this.observaciones = observaciones;
-        this.usuario_creador = usuario_creador;
         this.fecha_creacion = fecha_creacion;
     }
 
@@ -100,14 +97,6 @@ public class Citas {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
-    }
-
-    public Usuario getUsuario_creador() {
-        return usuario_creador;
-    }
-
-    public void setUsuario_creador(Usuario usuario_creador) {
-        this.usuario_creador = usuario_creador;
     }
 
     public LocalDateTime getFecha_creacion() {

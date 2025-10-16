@@ -1,5 +1,10 @@
-package agendamiento_clinico;
+package ola;
+
+
+
+
 public class DatosCombo {
+    
     private int codigo;
     private String nombre;
     

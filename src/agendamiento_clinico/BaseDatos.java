@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 /**
- *
- * @author Guillermo Villalba
+ 
  */
 public class BaseDatos {
     private String host = "localhost";
@@ -33,8 +32,8 @@ public class BaseDatos {
             // Se registra el Driver de MySQL
 //            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 ////            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos,this.usuBD,this.clave);
-            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
-            
+//            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
+conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos,this.usuBD,this.clave);            
 
 
 

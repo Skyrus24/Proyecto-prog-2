@@ -409,12 +409,14 @@ public class FrmHorarios extends javax.swing.JDialog {
         this.limpiar();
         this.habilitar(false);
         this.opc = 'z';
+        this.idHorarioActualizar = 0;
     }//GEN-LAST:event_cmdGuardarActionPerformed
 
     private void cmdCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCancelarActionPerformed
         this.limpiar();
         this.habilitar(false);
         this.opc = 'z';
+        this.idHorarioActualizar = 0;
     }//GEN-LAST:event_cmdCancelarActionPerformed
 
     private void cmdEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEliminarActionPerformed
@@ -529,6 +531,8 @@ public class FrmHorarios extends javax.swing.JDialog {
         this.cmdEliminar.setEnabled(!estado);
     }
 
+
+
     private void limpiar(){
         this.txtHoraInicio.setText("");
         this.txtHoraFin.setText("");
@@ -536,8 +540,6 @@ public class FrmHorarios extends javax.swing.JDialog {
         this.txtFechaFin.setText("");
         this.cboMedicos.setSelectedIndex(-1);
         this.cboDiaSemana.setSelectedIndex(0);
-        this.idHorarioActualizar = 0;
-
 
         DefaultTableModel modelo = (DefaultTableModel) this.grdHorarios.getModel();
         while(modelo.getRowCount() > 0) {

@@ -408,11 +408,13 @@ public class FrmHorarios extends javax.swing.JDialog {
 
         this.limpiar();
         this.habilitar(false);
+        this.opc = 'z';
     }//GEN-LAST:event_cmdGuardarActionPerformed
 
     private void cmdCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCancelarActionPerformed
         this.limpiar();
         this.habilitar(false);
+        this.opc = 'z';
     }//GEN-LAST:event_cmdCancelarActionPerformed
 
     private void cmdEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEliminarActionPerformed
@@ -535,7 +537,7 @@ public class FrmHorarios extends javax.swing.JDialog {
         this.cboMedicos.setSelectedIndex(-1);
         this.cboDiaSemana.setSelectedIndex(0);
         this.idHorarioActualizar = 0;
-        this.opc = 'z';
+
 
         DefaultTableModel modelo = (DefaultTableModel) this.grdHorarios.getModel();
         while(modelo.getRowCount() > 0) {
@@ -544,47 +546,24 @@ public class FrmHorarios extends javax.swing.JDialog {
     }
     
     private void actualizarHorario() {
-        // ✅ VALIDAR que los campos no estén vacíos
-        if (txtHoraInicio.getText().trim().replace(":", "").isEmpty() || 
-            txtHoraFin.getText().trim().replace(":", "").isEmpty() ||
-            txtFechaInicio.getText().trim().length() < 10 ||
-            txtFechaFin.getText().trim().length() < 10) {
-            JOptionPane.showMessageDialog(this, 
-                "Todos los campos deben estar completos.", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         DatosCombo cboMedicoSeleccionado = (DatosCombo) this.cboMedicos.getSelectedItem();
         int idMedico = cboMedicoSeleccionado.getCodigo();
         String diaTexto = cboDiaSemana.getSelectedItem().toString();
         int diaNumero = getNumeroDia(diaTexto);
-
-        String horaInicio = txtHoraInicio.getText().trim();
-        String horaFin = txtHoraFin.getText().trim();
-        String fechaInicio = txtFechaInicio.getText().trim();
-        String fechaFin = txtFechaFin.getText().trim();
-
-        // ✅ SIN COMILLAS PARA HORA (es TIME en BD)
+        
         String campos = String.format("id_medico=%d, dia_semana=%d, hora_inicio='%s', hora_fin='%s', fecha_inicio_validez='%s', fecha_fin_validez='%s'",
             idMedico,
             diaNumero,
-            horaInicio,
-            horaFin,
-            fechaInicio,
-            fechaFin
+            txtHoraInicio.getText(),
+            txtHoraFin.getText(),
+            txtFechaInicio.getText(),
+            txtFechaFin.getText()
         );
-
+        
         String criterio = "id_horario = " + this.idHorarioActualizar;
-
-        System.out.println("SQL generado: UPDATE horarios SET " + campos + " WHERE " + criterio);
-
+        
         if (bd.actualizarRegistro("horarios", campos, criterio)) {
-            JOptionPane.showMessageDialog(this, 
-                "Horario actualizado correctamente.", 
-                "Éxito", 
-                JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Horario actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         }
     }
     
@@ -592,9 +571,13 @@ public class FrmHorarios extends javax.swing.JDialog {
         DatosCombo cboMedicoSeleccionado = (DatosCombo) this.cboMedicos.getSelectedItem();
         int idMedico = cboMedicoSeleccionado.getCodigo();
 
-        boolean inserta = true;
+        // Usamos una sola variable booleana, como en tu ejemplo
+        boolean inserta = true; 
+
+        // Definimos los campos una sola vez fuera del bucle
         String campos = "id_medico, dia_semana, hora_inicio, hora_fin, fecha_inicio_validez, fecha_fin_validez";
 
+        // Recorremos la grilla para insertar cada horario
         for (int i = 0; i < this.grdHorarios.getRowCount(); i++) {
             String diaTexto = this.grdHorarios.getValueAt(i, 0).toString();
             int diaNumero = getNumeroDia(diaTexto);
@@ -603,60 +586,22 @@ public class FrmHorarios extends javax.swing.JDialog {
             String fechaInicio = this.grdHorarios.getValueAt(i, 3).toString();
             String fechaFin = this.grdHorarios.getValueAt(i, 4).toString();
 
-            // ✅ CONVERTIR A FORMATO TIME VÁLIDO (HH:MM:SS)
-            if (!horaInicio.contains(":")) {
-                JOptionPane.showMessageDialog(cmdGuardar, "Formato de hora inválido: " + horaInicio);
-                inserta = false;
-                break;
-            }
-
-            // Si viene en formato HH:MM, convertir a HH:MM:SS
-            if (horaInicio.length() == 5) { // "08:30"
-                horaInicio = horaInicio + ":00";
-            }
-            if (horaFin.length() == 5) { // "09:30"
-                horaFin = horaFin + ":00";
-            }
-
-            // ✅ VERIFICAR QUE LAS FECHAS SEAN VÁLIDAS
-            if (fechaInicio.length() < 10 || fechaFin.length() < 10) {
-                JOptionPane.showMessageDialog(cmdGuardar, 
-                    "Fechas inválidas para el día: " + diaTexto);
-                inserta = false;
-                break;
-            }
-
-            // ✅ CONSTRUIR SQL CON COMILLAS CORRECTAS
             String valores = String.format("%d, %d, '%s', '%s', '%s', '%s'",
-                    idMedico, 
-                    diaNumero, 
-                    horaInicio,      // Ahora con :00 agregado
-                    horaFin,         // Ahora con :00 agregado
-                    fechaInicio,
-                    fechaFin
-            );
+                    idMedico, diaNumero, horaInicio, horaFin, fechaInicio, fechaFin);
 
-            System.out.println("SQL: INSERT INTO horarios (" + campos + ") VALUES (" + valores + ")");
-
-            // Intentar insertar
+            // Intentamos insertar el registro
             inserta = bd.insertarRegistro("horarios", campos, valores);
 
+            // Si la inserción falla (inserta == false), mostramos un error y salimos del bucle
             if (!inserta) {
-                JOptionPane.showMessageDialog(cmdGuardar, 
-                    "Error al intentar guardar el horario de: " + diaTexto + " a las " + horaInicio,
-                    "Error SQL",
-                    JOptionPane.ERROR_MESSAGE);
-                break;
+                JOptionPane.showMessageDialog(cmdGuardar, "Error al intentar guardar el horario de: " + diaTexto + " a las " + horaInicio);
+                break; // Detenemos el proceso
             }
         }
 
+        // Si 'inserta' sigue siendo true, significa que todas las inserciones fueron exitosas
         if (inserta) {
-            JOptionPane.showMessageDialog(this, 
-                "¡Todos los horarios han sido guardados correctamente!", 
-                "Proceso Exitoso", 
-                JOptionPane.INFORMATION_MESSAGE);
-            this.limpiar();
-            this.habilitar(false);
+            JOptionPane.showMessageDialog(this, "¡Todos los horarios han sido guardados correctamente!", "Proceso Exitoso", JOptionPane.INFORMATION_MESSAGE);
         }
     }
     

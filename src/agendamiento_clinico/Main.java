@@ -1,7 +1,5 @@
 package agendamiento_clinico;
 
-import clases.Especialidad;
-
 
 
 /*

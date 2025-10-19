@@ -1,181 +1,125 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package agendamiento_clinico;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-/**
- *
- * @author Guillermo Villalba
- */
+
 public class BaseDatos {
     private String host = "localhost";
-    private String baseDatos="clinica";
+    private String baseDatos = "clinica";
     private String usuBD = "root";
     private String clave = "1234";
     private Connection conexion = null;
-    private static Statement sentencia;
-    
-    public BaseDatos(){
-        this.hayConexion();
-    }
-    public boolean hayConexion(){
-
-        if (conexion != null)
-            return true;
-
-        try {
-            // Se registra el Driver de MySQL
-//            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-////            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos,this.usuBD,this.clave);
-            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
-            
 
 
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error de conexión"+e.getMessage());
-            return false;
-        }
-        return true;
-    }
-    public boolean borrarRegistro(String tabla, String condicion){
-        try {
-            // Se crea un Statement, para realizar la consulta
-            Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            // Se realiza la consulta.
-            JOptionPane optionPane=new JOptionPane();
-            Object[] opciones={"Si","No"};
-
-            int ret=optionPane.showOptionDialog(null,"Esta seguro de ELIMINAR el REGISTRO? ","Pregunta",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,opciones,opciones[0]);
-            //Si la opcion escogida es Si
-            if(ret==JOptionPane.YES_OPTION)
-                s.executeUpdate("delete from "+tabla+" where "+condicion);
-        } catch (SQLException e) {
-            if (e.getErrorCode()==1451){
-                JOptionPane.showMessageDialog(null, "El registro esta relacionado con otros registros\nno podrá borrarlo." ,
-                        "Atencion", JOptionPane.INFORMATION_MESSAGE);
-            }else{
-                JOptionPane.showMessageDialog(null, "Ocurrio Un error" + e.getMessage(), "Atencion",
-                        JOptionPane.INFORMATION_MESSAGE);
+    private Connection getConexion() throws SQLException {
+        if (conexion == null || conexion.isClosed()) {
+            try {
+                String url = "jdbc:mysql://" + this.host + "/" + this.baseDatos + "?characterEncoding=utf8";
+                conexion = DriverManager.getConnection(url, this.usuBD, this.clave);
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Error de conexión: " + e.getMessage());
+                throw e;
             }
-            return false;
         }
-        return true;
+        return conexion;
     }
 
-    public boolean borrarRegistroSinPreguntar(String tabla, String condicion){
+    // --- MÉTODOS DE ESCRITURA CON COMMIT MANUAL ---
+
+    public boolean insertarRegistro(String tabla, String campos, String valores) {
+        String sql = "INSERT INTO " + tabla + " (" + campos + ") VALUES (" + valores + ")";
+        return ejecutarSentenciaDeEscritura(sql, "insertar");
+    }
+
+    public boolean actualizarRegistro(String tabla, String campos, String criterio) {
+        String sql = "UPDATE " + tabla + " SET " + campos + " WHERE " + criterio;
+        return ejecutarSentenciaDeEscritura(sql, "actualizar");
+    }
+
+    public boolean borrarRegistro(String tabla, String condicion) {
+        // La confirmación se hace en FrmHorarios, aquí solo borramos
+        String sql = "DELETE FROM " + tabla + " WHERE " + condicion;
+        return ejecutarSentenciaDeEscritura(sql, "borrar");
+    }
+
+    // MÉTODO CENTRALIZADO PARA INSERTAR, ACTUALIZAR Y BORRAR
+    private boolean ejecutarSentenciaDeEscritura(String sql, String operacion) {
+        Connection conn = null;
+        Statement stmt = null;
         try {
-            // Se crea un Statement, para realizar la consulta
-            Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            s.executeUpdate("delete from "+tabla+" where "+condicion);
+            conn = getConexion();
+            conn.setAutoCommit(false); // 1. Desactivamos el auto-guardado para controlar nosotros
+            stmt = conn.createStatement();
+            
+            stmt.executeUpdate(sql);
+            
+            conn.commit(); // 2. SI LLEGA HASTA AQUÍ, CONFIRMAMOS Y GUARDAMOS PERMANENTEMENTE
+            return true;
+            
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "No se ha eliminado el registro seleccionado\nPuede estar usándose en otra tabla", "Atencion",
-                        JOptionPane.INFORMATION_MESSAGE);
+            try {
+                if (conn != null) {
+                    conn.rollback(); // 3. Si hubo un error, DESHACEMOS todo
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Error crítico al intentar deshacer la operación: " + ex.getMessage());
+            }
+            JOptionPane.showMessageDialog(null, "Ocurrió un error al " + operacion + ":\n" + e.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
             return false;
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true); // 4. Dejamos la conexión en su estado normal
+                }
+            } catch (SQLException ex) {
+                // Error al cerrar recursos
+            }
         }
-        return true;
     }
 
-    public boolean insertarRegistro(String tabla, String campos, String valores){
-        try {
-            // Se crea un Statement, para realizar la consulta
-            Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            // Se realiza la consulta.
-            s.executeUpdate("insert into "+tabla+" ("+campos+") values ("+valores+")");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio Un error al insertar \n"+ e.getMessage() , "Atencion",
-                    JOptionPane.INFORMATION_MESSAGE);
-            return false;
-        }
-        return true;
-    }
-
-    public boolean insertarRegistro(String tabla,  String valores){
-        try {
-            // Se crea un Statement, para realizar la consulta
-            Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            // Se realiza la consulta.
-            s.executeUpdate("insert into "+tabla+" values ("+valores+")");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio Un error al insertar \n"+ e.getMessage() , "Atencion",
-                    JOptionPane.INFORMATION_MESSAGE);
-            return false;
-        }
-        return true;
-    }
-    public boolean actualizarRegistro(String tabla, String campos, String criterio){
-        try {
-            // Se crea un Statement, para realizar la consulta
-            Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-            // Se realiza la consulta.
-            s.executeUpdate("update "+tabla+" set "+campos+" where " +criterio);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio Un error\n"+e.getMessage() , "Atencion",
-                    JOptionPane.INFORMATION_MESSAGE);
-            return false;
-        }
-        return true;
-    }
+    // --- MÉTODOS DE LECTURA (NO NECESITAN TRANSACCIONES) ---
+    
     public ResultSet consultarRegistros(String sql) {
-        ResultSet rs = null;
         try {
-            // Se crea un Statement, para realizar la consulta
-            Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-
-            // Se realiza la consulta. Los resultados se guardan en el ResultSet rs
-            rs = s.executeQuery(sql);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio Un error"+ e.getMessage() , "Atencion",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-        return rs;
-    }
-    public void cargarCombo(JComboBox combo, String campos, String tabla){
-         ResultSet rsC;
-         try{
-             //Crear la sentencia para la consulta
-             sentencia = (Statement)conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-             //Se ejecuta la consulta
-             rsC = sentencia.executeQuery("select " + campos + " from " + tabla);
-           //Se inicializa el arraylist
-             ArrayList<DatosCombo> camposCombo;
-             camposCombo = new ArrayList();
-             //Recorrer los registros
-             while (rsC.next()) {
-                 //Agregar al arraylist datos del rsC
-                 camposCombo.add(new DatosCombo(rsC.getInt(1), rsC.getString(2)));
-             }
-             for (DatosCombo nombre: camposCombo){
-                 //Agregar items al combo
-                 combo.addItem(nombre);
-             }
-         }catch(Exception e) {
-             //Si ocurrio un error mostrar mensaje
-             JOptionPane.showMessageDialog(null, "Error al llenar combo\n" + e.getMessage()  , "Llenar Combo - "  + combo.getName(), JOptionPane.ERROR_MESSAGE);
-         }
-
-     }
-        /** Cierra la conexion con la base de datos */
-    public void cierraConexion() {
-        try {
-            conexion.close();
-        } catch (Exception e) {
-
+            Statement s = getConexion().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            return s.executeQuery(sql);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Ocurrió un error en la consulta: " + e.getMessage(), "Atención", JOptionPane.INFORMATION_MESSAGE);
+            return null;
         }
     }
-    public Connection miConexion(){
-        return this.conexion;
+
+    public void cargarCombo(JComboBox combo, String campos, String tabla) {
+        String sql = "SELECT " + campos + " FROM " + tabla;
+        try (Statement sentencia = getConexion().createStatement();
+             ResultSet rsC = sentencia.executeQuery(sql)) {
+
+            combo.removeAllItems();
+            ArrayList<DatosCombo> camposCombo = new ArrayList<>();
+            while (rsC.next()) {
+                camposCombo.add(new DatosCombo(rsC.getInt(1), rsC.getString(2)));
+            }
+            for (DatosCombo nombre : camposCombo) {
+                combo.addItem(nombre);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al llenar combo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
+    
+    public boolean hayConexion(){
+        try {
+            return getConexion() != null && !getConexion().isClosed();
+        } catch (SQLException e){
+            return false;
+        }
+    }
+    
 }

@@ -10,7 +10,7 @@ public class BaseDatos {
     private String host = "localhost";
     private String baseDatos="clinica";
     private String usuBD = "root";
-    private String clave = "1234";
+    private String clave = "12345";
     private Connection conexion = null;
     private static Statement sentencia;
     
@@ -18,7 +18,6 @@ public class BaseDatos {
         this.hayConexion();
     }
     public boolean hayConexion(){
-
         if (conexion != null)
             return true;
 

@@ -3,12 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package agendamiento_clinico.Medico;
+import javax.swing.JOptionPane;
+import agendamiento_clinico.BaseDatos;
+import agendamiento_clinico.Grilla;
+import agendamiento_clinico.DatosCombo;
 
 /**
  *
  * @author Alan Cabrera
  */
 public class FrmModificarMedico extends javax.swing.JDialog {
+    private BaseDatos bd = new BaseDatos();
+    private String opc = "z";
+    private Grilla grd = new Grilla();
 
     /**
      * Creates new form FrmModificarMedico
@@ -16,6 +23,15 @@ public class FrmModificarMedico extends javax.swing.JDialog {
     public FrmModificarMedico(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        if(!bd.hayConexion()){
+            JOptionPane.showMessageDialog(null, "Error de Conexión con la Base de Datos");
+        } else {
+            bd.cargarCombo(cboEspecialidadM,"id_edpecialidad, nombre_especialidad" , "especialidades");
+        }
+        this.habilitarCampos(false);
+        this.habilitarBotones(true);
+        this.actualizarGrilla();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -27,21 +43,234 @@ public class FrmModificarMedico extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        grdMedicos = new javax.swing.JTable();
+        cmdActualizar = new javax.swing.JToggleButton();
+        cmdBorrar = new javax.swing.JToggleButton();
+        txtNombre = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        txtApellido = new javax.swing.JTextField();
+        txtTel = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        cboEspecialidadM = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        txtLicencia = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        cmdGuardar = new javax.swing.JToggleButton();
+        cmdCancelar = new javax.swing.JToggleButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        grdMedicos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "id_medico", "nombre", "apellidos", "especialidad", "telefono", "Licencia", "Email"
+            }
+        ));
+        jScrollPane1.setViewportView(grdMedicos);
+        if (grdMedicos.getColumnModel().getColumnCount() > 0) {
+            grdMedicos.getColumnModel().getColumn(0).setMinWidth(50);
+            grdMedicos.getColumnModel().getColumn(0).setMaxWidth(100);
+            grdMedicos.getColumnModel().getColumn(1).setMinWidth(200);
+            grdMedicos.getColumnModel().getColumn(1).setMaxWidth(300);
+            grdMedicos.getColumnModel().getColumn(2).setMinWidth(200);
+            grdMedicos.getColumnModel().getColumn(2).setMaxWidth(300);
+            grdMedicos.getColumnModel().getColumn(3).setMinWidth(200);
+            grdMedicos.getColumnModel().getColumn(3).setMaxWidth(300);
+            grdMedicos.getColumnModel().getColumn(4).setMinWidth(100);
+            grdMedicos.getColumnModel().getColumn(4).setMaxWidth(200);
+            grdMedicos.getColumnModel().getColumn(5).setMinWidth(100);
+            grdMedicos.getColumnModel().getColumn(5).setMaxWidth(200);
+            grdMedicos.getColumnModel().getColumn(6).setMinWidth(200);
+            grdMedicos.getColumnModel().getColumn(6).setMaxWidth(300);
+        }
+
+        cmdActualizar.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        cmdActualizar.setText("Actualizar");
+        cmdActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdActualizarActionPerformed(evt);
+            }
+        });
+
+        cmdBorrar.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        cmdBorrar.setText("Borrar");
+        cmdBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdBorrarActionPerformed(evt);
+            }
+        });
+
+        txtNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNombreActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jLabel1.setText("Nombre");
+
+        txtApellido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtApellidoActionPerformed(evt);
+            }
+        });
+
+        txtTel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTelActionPerformed(evt);
+            }
+        });
+
+        txtEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEmailActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jLabel2.setText("Apellido");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jLabel3.setText("Especialidad");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jLabel4.setText("Telefono");
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jLabel5.setText("Email");
+
+        txtLicencia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLicenciaActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jLabel6.setText("Licencia");
+
+        cmdGuardar.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        cmdGuardar.setText("Guardar");
+
+        cmdCancelar.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        cmdCancelar.setText("Cancelar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmdActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addComponent(cmdBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtEmail)
+                                .addComponent(txtTel)
+                                .addComponent(txtApellido)
+                                .addComponent(txtNombre)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cboEspecialidadM, 0, 176, Short.MAX_VALUE)
+                                .addComponent(txtLicencia))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cmdGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cmdCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(12, 12, 12)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1090, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cboEspecialidadM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtLicencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmdGuardar)
+                    .addComponent(cmdCancelar))
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmdActualizar)
+                    .addComponent(cmdBorrar))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cmdActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdActualizarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmdActualizarActionPerformed
+
+    private void cmdBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdBorrarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmdBorrarActionPerformed
+
+    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombreActionPerformed
+
+    private void txtApellidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtApellidoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtApellidoActionPerformed
+
+    private void txtTelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTelActionPerformed
+
+    private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEmailActionPerformed
+
+    private void txtLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLicenciaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLicenciaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -86,5 +315,52 @@ public class FrmModificarMedico extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cboEspecialidadM;
+    private javax.swing.JToggleButton cmdActualizar;
+    private javax.swing.JToggleButton cmdBorrar;
+    private javax.swing.JToggleButton cmdCancelar;
+    private javax.swing.JToggleButton cmdGuardar;
+    private javax.swing.JTable grdMedicos;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField txtApellido;
+    private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextField txtLicencia;
+    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtTel;
     // End of variables declaration//GEN-END:variables
+private void limpiarCampos(){
+        
+        this.txtNombre.setText(null);
+        this.txtApellido.setText(null);
+        this.txtTel.setText(null);
+        this.txtEmail.setText(null);
+        this.txtLicencia.setText(null);
+    }
+
+private void habilitarCampos(boolean estado){
+    this.txtNombre.setEnabled(estado);
+    this.txtApellido.setEnabled(estado);
+    this.cboEspecialidadM.setEnabled(estado);
+    this.txtTel.setEnabled(estado);
+    this.txtEmail.setEnabled(estado);
+    this.txtLicencia.setEnabled(estado);
+}
+
+private void habilitarBotones(boolean estado){
+    this.cmdActualizar.setEnabled(estado);
+    this.cmdBorrar.setEnabled(estado);
+    this.cmdGuardar.setEnabled(estado);
+    this.cmdCancelar.setEnabled(estado);
+}
+
+private void actualizarGrilla(){
+    String campos[] = {"m.id_medico", "m.nombre", "m.apellidos", "e.nombre_especialidad", "m.telefono", "m.email", "m.Licencia"};
+    this.grd.cargarGrilla(grdMedicos, "medicos m inner join especialidades e on m.id_especialidad = e.ide_especialidad", campos);
+}
 }

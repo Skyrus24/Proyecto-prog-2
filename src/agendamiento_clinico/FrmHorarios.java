@@ -426,19 +426,28 @@ public class FrmHorarios extends javax.swing.JDialog {
         int idParaBorrar = consulta.obtenerIdSeleccionado();
 
         if (idParaBorrar > 0) {
-            int confirmacion = JOptionPane.showConfirmDialog(
+            if (bd.borrarRegistro("horarios", "id_horario = " + idParaBorrar)) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Horario eliminado correctamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo eliminar el horario. Puede estar relacionado con otros registros.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } else {
+            JOptionPane.showMessageDialog(
                 this,
-                "¿Está seguro de que desea eliminar permanentemente este horario?",
-                "Confirmar Eliminación",
-                JOptionPane.YES_NO_OPTION,
+                "No se seleccionó ningún horario para eliminar.",
+                "Aviso",
                 JOptionPane.WARNING_MESSAGE
             );
-
-            if (confirmacion == JOptionPane.YES_OPTION) {
-                if (bd.borrarRegistro("horarios", "id_horario = " + idParaBorrar)) {
-                    JOptionPane.showMessageDialog(this, "Horario eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
         }
     }//GEN-LAST:event_cmdEliminarActionPerformed
 

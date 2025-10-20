@@ -274,26 +274,25 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         String codigo = this.txtCodigo.getText().trim();
 
         if (codigo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un registro de la grilla para eliminar.", "Atención", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                "Debe seleccionar un registro de la grilla para eliminar.", 
+                "Atención", 
+                JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
-        int confirmacion = JOptionPane.showConfirmDialog(
-            this,
-            "¿Está seguro de que desea eliminar esta especialidad?",
-            "Confirmar Eliminación",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        );
 
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            if (bd.borrarRegistro("especialidades", "id_especialidad = '" + codigo + "'")) {
-                JOptionPane.showMessageDialog(this, "Especialidad eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                this.actualizarGrilla();
-                this.limpiarCampos();
-            } else {
-                JOptionPane.showMessageDialog(this, "No se puede eliminar esta especialidad porque hay médicos asociados a ella.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        if (bd.borrarRegistro("especialidades", "id_especialidad = '" + codigo + "'")) {
+            JOptionPane.showMessageDialog(this, 
+                "Especialidad eliminada correctamente.", 
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE);
+            this.actualizarGrilla();
+            this.limpiarCampos();
+        } else {
+            JOptionPane.showMessageDialog(this, 
+                "No se puede eliminar esta especialidad porque hay médicos asociados a ella.", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
 

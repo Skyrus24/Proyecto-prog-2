@@ -454,7 +454,6 @@ public class FrmHorarios extends javax.swing.JDialog {
         if (idParaBorrar > 0) {
                 if (bd.borrarRegistro("horarios", "id_horario = " + idParaBorrar)) {
                     JOptionPane.showMessageDialog(this, "Horario eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                
             }
         }
     }//GEN-LAST:event_cmdEliminarActionPerformed

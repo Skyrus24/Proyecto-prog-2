@@ -434,7 +434,6 @@ public class FrmHorarios extends javax.swing.JDialog {
         } else if (opc == 'M') {
             actualizarHorario();
         }
-
         this.limpiar();
         this.habilitar(false);
         this.opc = 'z';
@@ -453,17 +452,9 @@ public class FrmHorarios extends javax.swing.JDialog {
         consulta.setVisible(true);
         int idParaBorrar = consulta.obtenerIdSeleccionado();
         if (idParaBorrar > 0) {
-            int confirmacion = JOptionPane.showConfirmDialog(
-                this,
-                "¿Está seguro de que desea eliminar permanentemente este horario?",
-                "Confirmar Eliminación",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE
-            );
-            if (confirmacion == JOptionPane.YES_OPTION) {
                 if (bd.borrarRegistro("horarios", "id_horario = " + idParaBorrar)) {
                     JOptionPane.showMessageDialog(this, "Horario eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                }
+                
             }
         }
     }//GEN-LAST:event_cmdEliminarActionPerformed

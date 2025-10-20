@@ -168,6 +168,14 @@ public class BaseDatos {
         }
     }
     public Connection miConexion(){
-        return this.conexion;
+        try {
+        if (conexion == null || conexion.isClosed()) {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinica", usuBD, clave);
+        }
+    } catch (Exception e) {
+        System.out.println("Error de conexión: " + e.getMessage());
+    }
+    return conexion;
     }
 }

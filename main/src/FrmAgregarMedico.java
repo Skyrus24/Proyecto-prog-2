@@ -2,13 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package agendamiento_clinico.Medico;
-import java.awt.event.KeyEvent;
 
+import ola.Grilla;
+import ola.DatosCombo;
+import ola.BaseDatos;
+import clase.Especialidad;
+import clase.Medico;
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
-import agendamiento_clinico.BaseDatos;
-import agendamiento_clinico.Grilla;
-import agendamiento_clinico.DatosCombo;
+
 /**
  *
  * @author admin
@@ -188,12 +190,26 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        DatosCombo cbo = (DatosCombo) this.cboEspecialidad.getSelectedItem();
-        int codEspecialidad = cbo.getCodigo();
-        bd.insertarRegistro("medicos", this.txtID.getText()+",'"+this.txtNombre.getText()+"','"
-                +this.txtApellido.getText()+"',"+codEspecialidad+",'"+this.txtEmail.getText()+"','"
-                +this.txtTel.getText()+"','"+this.txtLicencia.getText()+"'");
-        limpiarCampos();
+        DatosCombo combo = (DatosCombo) cboEspecialidad.getSelectedItem();
+        Especialidad esp = new Especialidad(combo.getCodigo(), combo.getNombre(), "DEscripcion generica");
+
+        Medico medico = new Medico(
+            Integer.parseInt(txtID.getText()),
+            txtNombre.getText(),
+            txtApellido.getText(),
+            esp,
+            txtEmail.getText(),
+            txtTel.getText(),
+            txtLicencia.getText()
+        );
+
+        MedicoDAO dao = new MedicoDAO();
+        if (dao.insertar(medico)) {
+            JOptionPane.showMessageDialog(this, "Médico guardado correctamente");
+            limpiarCampos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al guardar médico");
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void cboEspecialidadKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEspecialidadKeyReleased
@@ -262,7 +278,7 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
     private void limpiarCampos(){
         this.txtID.setText(null);
         this.txtNombre.setText(null);
-        this.txtApellido.setText(null);
+        this.txtApellido.setText(null); 
         this.txtLicencia.setText(null);
         this.txtTel.setText(null);
         this.txtEmail.setText(null);

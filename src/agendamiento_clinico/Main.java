@@ -33,41 +33,91 @@ public class Main extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
         jMenuBar1 = new javax.swing.JMenuBar();
         itemMedico = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         itemPacientes = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        itemPacientesModificar = new javax.swing.JMenuItem();
+        itemPacientesEliminar = new javax.swing.JMenuItem();
+        itemPacientesListar = new javax.swing.JMenuItem();
         itemEspecialidades = new javax.swing.JMenu();
         itemCitas = new javax.swing.JMenu();
+        itemAgregarCitas = new javax.swing.JMenuItem();
+        itemCitasEliminar = new javax.swing.JMenuItem();
+        itemCitasModificar = new javax.swing.JMenuItem();
+        itemCitasListar = new javax.swing.JMenuItem();
         itemHistorial = new javax.swing.JMenu();
 
         jMenuItem1.setText("jMenuItem1");
+
+        jMenuItem9.setText("jMenuItem9");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         itemMedico.setText("Medico");
 
-        jMenuItem2.setText("Agregar");
+        jMenuItem2.setText("Agregar Medico");
         itemMedico.add(jMenuItem2);
 
         jMenuItem3.setText("Modificar");
         itemMedico.add(jMenuItem3);
 
+        jMenuItem4.setText("Eliminar");
+        itemMedico.add(jMenuItem4);
+
+        jMenuItem5.setText("Listar");
+        itemMedico.add(jMenuItem5);
+
         jMenuBar1.add(itemMedico);
 
         itemPacientes.setText("Pacientes");
+
+        jMenuItem6.setText("Agregar");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        itemPacientes.add(jMenuItem6);
+
+        itemPacientesModificar.setText("Modificar");
+        itemPacientes.add(itemPacientesModificar);
+
+        itemPacientesEliminar.setText("Eliminar");
+        itemPacientes.add(itemPacientesEliminar);
+
+        itemPacientesListar.setText("Listar");
+        itemPacientes.add(itemPacientesListar);
+
         jMenuBar1.add(itemPacientes);
 
         itemEspecialidades.setText("Especialidades");
-        itemEspecialidades.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemEspecialidadesActionPerformed(evt);
-            }
-        });
         jMenuBar1.add(itemEspecialidades);
 
         itemCitas.setText("Citas");
+
+        itemAgregarCitas.setText("Agregar");
+        itemCitas.add(itemAgregarCitas);
+
+        itemCitasEliminar.setText("Eliminar");
+        itemCitasEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCitasEliminarActionPerformed(evt);
+            }
+        });
+        itemCitas.add(itemCitasEliminar);
+
+        itemCitasModificar.setText("Modificar");
+        itemCitas.add(itemCitasModificar);
+
+        itemCitasListar.setText("Listar");
+        itemCitas.add(itemCitasListar);
+
         jMenuBar1.add(itemCitas);
 
         itemHistorial.setText("Historial");
@@ -89,9 +139,13 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void itemEspecialidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEspecialidadesActionPerformed
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
-    }//GEN-LAST:event_itemEspecialidadesActionPerformed
+    private void itemCitasEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasEliminarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemCitasEliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -119,14 +173,25 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem itemAgregarCitas;
     private javax.swing.JMenu itemCitas;
+    private javax.swing.JMenuItem itemCitasEliminar;
+    private javax.swing.JMenuItem itemCitasListar;
+    private javax.swing.JMenuItem itemCitasModificar;
     private javax.swing.JMenu itemEspecialidades;
     private javax.swing.JMenu itemHistorial;
     private javax.swing.JMenu itemMedico;
     private javax.swing.JMenu itemPacientes;
+    private javax.swing.JMenuItem itemPacientesEliminar;
+    private javax.swing.JMenuItem itemPacientesListar;
+    private javax.swing.JMenuItem itemPacientesModificar;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem9;
     // End of variables declaration//GEN-END:variables
 }

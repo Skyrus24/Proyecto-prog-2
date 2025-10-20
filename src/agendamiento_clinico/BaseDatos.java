@@ -1,17 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package agendamiento_clinico;
 
 import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-/**
- 
- */
+
 public class BaseDatos {
     private String host = "localhost";
     private String baseDatos="clinica";
@@ -24,7 +18,6 @@ public class BaseDatos {
         this.hayConexion();
     }
     public boolean hayConexion(){
-
         if (conexion != null)
             return true;
 
@@ -32,8 +25,8 @@ public class BaseDatos {
             // Se registra el Driver de MySQL
 //            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 ////            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos,this.usuBD,this.clave);
-//            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
-conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos,this.usuBD,this.clave);            
+            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+":3306/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
+            
 
 
 

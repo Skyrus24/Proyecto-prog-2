@@ -7,7 +7,6 @@ package agendamiento_clinico;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import clases.Especialidad;
 /**
  *
  * @author Usuario
@@ -279,9 +278,22 @@ public class FrmEspecialidades extends javax.swing.JDialog {
             return;
         }
         
-        if (bd.borrarRegistro("especialidades", "id_especialidad = '" + codigo + "'")) {
-            this.actualizarGrilla();
-            this.limpiarCampos();
+        int confirmacion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Está seguro de que desea eliminar esta especialidad?",
+            "Confirmar Eliminación",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            if (bd.borrarRegistro("especialidades", "id_especialidad = '" + codigo + "'")) {
+                JOptionPane.showMessageDialog(this, "Especialidad eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                this.actualizarGrilla();
+                this.limpiarCampos();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se puede eliminar esta especialidad porque hay médicos asociados a ella.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
 
@@ -328,17 +340,15 @@ public class FrmEspecialidades extends javax.swing.JDialog {
             return;
         }
 
-        Especialidad esp = new Especialidad(codigo, nombre, descripcion);
-
         boolean exito = false;
         if (this.opc == 'N') {
             String campos = "id_especialidad, nombre_especialidad, descripcion";
-            String valores = "'" + esp.getId_especialidad() + "', '" + esp.getNombre_especialidad() + "', '" + esp.getDescripcion() + "'";
+            String valores = "'" + codigo + "', '" + nombre + "', '" + descripcion + "'";
             exito = bd.insertarRegistro("especialidades", campos, valores);
             
         } else if (this.opc == 'A') {
-            String campos = "nombre_especialidad='" + esp.getNombre_especialidad() + "', descripcion='" + esp.getDescripcion() + "'";
-            String criterio = "id_especialidad='" + esp.getId_especialidad() + "'";
+            String campos = "nombre_especialidad='" + nombre + "', descripcion='" + descripcion + "'";
+            String criterio = "id_especialidad='" + codigo + "'";
             exito = bd.actualizarRegistro("especialidades", campos, criterio);
         }
 

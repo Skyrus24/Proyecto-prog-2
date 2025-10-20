@@ -26,7 +26,7 @@ public class FrmModificarMedico extends javax.swing.JDialog {
         if(!bd.hayConexion()){
             JOptionPane.showMessageDialog(null, "Error de Conexión con la Base de Datos");
         } else {
-            bd.cargarCombo(cboEspecialidadM,"id_edpecialidad, nombre_especialidad" , "especialidades");
+            bd.cargarCombo(cboEspecialidadM,"id_especialidad, nombre_especialidad" , "especialidades");
         }
         this.habilitarCampos(false);
         this.habilitarBotones(true);
@@ -72,7 +72,7 @@ public class FrmModificarMedico extends javax.swing.JDialog {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "id_medico", "nombre", "apellidos", "especialidad", "telefono", "Licencia", "Email"
+                "id_medico", "nombre", "apellidos", "especialidad", "telefono", "Email", "Licencia"
             }
         ));
         jScrollPane1.setViewportView(grdMedicos);
@@ -87,10 +87,10 @@ public class FrmModificarMedico extends javax.swing.JDialog {
             grdMedicos.getColumnModel().getColumn(3).setMaxWidth(300);
             grdMedicos.getColumnModel().getColumn(4).setMinWidth(100);
             grdMedicos.getColumnModel().getColumn(4).setMaxWidth(200);
-            grdMedicos.getColumnModel().getColumn(5).setMinWidth(100);
-            grdMedicos.getColumnModel().getColumn(5).setMaxWidth(200);
-            grdMedicos.getColumnModel().getColumn(6).setMinWidth(200);
-            grdMedicos.getColumnModel().getColumn(6).setMaxWidth(300);
+            grdMedicos.getColumnModel().getColumn(5).setMinWidth(200);
+            grdMedicos.getColumnModel().getColumn(5).setMaxWidth(300);
+            grdMedicos.getColumnModel().getColumn(6).setMinWidth(100);
+            grdMedicos.getColumnModel().getColumn(6).setMaxWidth(200);
         }
 
         cmdActualizar.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
@@ -167,43 +167,42 @@ public class FrmModificarMedico extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cmdActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cmdBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(250, 250, 250))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cmdActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
-                        .addComponent(cmdBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtEmail)
-                                .addComponent(txtTel)
-                                .addComponent(txtApellido)
-                                .addComponent(txtNombre)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cboEspecialidadM, 0, 176, Short.MAX_VALUE)
-                                .addComponent(txtLicencia))
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(cmdGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cmdCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(12, 12, 12)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1090, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtEmail)
+                        .addComponent(txtTel)
+                        .addComponent(txtApellido)
+                        .addComponent(txtNombre)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cboEspecialidadM, 0, 176, Short.MAX_VALUE)
+                        .addComponent(txtLicencia))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cmdGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cmdCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1399, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(231, 231, 231))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -226,30 +225,53 @@ public class FrmModificarMedico extends javax.swing.JDialog {
                         .addGap(9, 9, 9)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtLicencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(4, 4, 4)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmdGuardar)
-                    .addComponent(cmdCancelar))
+                        .addComponent(txtLicencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmdGuardar)
+                            .addComponent(cmdCancelar)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmdActualizar)
                     .addComponent(cmdBorrar))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdActualizarActionPerformed
-        // TODO add your handling code here:
+        if(this.grdMedicos.getSelectedRow()>-1){
+            this.txtNombre.setText(this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 1).toString());
+            this.txtApellido.setText(this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 2).toString());
+            this.txtTel.setText(this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 4).toString());
+            this.txtEmail.setText(this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 5).toString());
+            this.txtLicencia.setText(this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 6).toString());
+            int cantItem = this.cboEspecialidadM.getItemCount();
+            for(int i=0; i<cantItem;i++){
+                this.cboEspecialidadM.setSelectedIndex(i);
+                if(this.cboEspecialidadM.getSelectedItem().toString().equals(
+                        this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow(), 3))){
+                    break;
+                } 
+            }
+            this.opc = "M";
+            this.habilitarBotones(true);
+            this.habilitarCampos(true);
+            this.txtNombre.requestFocus();
+        }else{
+            JOptionPane.showMessageDialog(null, "Seleccione un registro para continuar");
+        }
+        
     }//GEN-LAST:event_cmdActualizarActionPerformed
 
     private void cmdBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdBorrarActionPerformed
-        // TODO add your handling code here:
+        if(this.grdMedicos.getSelectedRow()>-1){
+            bd.borrarRegistroSinPreguntar("medicos", "id_medico="+this.grdMedicos.getValueAt(
+                    this.grdMedicos.getSelectedRow() , 0).toString());
+            this.actualizarGrilla();
+        }
     }//GEN-LAST:event_cmdBorrarActionPerformed
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
@@ -355,12 +377,12 @@ private void habilitarCampos(boolean estado){
 private void habilitarBotones(boolean estado){
     this.cmdActualizar.setEnabled(estado);
     this.cmdBorrar.setEnabled(estado);
-    this.cmdGuardar.setEnabled(estado);
+    this.cmdGuardar.setEnabled(!estado);
     this.cmdCancelar.setEnabled(estado);
 }
 
 private void actualizarGrilla(){
-    String campos[] = {"m.id_medico", "m.nombre", "m.apellidos", "e.nombre_especialidad", "m.telefono", "m.email", "m.Licencia"};
-    this.grd.cargarGrilla(grdMedicos, "medicos m inner join especialidades e on m.id_especialidad = e.ide_especialidad", campos);
+    String campos[] = {"m.id_medico", "m.nombre", "m.apellidos", "e.nombre_especialidad", "m.telefono", "m.email", "m.numero_licencia"};
+    this.grd.cargarGrilla(grdMedicos, "medicos m inner join especialidades e on m.id_especialidad = e.id_especialidad", campos);
 }
 }

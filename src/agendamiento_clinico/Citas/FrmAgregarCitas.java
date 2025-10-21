@@ -70,18 +70,21 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         cboTipo = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtObservaciones = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        txtCodigo.setEditable(false);
 
         cboPacientes.setEditable(true);
         cboPacientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -136,9 +139,9 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         jLabel9.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel9.setText("Tipo");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        txtObservaciones.setColumns(20);
+        txtObservaciones.setRows(5);
+        jScrollPane1.setViewportView(txtObservaciones);
 
         jLabel10.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel10.setText("Observaciones");
@@ -267,6 +270,135 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
     private void cboInicioHoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboInicioHoraActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cboInicioHoraActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        try (Connection conexion = bd.miConexion()) {
+            // 🔹 Validar campos obligatorios
+            if (cboPacientes.getSelectedItem() == null || cboMedicos.getSelectedItem() == null ||
+                dcFecha.getDate() == null || cboInicioHora.getSelectedItem() == null || cboFinHora.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Debe completar todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String paciente = cboPacientes.getSelectedItem().toString();
+            String medico = cboMedicos.getSelectedItem().toString();
+            String motivo = txtMotivo.getText().trim();
+            String estado = cboEstado.getSelectedItem().toString();
+            String tipo = cboTipo.getSelectedItem().toString();
+            String observaciones = txtObservaciones.getText().trim();
+
+            // 🔹 Convertimos la fecha y las horas seleccionadas
+            java.time.LocalDate fecha = dcFecha.getDate()
+                    .toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate();
+
+            String horaInicioStr = cboInicioHora.getSelectedItem().toString();
+            String horaFinStr = cboFinHora.getSelectedItem().toString();
+
+            java.time.LocalDateTime fechaHoraInicio = java.time.LocalDateTime.parse(fecha + "T" + horaInicioStr);
+            java.time.LocalDateTime fechaHoraFin = java.time.LocalDateTime.parse(fecha + "T" + horaFinStr);
+
+            // 🔹 Validar que la hora de fin sea posterior
+            if (!fechaHoraFin.isAfter(fechaHoraInicio)) {
+                JOptionPane.showMessageDialog(this, "La hora de fin debe ser posterior a la hora de inicio.", "Error de horario", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 🔹 Buscar el id del médico
+            int idMedico = -1;
+            try (PreparedStatement ps = conexion.prepareStatement("SELECT id_medico FROM medicos WHERE CONCAT(nombre, ' ', apellidos) = ?")) {
+                ps.setString(1, medico);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) idMedico = rs.getInt("id_medico");
+                rs.close();
+            }
+
+            if (idMedico == -1) {
+                JOptionPane.showMessageDialog(this, "No se encontró el médico seleccionado.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 🔹 Verificar que la cita esté dentro del horario laboral del médico
+            int diaSemana = fecha.getDayOfWeek().getValue(); // 1 = Lunes, ..., 7 = Domingo
+            boolean dentroDeHorario = false;
+            try (PreparedStatement psHorario = conexion.prepareStatement(
+                    "SELECT hora_inicio, hora_fin FROM horarios " +
+                    "WHERE id_medico = ? AND dia_semana = ? AND fecha_inicio_validez <= ? AND fecha_fin_validez >= ?")) {
+                psHorario.setInt(1, idMedico);
+                psHorario.setInt(2, diaSemana);
+                psHorario.setDate(3, java.sql.Date.valueOf(fecha));
+                psHorario.setDate(4, java.sql.Date.valueOf(fecha));
+
+                ResultSet rsHorario = psHorario.executeQuery();
+                while (rsHorario.next()) {
+                    java.time.LocalTime inicioPermitido = java.time.LocalTime.parse(rsHorario.getString("hora_inicio"));
+                    java.time.LocalTime finPermitido = java.time.LocalTime.parse(rsHorario.getString("hora_fin"));
+                    if (!fechaHoraInicio.toLocalTime().isBefore(inicioPermitido) &&
+                        !fechaHoraFin.toLocalTime().isAfter(finPermitido)) {
+                        dentroDeHorario = true;
+                        break;
+                    }
+                }
+                rsHorario.close();
+            }
+
+            if (!dentroDeHorario) {
+                JOptionPane.showMessageDialog(this, "La cita está fuera del horario laboral del médico para ese día.", "Horario inválido", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // 🔹 Verificar solapamiento con otras citas del mismo médico
+            try (PreparedStatement psCita = conexion.prepareStatement(
+                    "SELECT COUNT(*) FROM citas WHERE id_medico = ? " +
+                    "AND ((? < fecha_hora_fin) AND (? > fecha_hora_inicio))")) {
+                psCita.setInt(1, idMedico);
+                psCita.setTimestamp(2, java.sql.Timestamp.valueOf(fechaHoraFin));
+                psCita.setTimestamp(3, java.sql.Timestamp.valueOf(fechaHoraInicio));
+                ResultSet rsCita = psCita.executeQuery();
+                if (rsCita.next() && rsCita.getInt(1) > 0) {
+                    JOptionPane.showMessageDialog(this, "El médico ya tiene una cita asignada en este horario.", "Conflicto de horario", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                rsCita.close();
+            }
+
+            // 🔹 Obtener id_paciente
+            int idPaciente = -1;
+            try (PreparedStatement ps = conexion.prepareStatement("SELECT id_paciente FROM pacientes WHERE CONCAT(nombre, ' ', apellidos) = ?")) {
+                ps.setString(1, paciente);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) idPaciente = rs.getInt("id_paciente");
+                rs.close();
+            }
+
+            if (idPaciente == -1) {
+                JOptionPane.showMessageDialog(this, "No se encontró el paciente seleccionado.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 🔹 Insertar la cita (usando las columnas correctas)
+            String sqlInsert = "INSERT INTO citas (id_paciente, id_medico, fecha_hora_inicio, fecha_hora_fin, motivo_consulta, estado_cita, tipo_cita, observaciones) " +
+                               "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement psInsert = conexion.prepareStatement(sqlInsert)) {
+                psInsert.setInt(1, idPaciente);
+                psInsert.setInt(2, idMedico);
+                psInsert.setTimestamp(3, java.sql.Timestamp.valueOf(fechaHoraInicio));
+                psInsert.setTimestamp(4, java.sql.Timestamp.valueOf(fechaHoraFin));
+                psInsert.setString(5, motivo);
+                psInsert.setString(6, estado);
+                psInsert.setString(7, tipo);
+                psInsert.setString(8, observaciones);
+                psInsert.executeUpdate();
+            }
+
+            JOptionPane.showMessageDialog(this, "Cita registrada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar la cita: " + e.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnGuardarActionPerformed
     
     private void inicializarFiltroPacientes() {
         listaPacientes = new ArrayList<>();
@@ -368,31 +500,36 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
     }
     
     private Set<String> obtenerHorasOcupadas(int idMedico, String fechaSeleccionada) {
-    Set<String> horasOcupadas = new HashSet<>();
-    try (Connection conexion = bd.miConexion()) {
-        PreparedStatement ps = conexion.prepareStatement(
-            "SELECT hora_inicio, hora_fin FROM citas WHERE id_medico = ? AND fecha = ?"
-        );
-        ps.setInt(1, idMedico);
-        ps.setString(2, fechaSeleccionada);
-        ResultSet rs = ps.executeQuery();
+        Set<String> horasOcupadas = new HashSet<>();
+        try (Connection conexion = bd.miConexion()) {
+            PreparedStatement ps = conexion.prepareStatement(
+                "SELECT DATE(fecha_hora_inicio) AS fecha, " +
+                "TIME(fecha_hora_inicio) AS hora_inicio, " +
+                "TIME(fecha_hora_fin) AS hora_fin " +
+                "FROM citas WHERE id_medico = ? AND DATE(fecha_hora_inicio) = ?"
+            );
+            ps.setInt(1, idMedico);
+            ps.setString(2, fechaSeleccionada); // formato yyyy-MM-dd
 
-        while (rs.next()) {
-            String hInicio = rs.getString("hora_inicio");
-            String hFin = rs.getString("hora_fin");
+            ResultSet rs = ps.executeQuery();
 
-            // Generamos los intervalos ocupados entre esas dos horas
-            List<String> intervalosOcupados = generarIntervalos(hInicio, hFin);
-            horasOcupadas.addAll(intervalosOcupados);
+            while (rs.next()) {
+                String hInicio = rs.getString("hora_inicio");
+                String hFin = rs.getString("hora_fin");
+
+                // Generamos los intervalos ocupados entre esas dos horas
+                List<String> intervalosOcupados = generarIntervalos(hInicio, hFin);
+                horasOcupadas.addAll(intervalosOcupados);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            System.out.println("Error obteniendo horas ocupadas: " + e.getMessage());
         }
-
-        rs.close();
-        ps.close();
-    } catch (Exception e) {
-        System.out.println("Error obteniendo horas ocupadas: " + e.getMessage());
+        return horasOcupadas;
     }
-    return horasOcupadas;
-}
+
 
     private void cargarHorariosMedico(String nombreMedicoSeleccionado) {
         cboInicioHora.removeAllItems();
@@ -493,6 +630,20 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         return sinAcentos.toLowerCase();
     }
     
+    private void limpiarCampos() {
+        txtCodigo.setText("");
+        txtMotivo.setText("");
+        txtObservaciones.setText("");
+        cboPacientes.setSelectedIndex(-1);
+        cboMedicos.setSelectedIndex(-1);
+        cboInicioHora.removeAllItems();
+        cboFinHora.removeAllItems();
+        dcFecha.setDate(null);
+        cboEstado.setSelectedIndex(0);
+        cboTipo.setSelectedIndex(0);
+    }
+
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -549,8 +700,8 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtMotivo;
+    private javax.swing.JTextArea txtObservaciones;
     // End of variables declaration//GEN-END:variables
 }

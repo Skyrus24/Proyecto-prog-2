@@ -1,10 +1,12 @@
 
 package agendamiento_clinico;
-
+import java.text.SimpleDateFormat;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import javax.swing.JOptionPane;
@@ -38,6 +40,8 @@ public class FrmHorarios extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jCalendar1 = new com.toedter.calendar.JCalendar();
+        jLocaleChooser1 = new com.toedter.components.JLocaleChooser();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         cboMedicos = new javax.swing.JComboBox<>();
@@ -48,12 +52,12 @@ public class FrmHorarios extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txtHoraInicio = new javax.swing.JFormattedTextField();
-        txtFechaFin = new javax.swing.JFormattedTextField();
-        txtFechaInicio = new javax.swing.JFormattedTextField();
         txtHoraFin = new javax.swing.JFormattedTextField();
         cboDiaSemana = new javax.swing.JComboBox<>();
         cmdQuitar = new javax.swing.JButton();
         cmdInsertar = new javax.swing.JButton();
+        dcFin = new com.toedter.calendar.JDateChooser();
+        dcInicio = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         grdHorarios = new javax.swing.JTable();
         cmdGuardar = new javax.swing.JButton();
@@ -73,7 +77,7 @@ public class FrmHorarios extends javax.swing.JDialog {
         jLabel1.setBounds(20, 41, 55, 25);
 
         jPanel2.add(cboMedicos);
-        cboMedicos.setBounds(87, 40, 935, 26);
+        cboMedicos.setBounds(87, 40, 935, 22);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Detalles del Horario", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Cambria", 3, 14))); // NOI18N
         jPanel3.setLayout(null);
@@ -110,26 +114,7 @@ public class FrmHorarios extends javax.swing.JDialog {
         }
         txtHoraInicio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPanel3.add(txtHoraInicio);
-        txtHoraInicio.setBounds(577, 37, 130, 26);
-
-        try {
-            txtFechaFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("####-##-##")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txtFechaFin.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jPanel3.add(txtFechaFin);
-        txtFechaFin.setBounds(577, 81, 130, 26);
-
-        try {
-            txtFechaInicio.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("####-##-##")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txtFechaInicio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jPanel3.add(txtFechaInicio);
-        txtFechaInicio.setBounds(222, 81, 130, 26);
-        txtFechaInicio.getAccessibleContext().setAccessibleName("");
+        txtHoraInicio.setBounds(577, 37, 130, 22);
 
         try {
             txtHoraFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##:##")));
@@ -138,11 +123,11 @@ public class FrmHorarios extends javax.swing.JDialog {
         }
         txtHoraFin.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPanel3.add(txtHoraFin);
-        txtHoraFin.setBounds(893, 37, 130, 26);
+        txtHoraFin.setBounds(893, 37, 130, 22);
 
         cboDiaSemana.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" }));
         jPanel3.add(cboDiaSemana);
-        cboDiaSemana.setBounds(222, 37, 130, 26);
+        cboDiaSemana.setBounds(222, 37, 130, 22);
 
         cmdQuitar.setText("Quitar Horario");
         cmdQuitar.addActionListener(new java.awt.event.ActionListener() {
@@ -161,6 +146,10 @@ public class FrmHorarios extends javax.swing.JDialog {
         });
         jPanel3.add(cmdInsertar);
         cmdInsertar.setBounds(902, 78, 130, 30);
+        jPanel3.add(dcFin);
+        dcFin.setBounds(580, 80, 130, 22);
+        jPanel3.add(dcInicio);
+        dcInicio.setBounds(230, 80, 120, 22);
 
         grdHorarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -317,8 +306,13 @@ public class FrmHorarios extends javax.swing.JDialog {
                     // Llenar los campos de texto
                     txtHoraInicio.setText(rs.getString("hora_inicio"));
                     txtHoraFin.setText(rs.getString("hora_fin"));
-                    txtFechaInicio.setText(rs.getString("fecha_inicio_validez"));
-                    txtFechaFin.setText(rs.getString("fecha_fin_validez"));
+                    
+                    // Cargar las fechas directamente al JDateChooser sin parsear
+                    Date fechaInicio = rs.getDate("fecha_inicio_validez");
+                    Date fechaFin = rs.getDate("fecha_fin_validez");
+
+                    dcInicio.setDate(fechaInicio);
+                    dcFin.setDate(fechaFin);
                     
                     habilitar(true);
                 }
@@ -330,67 +324,91 @@ public class FrmHorarios extends javax.swing.JDialog {
 
     private void cmdInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdInsertarActionPerformed
         if (opc == 'M') {
-            JOptionPane.showMessageDialog(this, "En modo modificación no se puede agregar a la tabla.\nModifique los datos y guarde los cambios.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "En modo modificación no se puede agregar a la tabla.\nModifique los datos y guarde los cambios.",
+                    "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (txtHoraInicio.getText().trim().replace(":", "").isEmpty() || txtHoraFin.getText().trim().replace(":", "").isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar la hora de inicio y fin.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String fechaInicioStr = txtFechaInicio.getText().trim();
-        String fechaFinStr = txtFechaFin.getText().trim();
 
-        // Validar formato de fecha
-        if (fechaInicioStr.length() < 10 || fechaFinStr.length() < 10) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar las fechas en formato AAAA-MM-DD.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+        // 🔹 Validar campos de hora
+        if (txtHoraInicio.getText().trim().replace(":", "").isEmpty() ||
+            txtHoraFin.getText().trim().replace(":", "").isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar la hora de inicio y fin.",
+                    "Error de Validación", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        LocalDate fechaInicio, fechaFin, hoy = LocalDate.now();
-        try {
-            fechaInicio = LocalDate.parse(fechaInicioStr, DateTimeFormatter.ISO_LOCAL_DATE);
-            fechaFin = LocalDate.parse(fechaFinStr, DateTimeFormatter.ISO_LOCAL_DATE);
-        } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "La fecha ingresada no es válida. Verifique mes y día.\nFormato: AAAA-MM-DD", "Error de Fecha", JOptionPane.ERROR_MESSAGE);
+
+        // 🔹 Validar que se seleccionaron fechas
+        Date fechaInicioDate = dcInicio.getDate();
+        Date fechaFinDate = dcFin.getDate();
+
+        if (fechaInicioDate == null || fechaFinDate == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar las fechas de inicio y fin de validez.",
+                    "Error de Validación", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        // 🔹 Convertir fechas a LocalDate para validaciones
+        LocalDate fechaInicio = fechaInicioDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fechaFin = fechaFinDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate hoy = LocalDate.now();
 
         // 🔹 Validaciones de rango de fechas
         if (fechaInicio.isAfter(fechaFin)) {
-            JOptionPane.showMessageDialog(this, "La fecha de inicio no puede ser posterior a la fecha de fin.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "La fecha de inicio no puede ser posterior a la fecha de fin.",
+                    "Error de Validación", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (fechaInicio.isBefore(hoy) || fechaFin.isBefore(hoy)) {
-            JOptionPane.showMessageDialog(this, "Las fechas no pueden ser anteriores al día actual.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (fechaInicio.plusYears(1).isBefore(fechaFin)) {
-            JOptionPane.showMessageDialog(this, "El rango de fechas no puede superar un año.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        String dia = this.cboDiaSemana.getSelectedItem().toString();
-        String horaInicio = this.txtHoraInicio.getText();
-        String horaFin = this.txtHoraFin.getText();
 
-        // 🔹 Validar orden lógico de horas
-        LocalTime hInicio, hFin;
+        if (fechaInicio.isBefore(hoy) || fechaFin.isBefore(hoy)) {
+            JOptionPane.showMessageDialog(this,
+                    "Las fechas no pueden ser anteriores al día actual.",
+                    "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (fechaInicio.plusYears(1).isBefore(fechaFin)) {
+            JOptionPane.showMessageDialog(this,
+                    "El rango de fechas no puede superar un año.",
+                    "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 🔹 Validar y convertir horas
+        String horaInicioStr = this.txtHoraInicio.getText();
+        String horaFinStr = this.txtHoraFin.getText();
+        LocalTime horaInicio, horaFin;
+
         try {
-            hInicio = LocalTime.parse(horaInicio);
-            hFin = LocalTime.parse(horaFin);
-            if (!hFin.isAfter(hInicio)) {
-                JOptionPane.showMessageDialog(this, "La hora de fin debe ser posterior a la hora de inicio.", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            horaInicio = LocalTime.parse(horaInicioStr);
+            horaFin = LocalTime.parse(horaFinStr);
+            if (!horaFin.isAfter(horaInicio)) {
+                JOptionPane.showMessageDialog(this,
+                        "La hora de fin debe ser posterior a la hora de inicio.",
+                        "Error de Validación", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Formato de hora no válido. Use HH:MM", "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Formato de hora no válido. Use el formato HH:MM.",
+                    "Error de Validación", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        // 🔹 Datos base
+        String dia = this.cboDiaSemana.getSelectedItem().toString();
 
         // 🔹 Validar duplicado exacto (mismo día, mismo rango)
         for (int i = 0; i < grdHorarios.getRowCount(); i++) {
             if (grdHorarios.getValueAt(i, 0).toString().equals(dia) &&
-                grdHorarios.getValueAt(i, 1).toString().equals(horaInicio) &&
-                grdHorarios.getValueAt(i, 2).toString().equals(horaFin)) {
-                JOptionPane.showMessageDialog(grdHorarios, "Este horario ya fue agregado para el médico.", "Horario Duplicado", JOptionPane.WARNING_MESSAGE);
+                grdHorarios.getValueAt(i, 1).toString().equals(horaInicioStr) &&
+                grdHorarios.getValueAt(i, 2).toString().equals(horaFinStr)) {
+                JOptionPane.showMessageDialog(this,
+                        "Este horario ya fue agregado para el médico.",
+                        "Horario Duplicado", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
@@ -398,26 +416,33 @@ public class FrmHorarios extends javax.swing.JDialog {
         // 🔹 Validar solapamiento de horarios en el mismo día
         for (int i = 0; i < grdHorarios.getRowCount(); i++) {
             String diaExistente = grdHorarios.getValueAt(i, 0).toString();
-            if (!diaExistente.equals(dia)) continue; // Solo comparar si es el mismo día
+            if (!diaExistente.equals(dia)) continue;
+
             LocalTime inicioExistente = LocalTime.parse(grdHorarios.getValueAt(i, 1).toString());
             LocalTime finExistente = LocalTime.parse(grdHorarios.getValueAt(i, 2).toString());
-            // Verificamos si los rangos se superponen
-            boolean solapan = 
-                (hInicio.isBefore(finExistente) && hFin.isAfter(inicioExistente)) ||
-                hInicio.equals(inicioExistente) || hFin.equals(finExistente);
+
+            boolean solapan =
+                (horaInicio.isBefore(finExistente) && horaFin.isAfter(inicioExistente)) ||
+                horaInicio.equals(inicioExistente) || horaFin.equals(finExistente);
+
             if (solapan) {
                 JOptionPane.showMessageDialog(this,
-                    String.format("El nuevo horario (%s-%s) se solapa con un horario existente (%s-%s) del mismo día (%s).",
-                        horaInicio, horaFin, inicioExistente, finExistente, dia),
-                    "Conflicto de Horarios", JOptionPane.WARNING_MESSAGE);
+                        String.format("El nuevo horario (%s - %s) se solapa con un horario existente (%s - %s) del mismo día (%s).",
+                                horaInicioStr, horaFinStr, inicioExistente, finExistente, dia),
+                        "Conflicto de Horarios", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
 
+        // 🔹 Formatear las fechas a texto para insertar en la tabla
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaInicioStr = sdf.format(fechaInicioDate);
+        String fechaFinStr = sdf.format(fechaFinDate);
+
         // ✅ Si pasa todas las validaciones, agregar a la tabla
-        DefaultTableModel dm = (DefaultTableModel) grdHorarios.getModel();
-        Object[] filaAgregar = {dia, horaInicio, horaFin, fechaInicioStr, fechaFinStr};
-        dm.addRow(filaAgregar);
+        DefaultTableModel modelo = (DefaultTableModel) grdHorarios.getModel();
+        Object[] filaAgregar = {dia, horaInicioStr, horaFinStr, fechaInicioStr, fechaFinStr};
+        modelo.addRow(filaAgregar);
     }//GEN-LAST:event_cmdInsertarActionPerformed
 
     private void cmdGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGuardarActionPerformed
@@ -508,18 +533,20 @@ public class FrmHorarios extends javax.swing.JDialog {
     private javax.swing.JButton cmdModificar;
     private javax.swing.JButton cmdNuevo;
     private javax.swing.JButton cmdQuitar;
+    private com.toedter.calendar.JDateChooser dcFin;
+    private com.toedter.calendar.JDateChooser dcInicio;
     private javax.swing.JTable grdHorarios;
+    private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private com.toedter.components.JLocaleChooser jLocaleChooser1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JFormattedTextField txtFechaFin;
-    private javax.swing.JFormattedTextField txtFechaInicio;
     private javax.swing.JFormattedTextField txtHoraFin;
     private javax.swing.JFormattedTextField txtHoraInicio;
     // End of variables declaration//GEN-END:variables
@@ -529,8 +556,8 @@ public class FrmHorarios extends javax.swing.JDialog {
         this.cboDiaSemana.setEnabled(estado);
         this.txtHoraInicio.setEnabled(estado);
         this.txtHoraFin.setEnabled(estado);
-        this.txtFechaInicio.setEnabled(estado);
-        this.txtFechaFin.setEnabled(estado);
+        this.dcInicio.setEnabled(estado);
+        this.dcFin.setEnabled(estado);
         
         this.cmdInsertar.setEnabled(estado && opc != 'M');
         this.cmdQuitar.setEnabled(estado && opc != 'M');
@@ -549,8 +576,8 @@ public class FrmHorarios extends javax.swing.JDialog {
     private void limpiar(){
         this.txtHoraInicio.setText("");
         this.txtHoraFin.setText("");
-        this.txtFechaInicio.setText("");
-        this.txtFechaFin.setText("");
+        this.dcInicio.setDate(null);
+        this.dcFin.setDate(null);
         this.cboMedicos.setSelectedIndex(-1);
         this.cboDiaSemana.setSelectedIndex(0);
 
@@ -565,34 +592,37 @@ public class FrmHorarios extends javax.swing.JDialog {
         int idMedico = cboMedicoSeleccionado.getCodigo();
         String diaTexto = cboDiaSemana.getSelectedItem().toString();
         int diaNumero = getNumeroDia(diaTexto);
-        
-        String campos = String.format("id_medico=%d, dia_semana=%d, hora_inicio='%s', hora_fin='%s', fecha_inicio_validez='%s', fecha_fin_validez='%s'",
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaInicio = sdf.format(dcInicio.getDate());
+        String fechaFin = sdf.format(dcFin.getDate());
+
+        String campos = String.format(
+            "id_medico=%d, dia_semana=%d, hora_inicio='%s', hora_fin='%s', fecha_inicio_validez='%s', fecha_fin_validez='%s'",
             idMedico,
             diaNumero,
             txtHoraInicio.getText(),
             txtHoraFin.getText(),
-            txtFechaInicio.getText(),
-            txtFechaFin.getText()
+            fechaInicio,
+            fechaFin
         );
-        
+
         String criterio = "id_horario = " + this.idHorarioActualizar;
-        
+
         if (bd.actualizarRegistro("horarios", campos, criterio)) {
             JOptionPane.showMessageDialog(this, "Horario actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+
     private void guardarNuevosHorarios() {
         DatosCombo cboMedicoSeleccionado = (DatosCombo) this.cboMedicos.getSelectedItem();
         int idMedico = cboMedicoSeleccionado.getCodigo();
-
-        // Usamos una sola variable booleana, como en tu ejemplo
         boolean inserta = true; 
-
-        // Definimos los campos una sola vez fuera del bucle
         String campos = "id_medico, dia_semana, hora_inicio, hora_fin, fecha_inicio_validez, fecha_fin_validez";
 
-        // Recorremos la grilla para insertar cada horario
+        // 🔹 Usamos formateador para fechas
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
         for (int i = 0; i < this.grdHorarios.getRowCount(); i++) {
             String diaTexto = this.grdHorarios.getValueAt(i, 0).toString();
             int diaNumero = getNumeroDia(diaTexto);
@@ -601,25 +631,29 @@ public class FrmHorarios extends javax.swing.JDialog {
             String fechaInicio = this.grdHorarios.getValueAt(i, 3).toString();
             String fechaFin = this.grdHorarios.getValueAt(i, 4).toString();
 
+            // 🔹 Si usás JDateChooser directamente, podés formatearlo así:
+            // String fechaInicio = sdf.format(dcInicio.getDate());
+            // String fechaFin = sdf.format(dcFin.getDate());
+
             String valores = String.format("%d, %d, '%s', '%s', '%s', '%s'",
                     idMedico, diaNumero, horaInicio, horaFin, fechaInicio, fechaFin);
 
-            // Intentamos insertar el registro
             inserta = bd.insertarRegistro("horarios", campos, valores);
 
-            // Si la inserción falla (inserta == false), mostramos un error y salimos del bucle
             if (!inserta) {
-                JOptionPane.showMessageDialog(cmdGuardar, "Error al intentar guardar el horario de: " + diaTexto + " a las " + horaInicio);
-                break; // Detenemos el proceso
+                JOptionPane.showMessageDialog(cmdGuardar,
+                        "Error al intentar guardar el horario de: " + diaTexto + " a las " + horaInicio);
+                break;
             }
         }
 
-        // Si 'inserta' sigue siendo true, significa que todas las inserciones fueron exitosas
         if (inserta) {
-            JOptionPane.showMessageDialog(this, "¡Todos los horarios han sido guardados correctamente!", "Proceso Exitoso", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "¡Todos los horarios han sido guardados correctamente!",
+                    "Proceso Exitoso", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+   
     private int getNumeroDia(String diaTexto) {
         switch (diaTexto) {
             case "Lunes": 

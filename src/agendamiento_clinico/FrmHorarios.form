@@ -173,7 +173,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Cambria" size="14" style="3"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Fecha Inicio (AAAA-MM-DD):"/>
+            <Property name="text" type="java.lang.String" value="Fecha Inicio "/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -186,7 +186,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Cambria" size="14" style="3"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Fecha Fin (AAAA-MM-DD):"/>
+            <Property name="text" type="java.lang.String" value="Fecha Fin "/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -292,7 +292,7 @@
         <Component class="com.toedter.calendar.JDateChooser" name="dcInicio">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="230" y="80" width="120" height="-1"/>
+              <AbsoluteConstraints x="220" y="80" width="130" height="-1"/>
             </Constraint>
           </Constraints>
         </Component>

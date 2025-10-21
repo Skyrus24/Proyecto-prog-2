@@ -93,12 +93,12 @@ public class FrmHorarios extends javax.swing.JDialog {
         jLabel3.setBounds(397, 38, 150, 25);
 
         jLabel4.setFont(new java.awt.Font("Cambria", 3, 14)); // NOI18N
-        jLabel4.setText("Fecha Inicio (AAAA-MM-DD):");
+        jLabel4.setText("Fecha Inicio ");
         jPanel3.add(jLabel4);
         jLabel4.setBounds(33, 82, 190, 25);
 
         jLabel5.setFont(new java.awt.Font("Cambria", 3, 14)); // NOI18N
-        jLabel5.setText("Fecha Fin (AAAA-MM-DD):");
+        jLabel5.setText("Fecha Fin ");
         jPanel3.add(jLabel5);
         jLabel5.setBounds(397, 82, 180, 25);
 
@@ -149,7 +149,7 @@ public class FrmHorarios extends javax.swing.JDialog {
         jPanel3.add(dcFin);
         dcFin.setBounds(580, 80, 130, 22);
         jPanel3.add(dcInicio);
-        dcInicio.setBounds(230, 80, 120, 22);
+        dcInicio.setBounds(220, 80, 130, 22);
 
         grdHorarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

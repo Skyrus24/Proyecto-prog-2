@@ -20,6 +20,8 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         initComponents();
         inicializarFiltroPacientes();
         inicializarFiltroMedicos();
+        cboPacientes.setSelectedItem(null);
+        cboMedicos.setSelectedItem(null);
         
         //Listener de cboMedicos par aactualizar
         cboMedicos.addActionListener(new ActionListener() {
@@ -79,6 +81,8 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        txtCodigo.setEditable(false);
+
         cboPacientes.setEditable(true);
         cboPacientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboPacientes.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -95,13 +99,13 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel7.setText("Fecha");
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel6.setText("Horario Fin");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel5.setText("Horario Inicio");
 
         cboInicioHora.addActionListener(new java.awt.event.ActionListener() {
@@ -110,33 +114,33 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel1.setText("Cita N°");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel2.setText("Paciente");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel4.setText("Medico");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel3.setText("Motivo");
 
         cboEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Programada", "Atendido", "Pendiente", "Cancelado", "No asistió", "Confirmada", " " }));
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel8.setText("Estado");
 
         cboTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Primera vez", "Seguimiento", "Urgencias", "Control" }));
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel9.setText("Tipo");
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI Historic", 1, 14)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel10.setText("Observaciones");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -233,7 +237,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(37, 37, 37)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,9 +298,9 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
                 String texto = editor.getText();
                 cboPacientes.hidePopup();
                 cboPacientes.removeAllItems();
-
+                String textoNormalizado = normalizarTexto(texto);
                 for (String paciente : listaPacientes) {
-                    if (paciente.toLowerCase().contains(texto.toLowerCase())) {
+                    if (normalizarTexto(paciente).contains(textoNormalizado)) {
                         cboPacientes.addItem(paciente);
                     }
                 }
@@ -336,9 +340,9 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
                 String texto = editor.getText();
                 cboMedicos.hidePopup();
                 cboMedicos.removeAllItems();
-
+                String textoNormalizado = normalizarTexto(texto);
                 for (String medico : listaMedicos) {
-                    if (medico.toLowerCase().contains(texto.toLowerCase())) {
+                    if (normalizarTexto(medico).contains(textoNormalizado)) {
                         cboMedicos.addItem(medico);
                     }
                 }
@@ -470,7 +474,6 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         }
     }
 
-    // devuelve la fecha seleccionada en formato yyyy-MM-dd
     private String obtenerFechaSeleccionada() {
         if (dcFecha.getDate() == null) {
             return null;
@@ -481,7 +484,14 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
             .toLocalDate();
         return fecha.toString();
     }
-
+    
+    // 🔹 Normaliza un texto quitando acentos y convirtiendo a minúsculas
+    private String normalizarTexto(String texto) {
+        if (texto == null) return "";
+        String sinAcentos = java.text.Normalizer.normalize(texto, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", ""); // elimina acentos
+        return sinAcentos.toLowerCase();
+    }
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

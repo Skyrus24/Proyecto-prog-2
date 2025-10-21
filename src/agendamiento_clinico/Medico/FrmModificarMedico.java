@@ -16,7 +16,7 @@ public class FrmModificarMedico extends javax.swing.JDialog {
     private BaseDatos bd = new BaseDatos();
     private String opc = "z";
     private Grilla grd = new Grilla();
-
+    private String id_medico;
     /**
      * Creates new form FrmModificarMedico
      */
@@ -74,17 +74,25 @@ public class FrmModificarMedico extends javax.swing.JDialog {
             new String [] {
                 "id_medico", "nombre", "apellidos", "especialidad", "telefono", "Email", "Licencia"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(grdMedicos);
         if (grdMedicos.getColumnModel().getColumnCount() > 0) {
             grdMedicos.getColumnModel().getColumn(0).setMinWidth(50);
             grdMedicos.getColumnModel().getColumn(0).setMaxWidth(100);
-            grdMedicos.getColumnModel().getColumn(1).setMinWidth(200);
-            grdMedicos.getColumnModel().getColumn(1).setMaxWidth(300);
-            grdMedicos.getColumnModel().getColumn(2).setMinWidth(200);
-            grdMedicos.getColumnModel().getColumn(2).setMaxWidth(300);
-            grdMedicos.getColumnModel().getColumn(3).setMinWidth(200);
-            grdMedicos.getColumnModel().getColumn(3).setMaxWidth(300);
+            grdMedicos.getColumnModel().getColumn(1).setMinWidth(100);
+            grdMedicos.getColumnModel().getColumn(1).setMaxWidth(200);
+            grdMedicos.getColumnModel().getColumn(2).setMinWidth(100);
+            grdMedicos.getColumnModel().getColumn(2).setMaxWidth(200);
+            grdMedicos.getColumnModel().getColumn(3).setMinWidth(100);
+            grdMedicos.getColumnModel().getColumn(3).setMaxWidth(200);
             grdMedicos.getColumnModel().getColumn(4).setMinWidth(100);
             grdMedicos.getColumnModel().getColumn(4).setMaxWidth(200);
             grdMedicos.getColumnModel().getColumn(5).setMinWidth(200);
@@ -159,43 +167,53 @@ public class FrmModificarMedico extends javax.swing.JDialog {
 
         cmdGuardar.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         cmdGuardar.setText("Guardar");
+        cmdGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdGuardarActionPerformed(evt);
+            }
+        });
 
         cmdCancelar.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         cmdCancelar.setText("Cancelar");
+        cmdCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cmdActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cmdBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(250, 250, 250))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtEmail)
-                        .addComponent(txtTel)
-                        .addComponent(txtApellido)
-                        .addComponent(txtNombre)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cboEspecialidadM, 0, 176, Short.MAX_VALUE)
-                        .addComponent(txtLicencia))
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(cmdGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cmdCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1399, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(231, 231, 231))
+                        .addComponent(cmdActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addComponent(cmdBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtEmail)
+                                .addComponent(txtTel)
+                                .addComponent(txtApellido)
+                                .addComponent(txtNombre)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cboEspecialidadM, 0, 176, Short.MAX_VALUE)
+                                .addComponent(txtLicencia))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cmdGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cmdCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1261, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(369, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,7 +248,7 @@ public class FrmModificarMedico extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmdGuardar)
                             .addComponent(cmdCancelar)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmdActualizar)
@@ -243,6 +261,7 @@ public class FrmModificarMedico extends javax.swing.JDialog {
 
     private void cmdActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdActualizarActionPerformed
         if(this.grdMedicos.getSelectedRow()>-1){
+            this.id_medico=this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 0).toString();
             this.txtNombre.setText(this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 1).toString());
             this.txtApellido.setText(this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 2).toString());
             this.txtTel.setText(this.grdMedicos.getValueAt(this.grdMedicos.getSelectedRow() , 4).toString());
@@ -257,7 +276,7 @@ public class FrmModificarMedico extends javax.swing.JDialog {
                 } 
             }
             this.opc = "M";
-            this.habilitarBotones(true);
+            this.habilitarBotones(false);
             this.habilitarCampos(true);
             this.txtNombre.requestFocus();
         }else{
@@ -268,7 +287,7 @@ public class FrmModificarMedico extends javax.swing.JDialog {
 
     private void cmdBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdBorrarActionPerformed
         if(this.grdMedicos.getSelectedRow()>-1){
-            bd.borrarRegistroSinPreguntar("medicos", "id_medico="+this.grdMedicos.getValueAt(
+            bd.borrarRegistro("medicos", "id_medico="+this.grdMedicos.getValueAt(
                     this.grdMedicos.getSelectedRow() , 0).toString());
             this.actualizarGrilla();
         }
@@ -293,6 +312,36 @@ public class FrmModificarMedico extends javax.swing.JDialog {
     private void txtLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLicenciaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtLicenciaActionPerformed
+
+    private void cmdGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGuardarActionPerformed
+        DatosCombo cbo = (DatosCombo) this.cboEspecialidadM.getSelectedItem();
+        int codEspecialidad = cbo.getCodigo();        
+        if(this.grdMedicos.getSelectedRow()>-1){
+            bd.actualizarRegistro("medicos", 
+                    "nombre='"+this.txtNombre.getText()+"',"+ 
+                    "apellidos='"+this.txtApellido.getText()+"',"+
+                    "id_especialidad="+codEspecialidad+","+
+                    "email='"+this.txtEmail.getText()+"',"+
+                    "telefono='"+this.txtTel.getText()+"',"+
+                    "numero_licencia='"+this.txtLicencia.getText()+"'",
+                    "id_medico="+this.id_medico);
+            
+        }
+        this.opc= "z";
+        this.limpiarCampos();
+        this.habilitarCampos(false);
+        this.habilitarBotones(true);
+        this.actualizarGrilla();
+    }//GEN-LAST:event_cmdGuardarActionPerformed
+
+    private void cmdCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCancelarActionPerformed
+        if(this.opc=="M"){
+            this.limpiarCampos();
+            this.habilitarCampos(false);
+            this.habilitarBotones(true);
+        }
+        
+    }//GEN-LAST:event_cmdCancelarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -378,7 +427,7 @@ private void habilitarBotones(boolean estado){
     this.cmdActualizar.setEnabled(estado);
     this.cmdBorrar.setEnabled(estado);
     this.cmdGuardar.setEnabled(!estado);
-    this.cmdCancelar.setEnabled(estado);
+    this.cmdCancelar.setEnabled(!estado);
 }
 
 private void actualizarGrilla(){

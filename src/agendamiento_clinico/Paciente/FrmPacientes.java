@@ -1,6 +1,7 @@
-package agendamiento_clinico; // <-- ¡Asegúrate de que este sea el nombre de tu paquete!
+package agendamiento_clinico.Paciente;
 
-import com.toedter.calendar.JDateChooser;
+import agendamiento_clinico.BaseDatos;
+import agendamiento_clinico.Grilla;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;

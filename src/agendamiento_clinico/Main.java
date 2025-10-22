@@ -52,6 +52,10 @@ public class Main extends javax.swing.JFrame {
         itemCitasModificar = new javax.swing.JMenuItem();
         itemCitasListar = new javax.swing.JMenuItem();
         itemHistorial = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
+        itemConsultorio = new javax.swing.JMenuItem();
+        itemMedicamento = new javax.swing.JMenuItem();
+        itemReceta = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -65,6 +69,11 @@ public class Main extends javax.swing.JFrame {
         itemMedico.add(jMenuItem2);
 
         jMenuItem3.setText("Modificar");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         itemMedico.add(jMenuItem3);
 
         jMenuItem4.setText("Eliminar");
@@ -97,6 +106,11 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(itemPacientes);
 
         itemEspecialidades.setText("Especialidades");
+        itemEspecialidades.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemEspecialidadesActionPerformed(evt);
+            }
+        });
         jMenuBar1.add(itemEspecialidades);
 
         itemCitas.setText("Citas");
@@ -123,6 +137,19 @@ public class Main extends javax.swing.JFrame {
         itemHistorial.setText("Historial");
         jMenuBar1.add(itemHistorial);
 
+        jMenu1.setText("Gestiones");
+
+        itemConsultorio.setText("Gestionar Consultorio");
+        jMenu1.add(itemConsultorio);
+
+        itemMedicamento.setText("Gestionar Medicamentos");
+        jMenu1.add(itemMedicamento);
+
+        itemReceta.setText("Gestionar Receta");
+        jMenu1.add(itemReceta);
+
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -146,6 +173,10 @@ public class Main extends javax.swing.JFrame {
     private void itemCitasEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasEliminarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_itemCitasEliminarActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -178,13 +209,17 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemCitasEliminar;
     private javax.swing.JMenuItem itemCitasListar;
     private javax.swing.JMenuItem itemCitasModificar;
+    private javax.swing.JMenuItem itemConsultorio;
     private javax.swing.JMenu itemEspecialidades;
     private javax.swing.JMenu itemHistorial;
+    private javax.swing.JMenuItem itemMedicamento;
     private javax.swing.JMenu itemMedico;
     private javax.swing.JMenu itemPacientes;
     private javax.swing.JMenuItem itemPacientesEliminar;
     private javax.swing.JMenuItem itemPacientesListar;
     private javax.swing.JMenuItem itemPacientesModificar;
+    private javax.swing.JMenuItem itemReceta;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;

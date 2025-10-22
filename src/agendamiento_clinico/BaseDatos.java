@@ -47,8 +47,11 @@ public class BaseDatos {
 
             int ret=optionPane.showOptionDialog(null,"Esta seguro de ELIMINAR el REGISTRO? ","Pregunta",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,opciones,opciones[0]);
             //Si la opcion escogida es Si
-            if(ret==JOptionPane.YES_OPTION)
+            if(ret==JOptionPane.YES_OPTION){
                 s.executeUpdate("delete from "+tabla+" where "+condicion);
+            }else{
+                return false;
+            }
         } catch (SQLException e) {
             if (e.getErrorCode()==1451){
                 JOptionPane.showMessageDialog(null, "El registro esta relacionado con otros registros\nno podrá borrarlo." ,

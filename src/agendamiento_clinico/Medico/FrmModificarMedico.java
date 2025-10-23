@@ -1,8 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package agendamiento_clinico.Medico;
+
+
 import javax.swing.JOptionPane;
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;

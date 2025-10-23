@@ -1,22 +1,25 @@
-package agendamiento_clinico.Pequeño;
-
+package agendamiento_clinico.Gestiones;
 
 import agendamiento_clinico.BaseDatos;
+import agendamiento_clinico.DatosCombo;
 import agendamiento_clinico.Grilla;
 import javax.swing.JOptionPane;
 
-import javax.swing.JOptionPane;
-
-public class FrmMedicamentos extends javax.swing.JDialog {
+public class FrmRecetas extends javax.swing.JDialog {
     private BaseDatos bd = new BaseDatos();
     private char opc = 'z';
     private Grilla grd = new Grilla();
-
-    public FrmMedicamentos(java.awt.Frame parent, boolean modal) {
+    
+    public FrmRecetas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        if (!this.bd.hayConexion()) {
+        if(!this.bd.hayConexion()){
             JOptionPane.showMessageDialog(null, "Error de conexión con la base de datos");
+        }else{
+            this.bd.cargarCombo(cboHistorial, 
+                "hc.id_historial, CONCAT('ID: ', hc.id_historial, ' - Paciente: ', p.nombre, ' ', p.apellidos)", 
+                "historial_clinico hc JOIN pacientes p ON hc.id_paciente = p.id_paciente ORDER BY hc.id_historial ASC");
+            this.bd.cargarCombo(cboMedicamento, "id_medicamento, nombre", "medicamentos");
         }
         this.habilitarCampos(false);
         this.habilitarBotones(true);
@@ -24,28 +27,44 @@ public class FrmMedicamentos extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
     }
     
-    private void habilitarCampos(boolean estado) {
-        txtNombre.setEnabled(estado);
-        txtDescripcion.setEnabled(estado);
-        txtDosis.setEnabled(estado);
+    private void habilitarCampos(boolean estado){
+        this.cboHistorial.setEnabled(estado);
+        this.cboMedicamento.setEnabled(estado);
+        this.txtCantidad.setEnabled(estado);
+        this.txtInstrucciones.setEnabled(estado);
     }
 
-    private void habilitarBotones(boolean estado) {
-        cmdAgregar.setEnabled(estado);
-        cmdEliminar.setEnabled(estado);
-        cmdModificar.setEnabled(estado);
-        cmdGuardar.setEnabled(!estado);
+    private void habilitarBotones(boolean estado){
+        this.cmdAgregar.setEnabled(estado);
+        this.cmdEliminar.setEnabled(estado);
+        this.cmdModificar.setEnabled(estado);
+        this.cmdGuardar.setEnabled(!estado);
     }
 
-    private void limpiarCampos() {
-        txtNombre.setText(null);
-        txtDescripcion.setText(null);
-        txtDosis.setText(null);
+    private void limpiarCampos(){
+        this.txtCantidad.setText(null);
+        this.txtInstrucciones.setText(null);
+        if (this.cboHistorial.getItemCount() > 0) this.cboHistorial.setSelectedIndex(0);
+        if (this.cboMedicamento.getItemCount() > 0) this.cboMedicamento.setSelectedIndex(0);
     }
 
-    private void actualizarGrilla() {
-        String campos[] = {"id_medicamento", "nombre", "descripcion", "dosis_recomendada"};
-        this.grd.cargarGrilla(grdMedicamentos, "medicamentos", campos);
+
+    private void actualizarGrilla(){
+        String campos[] = {
+            "r.id_receta", 
+            "CONCAT(p.nombre, ' ', p.apellidos) AS paciente", 
+            "m.nombre AS medicamento", 
+            "r.cantidad", 
+            "r.instrucciones"
+        };
+
+        String tablas = "recetas r " +
+                        "INNER JOIN historial_clinico hc ON r.id_historial = hc.id_historial " +
+                        "INNER JOIN pacientes p ON hc.id_paciente = p.id_paciente " +
+                        "INNER JOIN medicamentos m ON r.id_medicamento = m.id_medicamento " +
+                        "ORDER BY r.id_receta ASC";
+
+        this.grd.cargarGrilla(grdRecetas, tablas, campos);
     }
 
     /**
@@ -59,8 +78,10 @@ public class FrmMedicamentos extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
+        txtCantidad = new javax.swing.JTextField();
         txtBuscar = new javax.swing.JTextField();
         cmdAgregar = new javax.swing.JButton();
         cmdModificar = new javax.swing.JButton();
@@ -68,12 +89,12 @@ public class FrmMedicamentos extends javax.swing.JDialog {
         cmdGuardar = new javax.swing.JButton();
         cmdCancelar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        grdMedicamentos = new javax.swing.JTable();
+        grdRecetas = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        txtDescripcion = new javax.swing.JTextArea();
+        txtInstrucciones = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
-        txtDosis = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
+        cboMedicamento = new javax.swing.JComboBox<>();
+        cboHistorial = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -83,20 +104,30 @@ public class FrmMedicamentos extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Cambria", 3, 16)); // NOI18N
         jLabel1.setText("Buscar:");
         jPanel1.add(jLabel1);
-        jLabel1.setBounds(30, 590, 60, 30);
+        jLabel1.setBounds(30, 640, 60, 30);
+
+        jLabel2.setFont(new java.awt.Font("Cambria", 3, 16)); // NOI18N
+        jLabel2.setText("Historial Clinico");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(30, 20, 120, 30);
+
+        jLabel3.setFont(new java.awt.Font("Cambria", 3, 16)); // NOI18N
+        jLabel3.setText("Medicamento");
+        jPanel1.add(jLabel3);
+        jLabel3.setBounds(30, 80, 110, 30);
 
         jLabel4.setFont(new java.awt.Font("Cambria", 3, 16)); // NOI18N
-        jLabel4.setText("Descripción");
+        jLabel4.setText("Instrucciones");
         jPanel1.add(jLabel4);
-        jLabel4.setBounds(30, 70, 150, 30);
+        jLabel4.setBounds(30, 200, 150, 30);
 
-        txtNombre.addActionListener(new java.awt.event.ActionListener() {
+        txtCantidad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNombreActionPerformed(evt);
+                txtCantidadActionPerformed(evt);
             }
         });
-        jPanel1.add(txtNombre);
-        txtNombre.setBounds(200, 20, 470, 30);
+        jPanel1.add(txtCantidad);
+        txtCantidad.setBounds(200, 140, 200, 30);
 
         txtBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -109,7 +140,7 @@ public class FrmMedicamentos extends javax.swing.JDialog {
             }
         });
         jPanel1.add(txtBuscar);
-        txtBuscar.setBounds(100, 590, 760, 30);
+        txtBuscar.setBounds(100, 640, 760, 30);
 
         cmdAgregar.setText("Agregar");
         cmdAgregar.addActionListener(new java.awt.event.ActionListener() {
@@ -118,7 +149,7 @@ public class FrmMedicamentos extends javax.swing.JDialog {
             }
         });
         jPanel1.add(cmdAgregar);
-        cmdAgregar.setBounds(40, 250, 80, 30);
+        cmdAgregar.setBounds(40, 300, 80, 30);
 
         cmdModificar.setText("Modificar");
         cmdModificar.addActionListener(new java.awt.event.ActionListener() {
@@ -127,7 +158,7 @@ public class FrmMedicamentos extends javax.swing.JDialog {
             }
         });
         jPanel1.add(cmdModificar);
-        cmdModificar.setBounds(140, 250, 85, 30);
+        cmdModificar.setBounds(140, 300, 85, 30);
 
         cmdEliminar.setText("Eliminar");
         cmdEliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -136,7 +167,7 @@ public class FrmMedicamentos extends javax.swing.JDialog {
             }
         });
         jPanel1.add(cmdEliminar);
-        cmdEliminar.setBounds(240, 250, 77, 30);
+        cmdEliminar.setBounds(240, 300, 77, 30);
 
         cmdGuardar.setText("Guardar");
         cmdGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -145,7 +176,7 @@ public class FrmMedicamentos extends javax.swing.JDialog {
             }
         });
         jPanel1.add(cmdGuardar);
-        cmdGuardar.setBounds(330, 250, 76, 30);
+        cmdGuardar.setBounds(330, 300, 76, 30);
 
         cmdCancelar.setText("Cancelar");
         cmdCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -154,53 +185,46 @@ public class FrmMedicamentos extends javax.swing.JDialog {
             }
         });
         jPanel1.add(cmdCancelar);
-        cmdCancelar.setBounds(420, 250, 90, 30);
+        cmdCancelar.setBounds(420, 300, 90, 30);
 
-        grdMedicamentos.setModel(new javax.swing.table.DefaultTableModel(
+        grdRecetas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Nombre", "Descripción", "Dosis Recomendada"
+                "ID", "ID Historial", "Medicamento", "Medicamento", "Instucciones"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(grdMedicamentos);
+        jScrollPane1.setViewportView(grdRecetas);
 
         jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(30, 300, 830, 280);
+        jScrollPane1.setBounds(30, 350, 830, 280);
 
-        txtDescripcion.setColumns(20);
-        txtDescripcion.setRows(5);
-        jScrollPane2.setViewportView(txtDescripcion);
+        txtInstrucciones.setColumns(20);
+        txtInstrucciones.setRows(5);
+        jScrollPane2.setViewportView(txtInstrucciones);
 
         jPanel1.add(jScrollPane2);
-        jScrollPane2.setBounds(200, 70, 470, 90);
+        jScrollPane2.setBounds(200, 200, 470, 70);
 
         jLabel5.setFont(new java.awt.Font("Cambria", 3, 16)); // NOI18N
-        jLabel5.setText("Nombre");
+        jLabel5.setText("Cantidad");
         jPanel1.add(jLabel5);
-        jLabel5.setBounds(30, 20, 90, 30);
+        jLabel5.setBounds(30, 140, 90, 30);
 
-        txtDosis.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDosisActionPerformed(evt);
-            }
-        });
-        jPanel1.add(txtDosis);
-        txtDosis.setBounds(200, 190, 160, 30);
+        jPanel1.add(cboMedicamento);
+        cboMedicamento.setBounds(200, 80, 520, 30);
 
-        jLabel6.setFont(new java.awt.Font("Cambria", 3, 16)); // NOI18N
-        jLabel6.setText("Dosis Recomendada");
-        jPanel1.add(jLabel6);
-        jLabel6.setBounds(30, 190, 150, 30);
+        jPanel1.add(cboHistorial);
+        cboHistorial.setBounds(200, 20, 520, 30);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -208,81 +232,99 @@ public class FrmMedicamentos extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 882, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 898, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 708, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
+    private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombreActionPerformed
+    }//GEN-LAST:event_txtCantidadActionPerformed
 
     private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarActionPerformed
 
     private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
-        this.grd.filtrarGrilla(grdMedicamentos, this.txtBuscar.getText(), 1);
+        this.grd.filtrarGrilla(grdRecetas, this.txtBuscar.getText(), 1);
     }//GEN-LAST:event_txtBuscarKeyReleased
 
     private void cmdAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdAgregarActionPerformed
         this.opc = 'N';
         this.habilitarCampos(true);
         this.habilitarBotones(false);
-        this.txtNombre.requestFocus();
+        this.cboHistorial.requestFocus();
     }//GEN-LAST:event_cmdAgregarActionPerformed
 
     private void cmdModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdModificarActionPerformed
-        if (grdMedicamentos.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un medicamento de la lista para modificar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        if (grdRecetas.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una receta de la lista para modificar.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return; // Detiene la ejecución si no hay nada seleccionado
         }
         
-        this.txtNombre.setText(this.grdMedicamentos.getValueAt(this.grdMedicamentos.getSelectedRow(), 1).toString());
-        this.txtDescripcion.setText(this.grdMedicamentos.getValueAt(this.grdMedicamentos.getSelectedRow(), 2).toString());
-        this.txtDosis.setText(this.grdMedicamentos.getValueAt(this.grdMedicamentos.getSelectedRow(), 3).toString());
         this.opc = 'M';
         this.habilitarBotones(false);
         this.habilitarCampos(true);
-        this.txtNombre.requestFocus();
+
+        // Ya que la tabla ahora muestra el nombre del paciente, no podemos obtener el ID del historial directamente.
+        // Pero no importa, porque el ComboBox de selección de historial ya tiene el ID correcto.
+        // El siguiente código busca el medicamento y rellena los otros campos.
+        String nombreMedicamento = this.grdRecetas.getValueAt(this.grdRecetas.getSelectedRow(), 2).toString();
+        for(int i=0; i<cboMedicamento.getItemCount();i++){
+            this.cboMedicamento.setSelectedIndex(i);
+            if(this.cboMedicamento.getSelectedItem().toString().equals(nombreMedicamento)){
+                break;
+            }
+        }
+
+        this.txtCantidad.setText(this.grdRecetas.getValueAt(this.grdRecetas.getSelectedRow(), 3).toString());
+        this.txtInstrucciones.setText(this.grdRecetas.getValueAt(this.grdRecetas.getSelectedRow(), 4).toString());
+
+        this.cboHistorial.requestFocus();
     }//GEN-LAST:event_cmdModificarActionPerformed
 
     private void cmdEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEliminarActionPerformed
-        if (grdMedicamentos.getSelectedRow() == -1) {
+        if (grdRecetas.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(this, 
-                "Por favor, seleccione un medicamento de la lista para eliminar.", 
+                "Por favor, seleccione una receta de la lista para eliminar.", 
                 "Aviso", 
                 JOptionPane.WARNING_MESSAGE);
             return; // Detiene la ejecución
         }
 
-        String idMedicamento = this.grdMedicamentos.getValueAt(
-                this.grdMedicamentos.getSelectedRow(), 0).toString();
+        String idReceta = this.grdRecetas.getValueAt(
+                this.grdRecetas.getSelectedRow(), 0).toString();
 
-        bd.borrarRegistro("medicamentos", "id_medicamento=" + idMedicamento);
+        bd.borrarRegistro("recetas", "id_receta=" + idReceta);
         this.actualizarGrilla();
     }//GEN-LAST:event_cmdEliminarActionPerformed
 
     private void cmdGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdGuardarActionPerformed
+        DatosCombo cboH = (DatosCombo) this.cboHistorial.getSelectedItem();
+        int idHistorial = cboH.getCodigo();
+        DatosCombo cboM = (DatosCombo) this.cboMedicamento.getSelectedItem();
+        int idMedicamento = cboM.getCodigo();
+
         if(this.opc == 'N'){
-            String valores = "'" + this.txtNombre.getText() + "','"
-                + this.txtDescripcion.getText() + "','" + this.txtDosis.getText() + "'";
-            bd.insertarRegistro("medicamentos(nombre, descripcion, dosis_recomendada)", valores);
+            String valores = idHistorial + "," + idMedicamento + ","
+                + this.txtCantidad.getText() + ",'" + this.txtInstrucciones.getText() + "'";
+            bd.insertarRegistro("recetas(id_historial, id_medicamento, cantidad, instrucciones)", valores);
         } else {
-            String idMedicamento = this.grdMedicamentos.getValueAt(this.grdMedicamentos.getSelectedRow(), 0).toString();
-            String campos = "nombre='" + this.txtNombre.getText() + 
-                    "', descripcion='" + this.txtDescripcion.getText() + 
-                    "', dosis_recomendada='" + this.txtDosis.getText() + "'";
-            bd.actualizarRegistro("medicamentos", campos, "id_medicamento=" + idMedicamento);
+            String idReceta = this.grdRecetas.getValueAt(this.grdRecetas.getSelectedRow(), 0).toString();
+            String campos = "id_historial=" + idHistorial +
+                    ", id_medicamento=" + idMedicamento +
+                    ", cantidad=" + this.txtCantidad.getText() +
+                    ", instrucciones='" + this.txtInstrucciones.getText() + "'";
+            bd.actualizarRegistro("recetas", campos, "id_receta=" + idReceta);
         }
         this.opc = 'z';
         this.limpiarCampos();
@@ -296,10 +338,6 @@ public class FrmMedicamentos extends javax.swing.JDialog {
         this.habilitarCampos(false);
         this.habilitarBotones(true);
     }//GEN-LAST:event_cmdCancelarActionPerformed
-
-    private void txtDosisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDosisActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDosisActionPerformed
 
     /**
      * @param args the command line arguments
@@ -318,20 +356,20 @@ public class FrmMedicamentos extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmMedicamentos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmRecetas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmMedicamentos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmRecetas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmMedicamentos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmRecetas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmMedicamentos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmRecetas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                FrmMedicamentos dialog = new FrmMedicamentos(new javax.swing.JFrame(), true);
+                FrmRecetas dialog = new FrmRecetas(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -344,22 +382,24 @@ public class FrmMedicamentos extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cboHistorial;
+    private javax.swing.JComboBox<String> cboMedicamento;
     private javax.swing.JButton cmdAgregar;
     private javax.swing.JButton cmdCancelar;
     private javax.swing.JButton cmdEliminar;
     private javax.swing.JButton cmdGuardar;
     private javax.swing.JButton cmdModificar;
-    private javax.swing.JTable grdMedicamentos;
+    private javax.swing.JTable grdRecetas;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField txtBuscar;
-    private javax.swing.JTextArea txtDescripcion;
-    private javax.swing.JTextField txtDosis;
-    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtCantidad;
+    private javax.swing.JTextArea txtInstrucciones;
     // End of variables declaration//GEN-END:variables
 }

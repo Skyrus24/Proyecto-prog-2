@@ -36,10 +36,10 @@
                   <Component id="jPanel3" min="-2" pref="1059" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="1059" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+              <EmptySpace min="6" max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="27" max="32767" attributes="0"/>
               <Component id="cmdNuevo" min="-2" pref="80" max="-2" attributes="0"/>
               <EmptySpace min="13" pref="13" max="-2" attributes="0"/>
               <Component id="cmdModificar" min="-2" pref="90" max="-2" attributes="0"/>

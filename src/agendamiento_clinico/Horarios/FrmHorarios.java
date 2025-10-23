@@ -1,5 +1,8 @@
 
-package agendamiento_clinico;
+package agendamiento_clinico.Horarios;
+import agendamiento_clinico.BaseDatos;
+import agendamiento_clinico.DatosCombo;
+import agendamiento_clinico.Grilla;
 import java.text.SimpleDateFormat;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -77,7 +80,7 @@ public class FrmHorarios extends javax.swing.JDialog {
         jLabel1.setBounds(20, 41, 55, 25);
 
         jPanel2.add(cboMedicos);
-        cboMedicos.setBounds(87, 40, 935, 22);
+        cboMedicos.setBounds(87, 40, 935, 26);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Detalles del Horario", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Cambria", 3, 14))); // NOI18N
         jPanel3.setLayout(null);
@@ -114,7 +117,7 @@ public class FrmHorarios extends javax.swing.JDialog {
         }
         txtHoraInicio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPanel3.add(txtHoraInicio);
-        txtHoraInicio.setBounds(577, 37, 130, 22);
+        txtHoraInicio.setBounds(577, 37, 130, 26);
 
         try {
             txtHoraFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##:##")));
@@ -123,11 +126,11 @@ public class FrmHorarios extends javax.swing.JDialog {
         }
         txtHoraFin.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jPanel3.add(txtHoraFin);
-        txtHoraFin.setBounds(893, 37, 130, 22);
+        txtHoraFin.setBounds(893, 37, 130, 26);
 
         cboDiaSemana.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" }));
         jPanel3.add(cboDiaSemana);
-        cboDiaSemana.setBounds(222, 37, 130, 22);
+        cboDiaSemana.setBounds(222, 37, 130, 26);
 
         cmdQuitar.setText("Quitar Horario");
         cmdQuitar.addActionListener(new java.awt.event.ActionListener() {
@@ -147,9 +150,9 @@ public class FrmHorarios extends javax.swing.JDialog {
         jPanel3.add(cmdInsertar);
         cmdInsertar.setBounds(902, 78, 130, 30);
         jPanel3.add(dcFin);
-        dcFin.setBounds(580, 80, 130, 22);
+        dcFin.setBounds(580, 80, 130, 26);
         jPanel3.add(dcInicio);
-        dcInicio.setBounds(220, 80, 130, 22);
+        dcInicio.setBounds(220, 80, 130, 26);
 
         grdHorarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -221,9 +224,9 @@ public class FrmHorarios extends javax.swing.JDialog {
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1059, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 1059, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1059, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cmdNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(13, 13, 13)
                 .addComponent(cmdModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)

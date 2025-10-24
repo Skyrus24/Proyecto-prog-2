@@ -1,5 +1,5 @@
-package agendamiento_clinico.Citas;
 
+import agendamiento_clinico.Citas.*;
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.DatosCombo;
 import java.sql.ResultSet;
@@ -8,67 +8,28 @@ import java.awt.event.*;
 import java.util.*;
 import java.sql.*;
 import com.toedter.calendar.JDateChooser;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 
-public class FrmAgregarCitas extends javax.swing.JDialog {
-    BaseDatos bd = new BaseDatos();
-    private java.util.List<String> listaPacientes;
-    private java.util.List<String> listaMedicos;
+public class test extends javax.swing.JDialog {
+    private final BaseDatos bd = new BaseDatos();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmAgregarCitas.class.getName());
-    public FrmAgregarCitas(java.awt.Frame parent, boolean modal) {
+    
+    private List<String> listaPacientes = new ArrayList<>();
+    private List<String> listaMedicos = new ArrayList<>();
+
+    public test(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         cargarConsultorios();
-        inicializarFiltroPacientes();
-        inicializarFiltroMedicos();
-        cboFinHora.setEnabled(false);
-        cboPacientes.setSelectedItem(null);
-        cboMedicos.setSelectedItem(null);
-        
-        //Listener de cboMedicos para actualizar
-        cboMedicos.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object medicoSeleccionado = cboMedicos.getSelectedItem();
-            if (medicoSeleccionado != null && !medicoSeleccionado.toString().isEmpty()) {
-                cargarHorariosMedico(medicoSeleccionado.toString());
-                }
-            }
-        });
-        
-        // 🔹 Listener para cargar horarios automáticamente al seleccionar una fecha
-        dcFecha.getDateEditor().addPropertyChangeListener("date", evt -> {
-            Object medicoSeleccionado = cboMedicos.getSelectedItem();
-            if (medicoSeleccionado != null && !medicoSeleccionado.toString().isEmpty()) {
-                cargarHorariosMedico(medicoSeleccionado.toString());
-            }
-        });
-        
-        // 🔹 Listener: calcula hora fin automáticamente al elegir hora de inicio
-        cboInicioHora.addActionListener(e -> {
-            if (cboInicioHora.getSelectedItem() != null) {
-                try {
-                    String horaInicioStr = cboInicioHora.getSelectedItem().toString();
-                    java.time.LocalTime horaInicio = java.time.LocalTime.parse(horaInicioStr);
-                    java.time.LocalTime horaFin = horaInicio.plusMinutes(30); // cita de 30 minutos
-                    cboFinHora.removeAllItems();
-                    cboFinHora.addItem(horaFin.toString());
-                } catch (Exception ex) {
-                    System.out.println("Error al calcular hora fin: " + ex.getMessage());
-                }
-            }
-        });
-
-        
-        
-        ActionListener recargarHorarios = e -> {
-        Object medicoSeleccionado = cboMedicos.getSelectedItem();
-        if (medicoSeleccionado != null && !medicoSeleccionado.toString().isEmpty()) {
-            cargarHorariosMedico(medicoSeleccionado.toString());
-        }
-    }; 
+        configurarCombos();
+        configurarEventos();
     }
 
+    
+}
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -151,21 +112,15 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         jLabel4.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel4.setText("Medico");
 
-        dcFecha.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                dcFechaFocusGained(evt);
-            }
-        });
-
         jLabel3.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel3.setText("Motivo");
 
-        cboEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Programada", "Atendida", "Cancelada", "No asistió", "Confirmada", " " }));
+        cboEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Programada", "Atendido", "Pendiente", "Cancelado", "No asistió", "Confirmada", " " }));
 
         jLabel8.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel8.setText("Estado");
 
-        cboTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Primera Vez", "Seguimiento", "Urgencia", "Control" }));
+        cboTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Primera vez", "Seguimiento", "Urgencias", "Control" }));
 
         jLabel9.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel9.setText("Tipo");
@@ -293,12 +248,10 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
 
     private void cboMedicosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboMedicosKeyReleased
         String texto = cboMedicos.getEditor().getItem().toString().trim();
-        inicializarFiltroMedicos();
     }//GEN-LAST:event_cboMedicosKeyReleased
 
     private void cboPacientesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboPacientesKeyReleased
         String texto = cboPacientes.getEditor().getItem().toString().trim();
-        inicializarFiltroPacientes();
     }//GEN-LAST:event_cboPacientesKeyReleased
 
     private void cboInicioHoraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboInicioHoraActionPerformed
@@ -310,7 +263,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
             // Validaciones
             if (cboPacientes.getSelectedItem() == null || cboMedicos.getSelectedItem() == null ||
                 cboConsultorios.getSelectedItem() == null ||
-                dcFecha.getDate() == null || cboInicioHora.getSelectedItem() == null) {
+                dcFecha.getDate() == null || cboInicioHora.getSelectedItem() == null || cboFinHora.getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(this, "Debe completar todos los campos obligatorios.", "Campos incompletos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -330,9 +283,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
                     .toLocalDate();
 
             String horaInicioStr = cboInicioHora.getSelectedItem().toString();
-            java.time.LocalTime horaInicio = java.time.LocalTime.parse(horaInicioStr);
-            java.time.LocalTime horaFin = horaInicio.plusMinutes(30); // siempre 30 min
-            String horaFinStr = horaFin.toString();
+            String horaFinStr = cboFinHora.getSelectedItem().toString();
 
             java.time.LocalDateTime fechaHoraInicio = java.time.LocalDateTime.parse(fecha + "T" + horaInicioStr);
             java.time.LocalDateTime fechaHoraFin = java.time.LocalDateTime.parse(fecha + "T" + horaFinStr);
@@ -381,270 +332,193 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Error al guardar la cita: " + e.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
-
-    private void dcFechaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_dcFechaFocusGained
-
-    }//GEN-LAST:event_dcFechaFocusGained
-
     
-    private void inicializarFiltroEntidad(String tabla, JComboBox<String> comboBox,List<String> lista,String mensajeError) {
+    private void configurarCombos() {
+        cargarConsultorios();
+        cargarLista("pacientes", listaPacientes, cboPacientes);
+        cargarLista("medicos", listaMedicos, cboMedicos);
 
+        cboPacientes.setSelectedItem(null);
+        cboMedicos.setSelectedItem(null);
+    }
+
+    private void configurarEventos() {
+        cboMedicos.addActionListener(e -> {
+            Object medico = cboMedicos.getSelectedItem();
+            if (medico != null && !medico.toString().isEmpty()) {
+                cargarHorariosMedico(medico.toString());
+            }
+        });
+    }
+    
+    private void cargarLista(String tipo, List<String> lista, JComboBox<String> combo) {
         lista.clear();
-        try (Connection conexion = bd.miConexion();
-             Statement st = conexion.createStatement();
+        String tabla = tipo.equals("pacientes") ? "pacientes" : "medicos";
+        try (Connection cn = bd.miConexion();
+             Statement st = cn.createStatement();
              ResultSet rs = st.executeQuery("SELECT nombre, apellidos FROM " + tabla)) {
 
             while (rs.next()) {
                 lista.add(rs.getString("nombre") + " " + rs.getString("apellidos"));
             }
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, mensajeError + ": " + e.getMessage());
+            combo.removeAllItems();
+            lista.forEach(combo::addItem);
+            activarFiltro(combo, lista);
+
+        } catch (SQLException e) {
+            mostrarError("Error al cargar " + tipo + ": " + e.getMessage());
         }
-
-        // 🔹 Cargar datos en el combo
-        comboBox.removeAllItems();
-        for (String item : lista) comboBox.addItem(item);
-
-        // 🔹 Activar filtrado dinámico
-        comboBox.setEditable(true);
-        JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+    }
+    
+    private void activarFiltro(JComboBox<String> combo, List<String> lista) {
+        combo.setEditable(true);
+        JTextField editor = (JTextField) combo.getEditor().getEditorComponent();
         editor.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                String texto = editor.getText().trim();
-                comboBox.hidePopup();
-                comboBox.removeAllItems();
-                String textoNormalizado = normalizarTexto(texto);
-
-                for (String valor : lista) {
-                    if (normalizarTexto(valor).contains(textoNormalizado)) {
-                        comboBox.addItem(valor);
-                    }
-                }
-
-                editor.setText(texto);
-                comboBox.showPopup();
+                String texto = normalizarTexto(editor.getText());
+                combo.hidePopup();
+                combo.removeAllItems();
+                lista.stream()
+                     .filter(item -> normalizarTexto(item).contains(texto))
+                     .forEach(combo::addItem);
+                editor.setText(editor.getText());
+                combo.showPopup();
             }
         });
     }
-   
-    private void inicializarFiltroPacientes() {
-        if (listaPacientes == null) listaPacientes = new ArrayList<>();
-        inicializarFiltroEntidad("pacientes", cboPacientes, listaPacientes, "Error al cargar pacientes");
-    }
     
-    private void inicializarFiltroMedicos() {
-        if (listaMedicos == null) listaMedicos = new ArrayList<>();
-        inicializarFiltroEntidad("medicos", cboMedicos, listaMedicos, "Error al cargar médicos");
-    }
-
     private void cargarConsultorios() {
         cboConsultorios.removeAllItems();
-        try (Connection conexion = bd.miConexion();
-             Statement st = conexion.createStatement();
-             ResultSet rs = st.executeQuery("SELECT id_consultorio, nombre, ubicacion FROM consultorios")) {
+        String sql = "SELECT id_consultorio, nombre, ubicacion FROM consultorios";
+        try (Connection cn = bd.miConexion();
+             Statement st = cn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
-                int id = rs.getInt("id_consultorio");
-                String nombre = rs.getString("nombre");
-                String ubicacion = rs.getString("ubicacion");
-
-                // 🔹 Formato personalizado para mostrar en el combo
-                String textoCombo = nombre + " - " + ubicacion;
+                String textoCombo = rs.getInt("id_consultorio") + " - " +
+                                    rs.getString("nombre") + " - " +
+                                    rs.getString("ubicacion");
                 cboConsultorios.addItem(textoCombo);
             }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar consultorios: " + e.getMessage());
+            mostrarError("Error al cargar consultorios: " + e.getMessage());
         }
     }
-
-    private List<String> generarIntervalos(String horaInicio, String horaFin) {
-        List<String> intervalos = new ArrayList<>();
-        try {
-            java.time.LocalTime inicio = java.time.LocalTime.parse(horaInicio);
-            java.time.LocalTime fin = java.time.LocalTime.parse(horaFin);
-            while (inicio.isBefore(fin)) { // 🔹 antes: !inicio.isAfter(fin)
-                intervalos.add(inicio.toString());
-                inicio = inicio.plusMinutes(30); // intervalos de 30 minutos
-            }
-        } catch (Exception e) {
-            System.out.println("Error generando intervalos: " + e.getMessage());
-        }
-        return intervalos;
-    }
-
-    private Set<String> obtenerHorasOcupadas(int idMedico, String fechaSeleccionada) {
-        Set<String> horasOcupadas = new HashSet<>();
-        try (Connection conexion = bd.miConexion()) {
-            PreparedStatement ps = conexion.prepareStatement(
-                "SELECT DATE(fecha_hora_inicio) AS fecha, " +
-                "TIME(fecha_hora_inicio) AS hora_inicio, " +
-                "TIME(fecha_hora_fin) AS hora_fin " +
-                "FROM citas WHERE id_medico = ? AND DATE(fecha_hora_inicio) = ?"
-            );
+    
+    private Set<String> obtenerHorasOcupadas(Connection cn, int idMedico, String fecha) throws SQLException {
+        Set<String> ocupadas = new HashSet<>();
+        String sql = """
+            SELECT TIME(fecha_hora_inicio) AS inicio, TIME(fecha_hora_fin) AS fin
+            FROM citas WHERE id_medico = ? AND DATE(fecha_hora_inicio) = ?
+            """;
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setInt(1, idMedico);
-            ps.setString(2, fechaSeleccionada); // formato yyyy-MM-dd
-
+            ps.setString(2, fecha);
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
-                String hInicio = rs.getString("hora_inicio");
-                String hFin = rs.getString("hora_fin");
-
-                // Generamos los intervalos ocupados entre esas dos horas
-                List<String> intervalosOcupados = generarIntervalos(hInicio, hFin);
-                horasOcupadas.addAll(intervalosOcupados);
+                ocupadas.addAll(generarIntervalos(rs.getString("inicio"), rs.getString("fin")));
             }
-
-            rs.close();
-            ps.close();
-        } catch (Exception e) {
-            System.out.println("Error obteniendo horas ocupadas: " + e.getMessage());
         }
-        return horasOcupadas;
+        return ocupadas;
     }
-
-    private void cargarHorariosMedico(String nombreMedicoSeleccionado) {
+    
+    private void cargarHorariosMedico(String nombreMedico) {
         cboInicioHora.removeAllItems();
         cboFinHora.removeAllItems();
-
-        String fechaSeleccionada = obtenerFechaSeleccionada();
-        if (fechaSeleccionada == null) {
+        String fecha = obtenerFechaSeleccionada();
+        if (fecha == null) {
+            mostrarError("Seleccione una fecha válida antes de cargar horarios.");
             return;
         }
 
-        try (Connection conexion = bd.miConexion()) {
-            // Buscar el id del médico
-            PreparedStatement psMedico = conexion.prepareStatement(
-                "SELECT id_medico FROM medicos WHERE CONCAT(nombre, ' ', apellidos) = ?"
-            );
-            psMedico.setString(1, nombreMedicoSeleccionado);
-            ResultSet rsMedico = psMedico.executeQuery();
-
-            if (rsMedico.next()) {
-                int idMedico = rsMedico.getInt("id_medico");
-
-                // Obtenemos el día de la semana (1=Lunes, ..., 7=Domingo)
-                java.time.LocalDate fecha = java.time.LocalDate.parse(fechaSeleccionada);
-                int diaSemana = fecha.getDayOfWeek().getValue();
-
-                // Consulta horarios válidos del médico para ese día
-                PreparedStatement psHorarios = conexion.prepareStatement(
-                    "SELECT hora_inicio, hora_fin FROM horarios " +
-                    "WHERE id_medico = ? AND dia_semana = ? " +
-                    "AND fecha_inicio_validez <= ? AND fecha_fin_validez >= ?"
-                );
-                psHorarios.setInt(1, idMedico);
-                psHorarios.setInt(2, diaSemana);
-                psHorarios.setString(3, fechaSeleccionada);
-                psHorarios.setString(4, fechaSeleccionada);
-
-                ResultSet rsHorarios = psHorarios.executeQuery();
-                List<String> horariosDisponibles = new ArrayList<>();
-
-                while (rsHorarios.next()) {
-                    horariosDisponibles.addAll(
-                        generarIntervalos(rsHorarios.getString("hora_inicio"), rsHorarios.getString("hora_fin"))
-                    );
-                }
-
-                rsHorarios.close();
-                psHorarios.close();
-
-                // 🔹 Obtener los horarios ya ocupados
-                Set<String> horasOcupadas = obtenerHorasOcupadas(idMedico, fechaSeleccionada);
-
-                // 🔹 Filtramos solo los disponibles
-                List<String> horariosFinales = new ArrayList<>();
-                for (String hora : horariosDisponibles) {
-                    if (!horasOcupadas.contains(hora)) {
-                        horariosFinales.add(hora);
-                    }
-                }
-
-                if (horariosFinales.isEmpty()) {
-                    JOptionPane.showMessageDialog(this,
-                        "El médico no tiene horarios disponibles para esa fecha.",
-                        "Sin disponibilidad", JOptionPane.WARNING_MESSAGE);
-                        cboMedicos.setSelectedItem(null);
-                } else {
-                    for (String hora : horariosFinales) {
-                        cboInicioHora.addItem(hora);
-                        cboFinHora.addItem(hora);
-                    }
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "No se encontró el médico seleccionado.");
+        try (Connection cn = bd.miConexion()) {
+            int idMedico = obtenerIdPorNombre(cn, "medicos", "id_medico", nombreMedico);
+            if (idMedico == -1) {
+                mostrarError("No se encontró el médico seleccionado.");
+                return;
             }
 
-            rsMedico.close();
-            psMedico.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar horarios del médico: " + e.getMessage());
+            int diaSemana = LocalDate.parse(fecha).getDayOfWeek().getValue();
+            List<String> horarios = obtenerHorariosDisponibles(cn, idMedico, diaSemana, fecha);
+            Set<String> ocupados = obtenerHorasOcupadas(cn, idMedico, fecha);
+
+            horarios.removeAll(ocupados);
+            if (horarios.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Sin horarios disponibles para esa fecha.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            } else {
+                horarios.forEach(h -> { cboInicioHora.addItem(h); cboFinHora.addItem(h); });
+            }
+
+        } catch (SQLException e) {
+            mostrarError("Error al cargar horarios: " + e.getMessage());
+        }
+    }
+    
+    private List<String> obtenerHorariosDisponibles(Connection cn, int idMedico, int diaSemana, String fecha) throws SQLException {
+        List<String> horarios = new ArrayList<>();
+        String sql = """
+            SELECT hora_inicio, hora_fin FROM horarios 
+            WHERE id_medico = ? AND dia_semana = ? 
+            AND (fecha_inicio_validez IS NULL OR fecha_inicio_validez <= ?)
+            AND (fecha_fin_validez IS NULL OR fecha_fin_validez >= ?)
+            """;
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, idMedico);
+            ps.setInt(2, diaSemana);
+            ps.setString(3, fecha);
+            ps.setString(4, fecha);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                horarios.addAll(generarIntervalos(rs.getString("hora_inicio"), rs.getString("hora_fin")));
+            }
+        }
+        return horarios;
+    }
+
+    private List<String> generarIntervalos(String inicio, String fin) {
+        List<String> intervalos = new ArrayList<>();
+        LocalTime hora = LocalTime.parse(inicio);
+        LocalTime limite = LocalTime.parse(fin);
+        while (!hora.isAfter(limite)) {
+            intervalos.add(hora.toString());
+            hora = hora.plusMinutes(30);
+        }
+        return intervalos;
+    }
+    
+    private int obtenerIdPorNombre(Connection cn, String tabla, String columnaId, String valor) throws SQLException {
+        String campo = switch (tabla) {
+            case "medicos", "pacientes" -> "CONCAT(nombre, ' ', apellidos)";
+            case "consultorios" -> "nombre";
+            default -> throw new IllegalArgumentException("Tabla no soportada: " + tabla);
+        };
+
+        String sql = "SELECT " + columnaId + " FROM " + tabla + " WHERE " + campo + " = ?";
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setString(1, valor);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getInt(columnaId) : -1;
         }
     }
 
     private String obtenerFechaSeleccionada() {
-        if (dcFecha.getDate() == null) {
-            return null;
-        }
-        java.time.LocalDate fecha = dcFecha.getDate()
-            .toInstant()
-            .atZone(java.time.ZoneId.systemDefault())
-            .toLocalDate();
-        return fecha.toString();
-    }
-    
-    // 🔹 Normaliza un texto quitando acentos y convirtiendo a minúsculas
-    private String normalizarTexto(String texto) {
-        if (texto == null) return "";
-        String sinAcentos = java.text.Normalizer.normalize(texto, java.text.Normalizer.Form.NFD)
-                .replaceAll("\\p{InCombiningDiacriticalMarks}+", ""); // elimina acentos
-        return sinAcentos.toLowerCase();
-    }
-    
-    private int obtenerIdPorNombre(Connection conexion, String tabla, String columnaId, Object seleccionado) {
-        int id = -1;
-
-        if (seleccionado instanceof DatosCombo dato) {
-            return dato.getCodigo(); // ✅ Obtiene directamente el ID
-        }
-
-        // Fallback si llega texto (para los combos de texto filtrado)
-        String nombreCompleto = seleccionado.toString();
-        String campoNombre = switch (tabla) {
-            case "medicos", "pacientes" -> "CONCAT(nombre, ' ', apellidos)";
-            case "consultorios" -> "CONCAT(nombre, ' - ', ubicacion)";
-            default -> "";
-        };
-
-        if (campoNombre.isEmpty()) return -1;
-
-        String sql = "SELECT " + columnaId + " FROM " + tabla + " WHERE " + campoNombre + " = ?";
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, nombreCompleto);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) id = rs.getInt(columnaId);
-        } catch (SQLException e) {
-            System.out.println("Error obteniendo ID de " + tabla + ": " + e.getMessage());
-        }
-        return id;
+        if (dcFecha.getDate() == null) return null;
+        return dcFecha.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().toString();
     }
 
-    private void limpiarCampos() {
-        txtMotivo.setText("");
-        txtObservaciones.setText("");
-        cboPacientes.setSelectedIndex(-1);
-        cboMedicos.setSelectedIndex(-1);
-        cboConsultorios.setSelectedIndex(-1);
-        cboInicioHora.removeAllItems();
-        cboFinHora.removeAllItems();
-        dcFecha.setDate(null);
-        cboEstado.setSelectedIndex(0);
-        cboTipo.setSelectedIndex(0);
+    private String normalizarTexto(String t) {
+        return java.text.Normalizer.normalize(t, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase();
     }
+
+    private void mostrarError(String msg) {
+        JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
 
     
     public static void main(String args[]) {
@@ -669,7 +543,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                FrmAgregarCitas dialog = new FrmAgregarCitas(new javax.swing.JFrame(), true);
+                test dialog = new test(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

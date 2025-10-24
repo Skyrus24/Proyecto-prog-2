@@ -279,9 +279,6 @@
           </Properties>
         </Component>
         <Component class="com.toedter.calendar.JDateChooser" name="dcFecha">
-          <Events>
-            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="dcFechaFocusGained"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
@@ -296,13 +293,14 @@
         <Component class="javax.swing.JComboBox" name="cboEstado">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="6">
+              <StringArray count="7">
                 <StringItem index="0" value="Programada"/>
-                <StringItem index="1" value="Atendida"/>
-                <StringItem index="2" value="Cancelada"/>
-                <StringItem index="3" value="No asisti&#xf3;"/>
-                <StringItem index="4" value="Confirmada"/>
-                <StringItem index="5" value=" "/>
+                <StringItem index="1" value="Atendido"/>
+                <StringItem index="2" value="Pendiente"/>
+                <StringItem index="3" value="Cancelado"/>
+                <StringItem index="4" value="No asisti&#xf3;"/>
+                <StringItem index="5" value="Confirmada"/>
+                <StringItem index="6" value=" "/>
               </StringArray>
             </Property>
           </Properties>
@@ -322,9 +320,9 @@
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="4">
-                <StringItem index="0" value="Primera Vez"/>
+                <StringItem index="0" value="Primera vez"/>
                 <StringItem index="1" value="Seguimiento"/>
-                <StringItem index="2" value="Urgencia"/>
+                <StringItem index="2" value="Urgencias"/>
                 <StringItem index="3" value="Control"/>
               </StringArray>
             </Property>

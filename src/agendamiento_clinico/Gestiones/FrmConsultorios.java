@@ -1,4 +1,4 @@
-package agendamiento_clinico.Pequeño;
+package agendamiento_clinico.Gestiones;
 
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;

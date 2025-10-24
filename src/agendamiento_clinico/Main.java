@@ -1,5 +1,5 @@
 package agendamiento_clinico;
-
+import agendamiento_clinico.Gestiones.FrmConsultorios;
 import agendamiento_clinico.pacientes.FrmAgregarPaciente;
 
 public class Main extends javax.swing.JFrame {
@@ -114,6 +114,11 @@ public class Main extends javax.swing.JFrame {
         jMenu1.setText("Gestiones");
 
         itemConsultorio.setText("Gestionar Consultorio");
+        itemConsultorio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemConsultorioActionPerformed(evt);
+            }
+        });
         jMenu1.add(itemConsultorio);
 
         itemMedicamento.setText("Gestionar Medicamentos");
@@ -151,6 +156,11 @@ public class Main extends javax.swing.JFrame {
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void itemConsultorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemConsultorioActionPerformed
+        FrmConsultorios frm = new FrmConsultorios(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemConsultorioActionPerformed
 
     /**
      * @param args the command line arguments

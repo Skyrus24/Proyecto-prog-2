@@ -258,6 +258,7 @@ public class FrmConsultorios extends javax.swing.JDialog {
         this.limpiarCampos();
         this.habilitarCampos(false);
         this.habilitarBotones(true);
+        
     }//GEN-LAST:event_cmdCancelarActionPerformed
 
     private void cmdEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEliminarActionPerformed

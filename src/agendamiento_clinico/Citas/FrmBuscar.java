@@ -1,3 +1,5 @@
+package agendamiento_clinico.Citas;
+
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;
 import java.awt.event.*;
@@ -28,6 +30,7 @@ public class FrmBuscar extends javax.swing.JDialog {
     private void configurarTabla() {
         grilla.configurarmodelo(grdCitas, columnas, anchos);
     }
+    
 
     private void inicializarEventos() {
         // buscar mientras se escribe

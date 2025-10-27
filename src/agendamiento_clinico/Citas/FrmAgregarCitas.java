@@ -7,15 +7,20 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
 import java.sql.*;
+import com.toedter.calendar.JDateChooser;
 
 
 public class FrmAgregarCitas extends javax.swing.JDialog {
     BaseDatos bd = new BaseDatos();
+    private java.util.List<String> listaPacientes;
+    private java.util.List<String> listaMedicos;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmAgregarCitas.class.getName());
     public FrmAgregarCitas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         cargarConsultorios();
+        inicializarFiltroPacientes();
+        inicializarFiltroMedicos();
         cboFinHora.setEnabled(false);
         cboPacientes.setSelectedItem(null);
         cboMedicos.setSelectedItem(null);
@@ -28,6 +33,18 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
             if (medicoSeleccionado != null && !medicoSeleccionado.toString().isEmpty()) {
                 cargarHorariosMedico(medicoSeleccionado.toString());
                 }
+            }
+        });
+        
+        cboMedicos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cboMedicosKeyReleased(evt);
+            }
+        });
+        
+        cboPacientes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cboPacientesKeyReleased(evt);
             }
         });
         
@@ -108,9 +125,19 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
 
         cboPacientes.setEditable(true);
         cboPacientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboPacientes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cboPacientesKeyReleased(evt);
+            }
+        });
 
         cboMedicos.setEditable(true);
         cboMedicos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboMedicos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cboMedicosKeyReleased(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Cambria", 1, 14)); // NOI18N
         jLabel7.setText("Fecha");
@@ -352,6 +379,65 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
 
     }//GEN-LAST:event_dcFechaFocusGained
 
+    private void cboPacientesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboPacientesKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboPacientesKeyReleased
+
+    private void cboMedicosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboMedicosKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboMedicosKeyReleased
+    
+    private void inicializarFiltroEntidad(String tabla, JComboBox<String> comboBox,List<String> lista,String mensajeError) {
+
+        lista.clear();
+        try (Connection conexion = bd.miConexion();
+             Statement st = conexion.createStatement();
+             ResultSet rs = st.executeQuery("SELECT nombre, apellidos FROM " + tabla)) {
+
+            while (rs.next()) {
+                lista.add(rs.getString("nombre") + " " + rs.getString("apellidos"));
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, mensajeError + ": " + e.getMessage());
+        }
+
+        // 🔹 Cargar datos en el combo
+        comboBox.removeAllItems();
+        for (String item : lista) comboBox.addItem(item);
+
+        // 🔹 Activar filtrado dinámico
+        comboBox.setEditable(true);
+        JTextField editor = (JTextField) comboBox.getEditor().getEditorComponent();
+        editor.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String texto = editor.getText().trim();
+                comboBox.hidePopup();
+                comboBox.removeAllItems();
+                String textoNormalizado = normalizarTexto(texto);
+
+                for (String valor : lista) {
+                    if (normalizarTexto(valor).contains(textoNormalizado)) {
+                        comboBox.addItem(valor);
+                    }
+                }
+
+                editor.setText(texto);
+                comboBox.showPopup();
+            }
+        });
+    }
+   
+    private void inicializarFiltroPacientes() {
+        if (listaPacientes == null) listaPacientes = new ArrayList<>();
+        inicializarFiltroEntidad("pacientes", cboPacientes, listaPacientes, "Error al cargar pacientes");
+    }
+    
+    private void inicializarFiltroMedicos() {
+        if (listaMedicos == null) listaMedicos = new ArrayList<>();
+        inicializarFiltroEntidad("medicos", cboMedicos, listaMedicos, "Error al cargar médicos");
+    }
 
     private void cargarConsultorios() {
         cboConsultorios.removeAllItems();
@@ -405,8 +491,13 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
+                String hInicio = rs.getString("hora_inicio");
+                String hFin = rs.getString("hora_fin");
                 String estado = rs.getString("estado_cita");
 
+                // Generamos los intervalos ocupados entre esas dos horas
+                List<String> intervalosOcupados = generarIntervalos(hInicio, hFin);
+                horasOcupadas.addAll(intervalosOcupados);
                 // 🔹 Solo se marcan como ocupadas las citas que NO estén canceladas
                 if (estado == null || !estado.equalsIgnoreCase("Cancelada")) {
                     String horaInicio = rs.getString("hora_inicio");
@@ -414,6 +505,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
                     horasOcupadas.addAll(generarIntervalos(horaInicio, horaFin));
                 }
             }
+
             rs.close();
             ps.close();
         } catch (Exception e) {

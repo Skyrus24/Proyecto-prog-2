@@ -1,4 +1,4 @@
-package agendamiento_clinico.Horarios;
+package agendamiento_clinico.horario;
 
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.DatosCombo;

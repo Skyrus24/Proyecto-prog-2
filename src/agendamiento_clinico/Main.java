@@ -1,9 +1,15 @@
 package agendamiento_clinico;
-import agendamiento_clinico.Gestiones.*;
+import agendamiento_clinico.cita.FrmListar;
+import agendamiento_clinico.cita.FrmEliminarCitas;
+import agendamiento_clinico.cita.FrmModificarCitas;
+import agendamiento_clinico.cita.FrmAgregarCitas;
+import agendamiento_clinico.gestione.FrmRecetas;
+import agendamiento_clinico.gestione.FrmMedicamentos;
+import agendamiento_clinico.gestione.FrmConsultorios;
+import agendamiento_clinico.horario.FrmVisualizarHorarios;
+import agendamiento_clinico.horario.FrmHorarios;
+import agendamiento_clinico.medicos.FrmModificarMedico;
 import agendamiento_clinico.pacientes.*;
-import agendamiento_clinico.Citas.*;
-import agendamiento_clinico.Horarios.*;
-import agendamiento_clinico.Medico.*;
 import agendamiento_clinico.historialClinico.*;
 
 public class Main extends javax.swing.JFrame {
@@ -21,6 +27,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
+        cmdSalir = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         itemMedico = new javax.swing.JMenu();
         itemAgregarMedico = new javax.swing.JMenuItem();
@@ -41,6 +48,11 @@ public class Main extends javax.swing.JFrame {
         itemConsultorio = new javax.swing.JMenuItem();
         itemMedicamento = new javax.swing.JMenuItem();
         itemReceta = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        itemEspecialidades = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        itemHorario = new javax.swing.JMenuItem();
+        itemVisualizar = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -48,6 +60,17 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        cmdSalir.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        cmdSalir.setText("Salir");
+        cmdSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdSalirActionPerformed(evt);
+            }
+        });
+
+        jMenuBar1.setFont(new java.awt.Font("Cambria", 0, 17)); // NOI18N
+
+        itemMedico.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         itemMedico.setText("Medico");
 
         itemAgregarMedico.setText("Agregar ");
@@ -71,6 +94,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(itemMedico);
 
+        itemPacientes.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         itemPacientes.setText("Pacientes");
 
         itemAgregarPaciente.setText("Agregar");
@@ -82,6 +106,11 @@ public class Main extends javax.swing.JFrame {
         itemPacientes.add(itemAgregarPaciente);
 
         itemPacientesGestionar.setText("Gestionar");
+        itemPacientesGestionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemPacientesGestionarActionPerformed(evt);
+            }
+        });
         itemPacientes.add(itemPacientesGestionar);
 
         itemPacientesListar.setText("Listar");
@@ -94,6 +123,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(itemPacientes);
 
+        itemCitas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         itemCitas.setText("Citas");
 
         itemAgregarCitas.setText("Agregar");
@@ -130,6 +160,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(itemCitas);
 
+        itemHistorial.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         itemHistorial.setText("Historial");
 
         itemGestionarHistorial.setText("Gestionar Historiales");
@@ -142,6 +173,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(itemHistorial);
 
+        jMenu1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jMenu1.setText("Gestiones");
 
         itemConsultorio.setText("Gestionar Consultorio");
@@ -170,17 +202,57 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        jMenu2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jMenu2.setText("Especialidades");
+
+        itemEspecialidades.setText("Gestion Especialidades");
+        itemEspecialidades.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemEspecialidadesActionPerformed(evt);
+            }
+        });
+        jMenu2.add(itemEspecialidades);
+
+        jMenuBar1.add(jMenu2);
+
+        jMenu3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jMenu3.setText("Horarios");
+
+        itemHorario.setText("Gestionar Horario");
+        itemHorario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemHorarioActionPerformed(evt);
+            }
+        });
+        jMenu3.add(itemHorario);
+
+        itemVisualizar.setText("Visualizar");
+        itemVisualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemVisualizarActionPerformed(evt);
+            }
+        });
+        jMenu3.add(itemVisualizar);
+
+        jMenuBar1.add(jMenu3);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(459, Short.MAX_VALUE)
+                .addComponent(cmdSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(252, Short.MAX_VALUE)
+                .addComponent(cmdSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -246,30 +318,33 @@ public class Main extends javax.swing.JFrame {
         frm.setVisible(true);
     }//GEN-LAST:event_itemGestionarHistorialActionPerformed
 
-    
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void itemEspecialidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEspecialidadesActionPerformed
+        FrmEspecialidades frm = new FrmEspecialidades(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemEspecialidadesActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Main().setVisible(true));
-    }
+    private void itemHorarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemHorarioActionPerformed
+        FrmHorarios frm = new FrmHorarios(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemHorarioActionPerformed
+
+    private void itemVisualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemVisualizarActionPerformed
+        FrmVisualizarHorarios frm = new FrmVisualizarHorarios(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemVisualizarActionPerformed
+
+    private void itemPacientesGestionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPacientesGestionarActionPerformed
+        FrmGestionarPacientes frm = new FrmGestionarPacientes(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemPacientesGestionarActionPerformed
+
+    private void cmdSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_cmdSalirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cmdSalir;
     private javax.swing.JMenuItem itemAgregarCitas;
     private javax.swing.JMenuItem itemAgregarMedico;
     private javax.swing.JMenuItem itemAgregarPaciente;
@@ -278,8 +353,10 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemCitasListar;
     private javax.swing.JMenuItem itemCitasModificar;
     private javax.swing.JMenuItem itemConsultorio;
+    private javax.swing.JMenuItem itemEspecialidades;
     private javax.swing.JMenuItem itemGestionarHistorial;
     private javax.swing.JMenu itemHistorial;
+    private javax.swing.JMenuItem itemHorario;
     private javax.swing.JMenuItem itemListarMedico;
     private javax.swing.JMenuItem itemMedicamento;
     private javax.swing.JMenu itemMedico;
@@ -288,7 +365,10 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemPacientesGestionar;
     private javax.swing.JMenuItem itemPacientesListar;
     private javax.swing.JMenuItem itemReceta;
+    private javax.swing.JMenuItem itemVisualizar;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem9;

@@ -190,9 +190,12 @@ public class FrmEspecialidades extends javax.swing.JDialog {
             }
         });
         jScrollPane2.setViewportView(grdEspecialidades);
+        if (grdEspecialidades.getColumnModel().getColumnCount() > 0) {
+            grdEspecialidades.getColumnModel().getColumn(0).setMaxWidth(30);
+        }
 
         jPanel1.add(jScrollPane2);
-        jScrollPane2.setBounds(350, 150, 456, 406);
+        jScrollPane2.setBounds(350, 150, 680, 406);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         jLabel4.setText("Buscar:");
@@ -205,7 +208,7 @@ public class FrmEspecialidades extends javax.swing.JDialog {
             }
         });
         jPanel1.add(txtBuscar);
-        txtBuscar.setBounds(350, 120, 456, 26);
+        txtBuscar.setBounds(350, 120, 680, 26);
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -234,9 +237,10 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 826, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1032, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

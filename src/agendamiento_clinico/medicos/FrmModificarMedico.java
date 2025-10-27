@@ -1,4 +1,4 @@
-package agendamiento_clinico.Medico;
+package agendamiento_clinico.medicos;
 
 
 import javax.swing.JOptionPane;

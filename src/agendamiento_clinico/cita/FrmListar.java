@@ -1,4 +1,4 @@
-package agendamiento_clinico.Citas;
+package agendamiento_clinico.cita;
 
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;
@@ -8,8 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.event.ListSelectionEvent;
 
-public class FrmBuscar extends javax.swing.JDialog {
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmBuscar.class.getName());
+public class FrmListar extends javax.swing.JDialog {
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmListar.class.getName());
     private final BaseDatos bd = new BaseDatos();
     private final Grilla grilla = new Grilla();
     private int citaSeleccionada = -1;
@@ -18,13 +18,13 @@ public class FrmBuscar extends javax.swing.JDialog {
     private final String[] columnas = {"ID Cita", "Paciente", "CI", "Médico", "Inicio", "Fin", "Estado", "Tipo"};
     private final int[] anchos = {60, 140, 90, 140, 120, 120, 80, 100};
     
-    public FrmBuscar(java.awt.Frame parent, boolean modal) {
+    public FrmListar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
         configurarTabla();
         inicializarEventos();
-        btnAceptar.setEnabled(false);
+        btnSalir.setEnabled(false);
         rdNombre.setSelected(true);
     }
     private void configurarTabla() {
@@ -44,21 +44,11 @@ public class FrmBuscar extends javax.swing.JDialog {
         // selección de fila
         grdCitas.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             boolean seleccionValida = grdCitas.getSelectedRow() != -1;
-            btnAceptar.setEnabled(seleccionValida);
+            btnSalir.setEnabled(seleccionValida);
             if (seleccionValida) {
                 Object valor = grdCitas.getValueAt(grdCitas.getSelectedRow(), 0);
                 if (valor != null) {
                     citaSeleccionada = Integer.parseInt(valor.toString());
-                }
-            }
-        });
-
-        // doble clic en la fila para aceptar
-        grdCitas.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2 && citaSeleccionada != -1) {
-                    dispose();
                 }
             }
         });
@@ -144,7 +134,7 @@ public class FrmBuscar extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         grdCitas = new javax.swing.JTable();
-        btnAceptar = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         txtBuscar = new javax.swing.JTextField();
@@ -187,10 +177,10 @@ public class FrmBuscar extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        btnAceptar.setText("Aceptar");
-        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+        btnSalir.setText("Aceptar");
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAceptarActionPerformed(evt);
+                btnSalirActionPerformed(evt);
             }
         });
 
@@ -252,7 +242,7 @@ public class FrmBuscar extends javax.swing.JDialog {
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -270,22 +260,20 @@ public class FrmBuscar extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                    .addComponent(btnAceptar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         if (citaSeleccionada != -1) {
             // 🔹 Aseguramos que los datos de la tabla ya estén en memoria antes de cerrar
             grdCitas.clearSelection();
             dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar una cita antes de continuar.", "Atención", JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_btnAceptarActionPerformed
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         citaSeleccionada = -1;
@@ -314,7 +302,7 @@ public class FrmBuscar extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                FrmBuscar dialog = new FrmBuscar(new javax.swing.JFrame(), true);
+                FrmListar dialog = new FrmListar(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -327,8 +315,8 @@ public class FrmBuscar extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnSalir;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JTable grdCitas;
     private javax.swing.JLabel jLabel1;

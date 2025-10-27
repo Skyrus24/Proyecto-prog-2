@@ -11,6 +11,8 @@ import agendamiento_clinico.horario.FrmHorarios;
 import agendamiento_clinico.medicos.FrmModificarMedico;
 import agendamiento_clinico.pacientes.*;
 import agendamiento_clinico.historialClinico.*;
+import agendamiento_clinico.medicos.FrmAgregarMedico;
+import agendamiento_clinico.medicos.FrmListarMedicos;
 
 public class Main extends javax.swing.JFrame {
     
@@ -119,6 +121,11 @@ public class Main extends javax.swing.JFrame {
         itemMedico.add(itemModificarMedico);
 
         itemListarMedico.setText("Listar");
+        itemListarMedico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemListarMedicoActionPerformed(evt);
+            }
+        });
         itemMedico.add(itemListarMedico);
 
         jMenuBar1.add(itemMedico);
@@ -302,7 +309,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_itemConsultorioActionPerformed
 
     private void itemAgregarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarMedicoActionPerformed
-        FrmAgregarPaciente frm = new FrmAgregarPaciente(this,true);
+        FrmAgregarMedico frm = new FrmAgregarMedico(this,true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemAgregarMedicoActionPerformed
 
@@ -364,6 +371,11 @@ public class Main extends javax.swing.JFrame {
     private void cmdSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalirActionPerformed
         System.exit(0);
     }//GEN-LAST:event_cmdSalirActionPerformed
+
+    private void itemListarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemListarMedicoActionPerformed
+        FrmListarMedicos frm = new FrmListarMedicos(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemListarMedicoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

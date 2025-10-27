@@ -1,13 +1,8 @@
 package agendamiento_clinico.pacientes;
-
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author TuNombre
- */
 public class FrmGestionarPacientes extends javax.swing.JDialog {
 
     private final BaseDatos bd = new BaseDatos();
@@ -16,7 +11,6 @@ public class FrmGestionarPacientes extends javax.swing.JDialog {
     public FrmGestionarPacientes(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
         if(!bd.hayConexion()){
             JOptionPane.showMessageDialog(this, "Error de conexión con la base de datos", "Error de Conexión", JOptionPane.ERROR_MESSAGE);
         }

@@ -76,7 +76,7 @@ public class FrmBuscar extends javax.swing.JDialog {
                 ? "CONCAT(p.nombre, ' ', p.apellidos) LIKE ?"
                 : "p.numero_documento LIKE ?";
 
-        String sql = 
+        String sql =
             "SELECT c.id_cita, " +
             "CONCAT(p.nombre, ' ', p.apellidos) AS paciente, " +
             "p.numero_documento AS ci, " +
@@ -91,14 +91,18 @@ public class FrmBuscar extends javax.swing.JDialog {
             "WHERE " + condicion + " " +
             "ORDER BY c.fecha_hora_inicio DESC";
 
-        try (Connection cn = bd.miConexion();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+        Connection cn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
+        try {
+            cn = bd.miConexion();
+            ps = cn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ps.setString(1, "%" + texto + "%");
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
             DefaultTableModel modelo = (DefaultTableModel) grdCitas.getModel();
-            modelo.setRowCount(0); // limpiar
+            modelo.setRowCount(0);
 
             while (rs.next()) {
                 Object[] fila = new Object[columnas.length];
@@ -114,8 +118,14 @@ public class FrmBuscar extends javax.swing.JDialog {
                     "Error SQL",
                     JOptionPane.ERROR_MESSAGE);
             logger.log(java.util.logging.Level.SEVERE, "Error al buscar citas", ex);
+        } finally {
+            // 🔹 Cerrar manualmente en orden inverso
+            try { if (rs != null && !rs.isClosed()) rs.close(); } catch (SQLException ignored) {}
+            try { if (ps != null && !ps.isClosed()) ps.close(); } catch (SQLException ignored) {}
+            try { if (cn != null && !cn.isClosed()) cn.close(); } catch (SQLException ignored) {}
         }
     }
+
 
     private void limpiarTabla() {
         DefaultTableModel modelo = (DefaultTableModel) grdCitas.getModel();
@@ -269,7 +279,9 @@ public class FrmBuscar extends javax.swing.JDialog {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         if (citaSeleccionada != -1) {
-            dispose(); // cierra el diálogo
+            // 🔹 Aseguramos que los datos de la tabla ya estén en memoria antes de cerrar
+            grdCitas.clearSelection();
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar una cita antes de continuar.", "Atención", JOptionPane.WARNING_MESSAGE);
         }

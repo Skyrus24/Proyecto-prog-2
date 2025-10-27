@@ -190,10 +190,18 @@ public class FrmAgregarMedico extends javax.swing.JDialog {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         DatosCombo cbo = (DatosCombo) this.cboEspecialidad.getSelectedItem();
         int codEspecialidad = cbo.getCodigo();
-        bd.insertarRegistro("medicos", this.txtID.getText()+",'"+this.txtNombre.getText()+"','"
+
+        boolean exito = bd.insertarRegistro("medicos", 
+                this.txtID.getText()+",'"+this.txtNombre.getText()+"','"
                 +this.txtApellido.getText()+"',"+codEspecialidad+",'"+this.txtEmail.getText()+"','"
                 +this.txtTel.getText()+"','"+this.txtLicencia.getText()+"'");
-        limpiarCampos();
+
+        if (exito) {
+            JOptionPane.showMessageDialog(this, "Médico guardado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo guardar el médico.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void cboEspecialidadKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cboEspecialidadKeyReleased

@@ -1,6 +1,10 @@
 package agendamiento_clinico;
-import agendamiento_clinico.Gestiones.FrmConsultorios;
-import agendamiento_clinico.pacientes.FrmAgregarPaciente;
+import agendamiento_clinico.Gestiones.*;
+import agendamiento_clinico.pacientes.*;
+import agendamiento_clinico.Citas.*;
+import agendamiento_clinico.Horarios.*;
+import agendamiento_clinico.Medico.*;
+import agendamiento_clinico.historialClinico.*;
 
 public class Main extends javax.swing.JFrame {
     
@@ -19,14 +23,12 @@ public class Main extends javax.swing.JFrame {
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuBar1 = new javax.swing.JMenuBar();
         itemMedico = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        itemAgregarMedico = new javax.swing.JMenuItem();
+        itemModificarMedico = new javax.swing.JMenuItem();
+        itemListarMedico = new javax.swing.JMenuItem();
         itemPacientes = new javax.swing.JMenu();
-        itemAgregarEspeci = new javax.swing.JMenuItem();
-        itemPacientesModificar = new javax.swing.JMenuItem();
-        itemPacientesEliminar = new javax.swing.JMenuItem();
+        itemAgregarPaciente = new javax.swing.JMenuItem();
+        itemPacientesGestionar = new javax.swing.JMenuItem();
         itemPacientesListar = new javax.swing.JMenuItem();
         itemCitas = new javax.swing.JMenu();
         itemAgregarCitas = new javax.swing.JMenuItem();
@@ -34,6 +36,7 @@ public class Main extends javax.swing.JFrame {
         itemCitasModificar = new javax.swing.JMenuItem();
         itemCitasListar = new javax.swing.JMenuItem();
         itemHistorial = new javax.swing.JMenu();
+        itemGestionarHistorial = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         itemConsultorio = new javax.swing.JMenuItem();
         itemMedicamento = new javax.swing.JMenuItem();
@@ -47,42 +50,46 @@ public class Main extends javax.swing.JFrame {
 
         itemMedico.setText("Medico");
 
-        jMenuItem2.setText("Agregar Medico");
-        itemMedico.add(jMenuItem2);
-
-        jMenuItem3.setText("Modificar");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        itemAgregarMedico.setText("Agregar ");
+        itemAgregarMedico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                itemAgregarMedicoActionPerformed(evt);
             }
         });
-        itemMedico.add(jMenuItem3);
+        itemMedico.add(itemAgregarMedico);
 
-        jMenuItem4.setText("Eliminar");
-        itemMedico.add(jMenuItem4);
+        itemModificarMedico.setText("Modificar/Eliminar");
+        itemModificarMedico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemModificarMedicoActionPerformed(evt);
+            }
+        });
+        itemMedico.add(itemModificarMedico);
 
-        jMenuItem5.setText("Listar");
-        itemMedico.add(jMenuItem5);
+        itemListarMedico.setText("Listar");
+        itemMedico.add(itemListarMedico);
 
         jMenuBar1.add(itemMedico);
 
         itemPacientes.setText("Pacientes");
 
-        itemAgregarEspeci.setText("Agregar");
-        itemAgregarEspeci.addActionListener(new java.awt.event.ActionListener() {
+        itemAgregarPaciente.setText("Agregar");
+        itemAgregarPaciente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemAgregarEspeciActionPerformed(evt);
+                itemAgregarPacienteActionPerformed(evt);
             }
         });
-        itemPacientes.add(itemAgregarEspeci);
+        itemPacientes.add(itemAgregarPaciente);
 
-        itemPacientesModificar.setText("Modificar");
-        itemPacientes.add(itemPacientesModificar);
-
-        itemPacientesEliminar.setText("Eliminar");
-        itemPacientes.add(itemPacientesEliminar);
+        itemPacientesGestionar.setText("Gestionar");
+        itemPacientes.add(itemPacientesGestionar);
 
         itemPacientesListar.setText("Listar");
+        itemPacientesListar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemPacientesListarActionPerformed(evt);
+            }
+        });
         itemPacientes.add(itemPacientesListar);
 
         jMenuBar1.add(itemPacientes);
@@ -90,6 +97,11 @@ public class Main extends javax.swing.JFrame {
         itemCitas.setText("Citas");
 
         itemAgregarCitas.setText("Agregar");
+        itemAgregarCitas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAgregarCitasActionPerformed(evt);
+            }
+        });
         itemCitas.add(itemAgregarCitas);
 
         itemCitasEliminar.setText("Eliminar");
@@ -101,14 +113,33 @@ public class Main extends javax.swing.JFrame {
         itemCitas.add(itemCitasEliminar);
 
         itemCitasModificar.setText("Modificar");
+        itemCitasModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCitasModificarActionPerformed(evt);
+            }
+        });
         itemCitas.add(itemCitasModificar);
 
         itemCitasListar.setText("Listar");
+        itemCitasListar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCitasListarActionPerformed(evt);
+            }
+        });
         itemCitas.add(itemCitasListar);
 
         jMenuBar1.add(itemCitas);
 
         itemHistorial.setText("Historial");
+
+        itemGestionarHistorial.setText("Gestionar Historiales");
+        itemGestionarHistorial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemGestionarHistorialActionPerformed(evt);
+            }
+        });
+        itemHistorial.add(itemGestionarHistorial);
+
         jMenuBar1.add(itemHistorial);
 
         jMenu1.setText("Gestiones");
@@ -122,9 +153,19 @@ public class Main extends javax.swing.JFrame {
         jMenu1.add(itemConsultorio);
 
         itemMedicamento.setText("Gestionar Medicamentos");
+        itemMedicamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemMedicamentoActionPerformed(evt);
+            }
+        });
         jMenu1.add(itemMedicamento);
 
         itemReceta.setText("Gestionar Receta");
+        itemReceta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemRecetaActionPerformed(evt);
+            }
+        });
         jMenu1.add(itemReceta);
 
         jMenuBar1.add(jMenu1);
@@ -145,26 +186,67 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void itemAgregarEspeciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarEspeciActionPerformed
-
-    }//GEN-LAST:event_itemAgregarEspeciActionPerformed
+    private void itemAgregarPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarPacienteActionPerformed
+        FrmAgregarPaciente frm = new FrmAgregarPaciente(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemAgregarPacienteActionPerformed
 
     private void itemCitasEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasEliminarActionPerformed
-        // TODO add your handling code here:
+        FrmEliminarCitas frm = new FrmEliminarCitas(this, true);
+        frm.setVisible(true);
     }//GEN-LAST:event_itemCitasEliminarActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    private void itemModificarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemModificarMedicoActionPerformed
+        FrmModificarMedico frm = new FrmModificarMedico(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemModificarMedicoActionPerformed
 
     private void itemConsultorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemConsultorioActionPerformed
         FrmConsultorios frm = new FrmConsultorios(this, true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemConsultorioActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void itemAgregarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarMedicoActionPerformed
+        FrmAgregarPaciente frm = new FrmAgregarPaciente(this,true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemAgregarMedicoActionPerformed
+
+    private void itemPacientesListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPacientesListarActionPerformed
+        FrmListarPacientes frm = new FrmListarPacientes(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemPacientesListarActionPerformed
+
+    private void itemAgregarCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarCitasActionPerformed
+        FrmAgregarCitas frm = new FrmAgregarCitas(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemAgregarCitasActionPerformed
+
+    private void itemCitasModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasModificarActionPerformed
+        FrmModificarCitas frm = new FrmModificarCitas(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemCitasModificarActionPerformed
+
+    private void itemCitasListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasListarActionPerformed
+        FrmListar frm = new FrmListar(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemCitasListarActionPerformed
+
+    private void itemMedicamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemMedicamentoActionPerformed
+        FrmMedicamentos frm = new FrmMedicamentos(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemMedicamentoActionPerformed
+
+    private void itemRecetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemRecetaActionPerformed
+        FrmRecetas frm = new FrmRecetas(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemRecetaActionPerformed
+
+    private void itemGestionarHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGestionarHistorialActionPerformed
+        FrmGestionarHistorial frm = new FrmGestionarHistorial(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemGestionarHistorialActionPerformed
+
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -189,27 +271,26 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem itemAgregarCitas;
-    private javax.swing.JMenuItem itemAgregarEspeci;
+    private javax.swing.JMenuItem itemAgregarMedico;
+    private javax.swing.JMenuItem itemAgregarPaciente;
     private javax.swing.JMenu itemCitas;
     private javax.swing.JMenuItem itemCitasEliminar;
     private javax.swing.JMenuItem itemCitasListar;
     private javax.swing.JMenuItem itemCitasModificar;
     private javax.swing.JMenuItem itemConsultorio;
+    private javax.swing.JMenuItem itemGestionarHistorial;
     private javax.swing.JMenu itemHistorial;
+    private javax.swing.JMenuItem itemListarMedico;
     private javax.swing.JMenuItem itemMedicamento;
     private javax.swing.JMenu itemMedico;
+    private javax.swing.JMenuItem itemModificarMedico;
     private javax.swing.JMenu itemPacientes;
-    private javax.swing.JMenuItem itemPacientesEliminar;
+    private javax.swing.JMenuItem itemPacientesGestionar;
     private javax.swing.JMenuItem itemPacientesListar;
-    private javax.swing.JMenuItem itemPacientesModificar;
     private javax.swing.JMenuItem itemReceta;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem9;
     // End of variables declaration//GEN-END:variables
 }

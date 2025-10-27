@@ -11,14 +11,48 @@ import agendamiento_clinico.horario.FrmHorarios;
 import agendamiento_clinico.medicos.FrmModificarMedico;
 import agendamiento_clinico.pacientes.*;
 import agendamiento_clinico.historialClinico.*;
+import agendamiento_clinico.medicos.FrmAgregarMedico;
+import agendamiento_clinico.medicos.FrmListarMedicos;
 
 public class Main extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Main.class.getName());
+    // 1. Añade una variable para guardar el rol del usuario
+    private String rolUsuario;
 
-    public Main() {
+    // 2. Modifica tu constructor actual y crea uno nuevo
+    public Main() { // Este constructor ya no se usará, pero es bueno dejarlo
         initComponents();
         this.setLocationRelativeTo(null);
+    }
+
+    // ¡ESTE ES EL NUEVO CONSTRUCTOR IMPORTANTE!
+    public Main(String rol) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.rolUsuario = rol; // Guardamos el rol
+        configurarSegunRol(); // Llamamos al método que habilita/deshabilita cosas
+    }
+
+    // 3. Crea el método que contiene toda la lógica de los permisos
+    private void configurarSegunRol() {
+        // Por defecto, un administrador puede ver todo, así que no hacemos nada para él.
+        switch (rolUsuario) {
+            case "Medico":
+                // Un médico no debería poder gestionar otros médicos ni consultorios.
+                itemMedico.setVisible(false); // Oculta el menú "Medico" completo
+                jMenu1.setVisible(false);     // Oculta el menú "Gestiones" completo
+                break;
+
+            case "Recepcionista":
+                // Un recepcionista no debería ver historiales clínicos ni gestionar médicos/medicamentos.
+                itemHistorial.setVisible(false);   // Oculta el menú "Historial"
+                itemMedico.setVisible(false);      // Oculta el menú "Medico"
+                itemMedicamento.setVisible(false); // Oculta solo el item de "Gestionar Medicamentos"
+                break;
+            
+            default: // Si el rol es Administrador o cualquier otro, no se oculta nada.
+                break;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -68,9 +102,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jMenuBar1.setFont(new java.awt.Font("Cambria", 0, 17)); // NOI18N
-
-        itemMedico.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         itemMedico.setText("Medico");
 
         itemAgregarMedico.setText("Agregar ");
@@ -90,11 +121,15 @@ public class Main extends javax.swing.JFrame {
         itemMedico.add(itemModificarMedico);
 
         itemListarMedico.setText("Listar");
+        itemListarMedico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemListarMedicoActionPerformed(evt);
+            }
+        });
         itemMedico.add(itemListarMedico);
 
         jMenuBar1.add(itemMedico);
 
-        itemPacientes.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         itemPacientes.setText("Pacientes");
 
         itemAgregarPaciente.setText("Agregar");
@@ -123,7 +158,6 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(itemPacientes);
 
-        itemCitas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         itemCitas.setText("Citas");
 
         itemAgregarCitas.setText("Agregar");
@@ -160,7 +194,6 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(itemCitas);
 
-        itemHistorial.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         itemHistorial.setText("Historial");
 
         itemGestionarHistorial.setText("Gestionar Historiales");
@@ -173,7 +206,6 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(itemHistorial);
 
-        jMenu1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jMenu1.setText("Gestiones");
 
         itemConsultorio.setText("Gestionar Consultorio");
@@ -202,7 +234,6 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jMenu2.setText("Especialidades");
 
         itemEspecialidades.setText("Gestion Especialidades");
@@ -215,7 +246,6 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jMenu3.setText("Horarios");
 
         itemHorario.setText("Gestionar Horario");
@@ -250,7 +280,7 @@ public class Main extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(252, Short.MAX_VALUE)
+                .addContainerGap(255, Short.MAX_VALUE)
                 .addComponent(cmdSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -279,7 +309,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_itemConsultorioActionPerformed
 
     private void itemAgregarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarMedicoActionPerformed
-        FrmAgregarPaciente frm = new FrmAgregarPaciente(this,true);
+        FrmAgregarMedico frm = new FrmAgregarMedico(this,true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemAgregarMedicoActionPerformed
 
@@ -341,6 +371,11 @@ public class Main extends javax.swing.JFrame {
     private void cmdSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalirActionPerformed
         System.exit(0);
     }//GEN-LAST:event_cmdSalirActionPerformed
+
+    private void itemListarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemListarMedicoActionPerformed
+        FrmListarMedicos frm = new FrmListarMedicos(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemListarMedicoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

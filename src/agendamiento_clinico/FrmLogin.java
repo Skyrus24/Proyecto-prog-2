@@ -37,29 +37,31 @@ public class FrmLogin extends javax.swing.JDialog {
         }
 
         // --- CAMBIO CLAVE AQUÍ ---
-        // La consulta ahora usa SHA2() para comparar la contraseña.
-        // Ya no traemos el rol, solo verificamos si el usuario existe con esa contraseña.
-        String sql = "SELECT nombre_usuario FROM usuarios WHERE nombre_usuario = ? AND contrasena = SHA2(?, 256)";
+        // La consulta ahora une las tablas para obtener el nombre del rol.
+        String sql = "SELECT r.nombre_rol FROM usuarios u " +
+                     "JOIN roles r ON u.id_rol = r.id_rol " +
+                     "WHERE u.nombre_usuario = ? AND u.contrasena = SHA2(?, 256)";
 
         try {
             PreparedStatement pst = bd.miConexion().prepareStatement(sql);
-            pst.setString(1, usuario);      // El primer '?' es el nombre de usuario
-            pst.setString(2, contrasena);   // El segundo '?' es la contraseña en texto plano
+            pst.setString(1, usuario);
+            pst.setString(2, contrasena);
 
             ResultSet rs = pst.executeQuery();
 
-            // Si rs.next() es verdadero, significa que la consulta encontró una coincidencia.
             if (rs.next()) {
+                // Obtenemos el rol desde la base de datos
+                String rol = rs.getString("nombre_rol");
+
                 JOptionPane.showMessageDialog(this, "¡Bienvenido, " + usuario + "!", "Acceso Concedido", JOptionPane.INFORMATION_MESSAGE);
 
-                this.dispose(); // Cierra esta ventana de login
+                this.dispose();
 
-                // --- CAMBIO AQUÍ ---
-                // Llamamos al constructor simple de Main, sin pasarle ningún rol.
-                new Main().setVisible(true);
+                // --- ¡AQUÍ ESTÁ LA MAGIA! ---
+                // Creamos una instancia de Main y le pasamos el rol en el constructor.
+                new Main(rol).setVisible(true);
 
             } else {
-                // Si no hay resultados, el usuario o la contraseña (o ambos) son incorrectos.
                 JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
             }
 

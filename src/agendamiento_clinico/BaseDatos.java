@@ -17,25 +17,36 @@ public class BaseDatos {
     public BaseDatos(){
         this.hayConexion();
     }
-    public boolean hayConexion(){
-        if (conexion != null)
-            return true;
-
+    public boolean hayConexion() {
         try {
-            // Se registra el Driver de MySQL
-//            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-////            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+"/"+this.baseDatos,this.usuBD,this.clave);
+            if (conexion == null || conexion.isClosed()) {
+                conexion = DriverManager.getConnection(
+                    "jdbc:mysql://" + this.host + ":3306/" + this.baseDatos + "?characterEncoding=utf8",
+                    this.usuBD,
+                    this.clave
+                );
+            }
+            return true;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error de conexión: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+    public boolean hayConexion(){
+        if (conexion != null){
+            return true;
+        try{
             conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+":3306/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
-            
-
-
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error de conexión"+e.getMessage());
             return false;
         }
         return true;
     }
+ } 
+ */
     public boolean borrarRegistro(String tabla, String condicion){
         try {
             // Se crea un Statement, para realizar la consulta
@@ -170,15 +181,13 @@ public class BaseDatos {
 
         }
     }
-    public Connection miConexion(){
+    public Connection miConexion() {
         try {
-        if (conexion == null || conexion.isClosed()) {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/clinica", usuBD, clave);
+            hayConexion(); // Garantiza que esté abierta
+        } catch (Exception e) {
+            System.out.println("Error de conexión: " + e.getMessage());
         }
-    } catch (Exception e) {
-        System.out.println("Error de conexión: " + e.getMessage());
+        return conexion;
     }
-    return conexion;
-    }
+
 }

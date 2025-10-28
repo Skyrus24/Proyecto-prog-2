@@ -61,7 +61,9 @@ public class Main extends javax.swing.JFrame {
 
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
+        jPanel1 = new javax.swing.JPanel();
         cmdSalir = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         itemMedico = new javax.swing.JMenu();
         itemAgregarMedico = new javax.swing.JMenuItem();
@@ -94,6 +96,8 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setLayout(null);
+
         cmdSalir.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         cmdSalir.setText("Salir");
         cmdSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -101,6 +105,12 @@ public class Main extends javax.swing.JFrame {
                 cmdSalirActionPerformed(evt);
             }
         });
+        jPanel1.add(cmdSalir);
+        cmdSalir.setBounds(500, 490, 97, 39);
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icono/iconos/Screenshot 2025-10-28 190651.png"))); // NOI18N
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(0, 0, 610, 540);
 
         itemMedico.setText("Medico");
 
@@ -272,110 +282,104 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(459, Short.MAX_VALUE)
-                .addComponent(cmdSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(255, Short.MAX_VALUE)
-                .addComponent(cmdSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void itemAgregarPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarPacienteActionPerformed
-        FrmAgregarPaciente frm = new FrmAgregarPaciente(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemAgregarPacienteActionPerformed
-
-    private void itemCitasEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasEliminarActionPerformed
-        FrmEliminarCitas frm = new FrmEliminarCitas(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemCitasEliminarActionPerformed
-
-    private void itemModificarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemModificarMedicoActionPerformed
-        FrmModificarMedico frm = new FrmModificarMedico(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemModificarMedicoActionPerformed
-
-    private void itemConsultorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemConsultorioActionPerformed
-        FrmConsultorios frm = new FrmConsultorios(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemConsultorioActionPerformed
-
-    private void itemAgregarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarMedicoActionPerformed
-        FrmAgregarMedico frm = new FrmAgregarMedico(this,true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemAgregarMedicoActionPerformed
-
-    private void itemPacientesListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPacientesListarActionPerformed
-        FrmListarPacientes frm = new FrmListarPacientes(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemPacientesListarActionPerformed
-
-    private void itemAgregarCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarCitasActionPerformed
-        FrmAgregarCitas frm = new FrmAgregarCitas(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemAgregarCitasActionPerformed
-
-    private void itemCitasModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasModificarActionPerformed
-        FrmModificarCitas frm = new FrmModificarCitas(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemCitasModificarActionPerformed
-
-    private void itemCitasListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasListarActionPerformed
-        FrmListar frm = new FrmListar(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemCitasListarActionPerformed
-
-    private void itemMedicamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemMedicamentoActionPerformed
-        FrmMedicamentos frm = new FrmMedicamentos(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemMedicamentoActionPerformed
-
-    private void itemRecetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemRecetaActionPerformed
-        FrmRecetas frm = new FrmRecetas(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemRecetaActionPerformed
-
-    private void itemGestionarHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGestionarHistorialActionPerformed
-        FrmGestionarHistorial frm = new FrmGestionarHistorial(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemGestionarHistorialActionPerformed
-
-    private void itemEspecialidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEspecialidadesActionPerformed
-        FrmEspecialidades frm = new FrmEspecialidades(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemEspecialidadesActionPerformed
-
-    private void itemHorarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemHorarioActionPerformed
-        FrmHorarios frm = new FrmHorarios(this, true);
-        frm.setVisible(true);
-    }//GEN-LAST:event_itemHorarioActionPerformed
+    private void cmdSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalirActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_cmdSalirActionPerformed
 
     private void itemVisualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemVisualizarActionPerformed
         FrmVisualizarHorarios frm = new FrmVisualizarHorarios(this, true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemVisualizarActionPerformed
 
+    private void itemHorarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemHorarioActionPerformed
+        FrmHorarios frm = new FrmHorarios(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemHorarioActionPerformed
+
+    private void itemEspecialidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEspecialidadesActionPerformed
+        FrmEspecialidades frm = new FrmEspecialidades(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemEspecialidadesActionPerformed
+
+    private void itemRecetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemRecetaActionPerformed
+        FrmRecetas frm = new FrmRecetas(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemRecetaActionPerformed
+
+    private void itemMedicamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemMedicamentoActionPerformed
+        FrmMedicamentos frm = new FrmMedicamentos(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemMedicamentoActionPerformed
+
+    private void itemConsultorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemConsultorioActionPerformed
+        FrmConsultorios frm = new FrmConsultorios(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemConsultorioActionPerformed
+
+    private void itemGestionarHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGestionarHistorialActionPerformed
+        FrmGestionarHistorial frm = new FrmGestionarHistorial(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemGestionarHistorialActionPerformed
+
+    private void itemCitasListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasListarActionPerformed
+        FrmListar frm = new FrmListar(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemCitasListarActionPerformed
+
+    private void itemCitasModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasModificarActionPerformed
+        FrmModificarCitas frm = new FrmModificarCitas(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemCitasModificarActionPerformed
+
+    private void itemCitasEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCitasEliminarActionPerformed
+        FrmEliminarCitas frm = new FrmEliminarCitas(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemCitasEliminarActionPerformed
+
+    private void itemAgregarCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarCitasActionPerformed
+        FrmAgregarCitas frm = new FrmAgregarCitas(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemAgregarCitasActionPerformed
+
+    private void itemPacientesListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPacientesListarActionPerformed
+        FrmListarPacientes frm = new FrmListarPacientes(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemPacientesListarActionPerformed
+
     private void itemPacientesGestionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemPacientesGestionarActionPerformed
         FrmGestionarPacientes frm = new FrmGestionarPacientes(this, true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemPacientesGestionarActionPerformed
 
-    private void cmdSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSalirActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_cmdSalirActionPerformed
+    private void itemAgregarPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarPacienteActionPerformed
+        FrmAgregarPaciente frm = new FrmAgregarPaciente(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemAgregarPacienteActionPerformed
 
     private void itemListarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemListarMedicoActionPerformed
         FrmListarMedicos frm = new FrmListarMedicos(this, true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemListarMedicoActionPerformed
+
+    private void itemModificarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemModificarMedicoActionPerformed
+        FrmModificarMedico frm = new FrmModificarMedico(this, true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemModificarMedicoActionPerformed
+
+    private void itemAgregarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarMedicoActionPerformed
+        FrmAgregarMedico frm = new FrmAgregarMedico(this,true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemAgregarMedicoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -401,11 +405,13 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemPacientesListar;
     private javax.swing.JMenuItem itemReceta;
     private javax.swing.JMenuItem itemVisualizar;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

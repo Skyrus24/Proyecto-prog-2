@@ -42,9 +42,13 @@
                           <Component id="jLabel2" min="-2" pref="148" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="cboMedicos" min="-2" pref="510" max="-2" attributes="0"/>
-                          <Component id="cboMedicos1" min="-2" pref="221" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="cboCriterio" min="-2" pref="113" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="txtBuscar" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -62,8 +66,9 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="cboMedicos1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cboCriterio" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel2" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="txtBuscar" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="325" max="-2" attributes="0"/>
@@ -175,17 +180,17 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdCancelarActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JComboBox" name="cboMedicos1">
+    <Component class="javax.swing.JComboBox" name="cboCriterio">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="2">
-            <StringItem index="0" value="Mes de Inicio (MM)"/>
-            <StringItem index="1" value="Estado (Activo/Inactivo)"/>
+            <StringItem index="0" value="ID"/>
+            <StringItem index="1" value="D&#xed;a"/>
           </StringArray>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboMedicos1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboCriterioActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Object&gt;"/>
@@ -198,6 +203,11 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Filtrar por:"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtBuscar">
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBuscarKeyReleased"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

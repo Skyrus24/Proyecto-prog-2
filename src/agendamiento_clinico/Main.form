@@ -16,20 +16,11 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="itemMedico">
           <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="null"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Medico"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Nirmala UI" size="12" style="1"/>
-            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemAgregarMedico">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Agregar "/>
               </Properties>
               <Events>
@@ -38,9 +29,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemModificarMedico">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Modificar/Eliminar"/>
               </Properties>
               <Events>
@@ -49,9 +37,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemListarMedico">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Listar"/>
               </Properties>
               <Events>
@@ -63,16 +48,10 @@
         <Menu class="javax.swing.JMenu" name="itemPacientes">
           <Properties>
             <Property name="text" type="java.lang.String" value="Pacientes"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Nirmala UI" size="12" style="1"/>
-            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemAgregarPaciente">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Agregar"/>
               </Properties>
               <Events>
@@ -81,9 +60,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemPacientesGestionar">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar"/>
               </Properties>
               <Events>
@@ -92,9 +68,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemPacientesListar">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Listar"/>
               </Properties>
               <Events>
@@ -106,16 +79,10 @@
         <Menu class="javax.swing.JMenu" name="itemCitas">
           <Properties>
             <Property name="text" type="java.lang.String" value="Citas"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Nirmala UI" size="12" style="1"/>
-            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemAgregarCitas">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Agregar"/>
               </Properties>
               <Events>
@@ -124,9 +91,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemCitasEliminar">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Eliminar"/>
               </Properties>
               <Events>
@@ -135,9 +99,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemCitasModificar">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Modificar"/>
               </Properties>
               <Events>
@@ -146,9 +107,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemCitasListar">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Listar"/>
               </Properties>
               <Events>
@@ -160,16 +118,10 @@
         <Menu class="javax.swing.JMenu" name="itemHistorial">
           <Properties>
             <Property name="text" type="java.lang.String" value="Historial"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Nirmala UI" size="12" style="1"/>
-            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemGestionarHistorial">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar Historiales"/>
               </Properties>
               <Events>
@@ -181,16 +133,10 @@
         <Menu class="javax.swing.JMenu" name="jMenu1">
           <Properties>
             <Property name="text" type="java.lang.String" value="Gestiones"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Nirmala UI" size="12" style="1"/>
-            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemConsultorio">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar Consultorio"/>
               </Properties>
               <Events>
@@ -199,9 +145,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemMedicamento">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar Medicamentos"/>
               </Properties>
               <Events>
@@ -210,9 +153,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemReceta">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar Receta"/>
               </Properties>
               <Events>
@@ -224,16 +164,10 @@
         <Menu class="javax.swing.JMenu" name="jMenu2">
           <Properties>
             <Property name="text" type="java.lang.String" value="Especialidades"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Nirmala UI" size="12" style="1"/>
-            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemEspecialidades">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Gestion Especialidades"/>
               </Properties>
               <Events>
@@ -245,16 +179,10 @@
         <Menu class="javax.swing.JMenu" name="jMenu3">
           <Properties>
             <Property name="text" type="java.lang.String" value="Horarios"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Nirmala UI" size="12" style="1"/>
-            </Property>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="itemHorario">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Gestionar Horario"/>
               </Properties>
               <Events>
@@ -263,9 +191,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemVisualizar">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="12" style="2"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Visualizar"/>
               </Properties>
               <Events>
@@ -279,12 +204,6 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-      <Color blue="ff" green="0" red="0" type="rgb"/>
-    </Property>
-    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-      <Font name="Arial" size="10" style="1"/>
-    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
@@ -306,34 +225,51 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="471" max="32767" attributes="0"/>
-              <Component id="cmdSalir" min="-2" pref="85" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
+          <Component id="jPanel1" alignment="0" pref="612" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="262" max="32767" attributes="0"/>
-              <Component id="cmdSalir" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
+          <Component id="jPanel1" alignment="1" pref="538" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="cmdSalir">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Segoe UI" size="18" style="3"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Salir"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdSalirActionPerformed"/>
-      </Events>
-    </Component>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JButton" name="cmdSalir">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="18" style="3"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Salir"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdSalirActionPerformed"/>
+          </Events>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+              <AbsoluteConstraints x="500" y="490" width="97" height="39"/>
+            </Constraint>
+          </Constraints>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel2">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/icono/iconos/Screenshot 2025-10-28 190651.png"/>
+            </Property>
+          </Properties>
+          <Constraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+              <AbsoluteConstraints x="0" y="0" width="610" height="540"/>
+            </Constraint>
+          </Constraints>
+        </Component>
+      </SubComponents>
+    </Container>
   </SubComponents>
 </Form>

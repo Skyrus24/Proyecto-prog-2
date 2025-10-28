@@ -2,6 +2,7 @@ package agendamiento_clinico;
 
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
+import java.text.Normalizer;
 import java.util.regex.Pattern;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,14 +22,32 @@ class DecimalRenderer extends DefaultTableCellRenderer {
         setHorizontalAlignment (JLabel.RIGHT);
     }
 }
+
 public class Grilla {
     BaseDatos bd =new BaseDatos();
+
+    /**
+     * Convierte una cadena acentuada en una cadena sin acentos y en minúsculas.
+     * Por ejemplo, "CAMIÓN" se convierte en "camion".
+     */
+    private static String normalizarTexto(String texto) {
+        if (texto == null) {
+            return "";
+        }
+        // 1. Convertir a minúsculas
+        String lowerCaseText = texto.toLowerCase();
+        // 2. Descomponer la cadena en sus caracteres base y diacríticos (ej: 'é' -> 'e' + '´')
+        String normalizado = Normalizer.normalize(lowerCaseText, Normalizer.Form.NFD);
+        // 3. Eliminar los caracteres diacríticos (tildes, etc.)
+        return normalizado.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+    }
+
     public void configurarmodelo(JTable nombregrilla, String[] columnas, int [] ancho){
         ResultSet rs;
         DefaultTableModel dm = new DefaultTableModel(){
             public boolean isCellEditable(int row, int col){
             return false;
-           }
+            }
         };
         dm.setDataVector(
                 new Object[][]{},
@@ -40,11 +59,12 @@ public class Grilla {
         for (int cont2=0; cont2<=columnas.length-1;cont2++){
             nombregrilla.getColumnModel().getColumn(cont2).setPreferredWidth(ancho[cont2]);}
     }
+
     public void alinear(JTable grilla, String columna){
         final DecimalFormat formato = new DecimalFormat("###,##0.00");
         grilla.getColumn(columna).setCellRenderer(new DecimalRenderer (formato));
-
     }
+
     public void cargarGrilla(JTable nombregrilla, String tabla, String[] campos){
         String sql="Select ";
         DefaultTableModel modelo = (DefaultTableModel) nombregrilla.getModel();
@@ -76,16 +96,37 @@ public class Grilla {
             nombregrilla.setModel(modelo);
         }catch (Exception ex){
             JOptionPane.showMessageDialog(null,"Error al intentar cargar la grilla"+ex.toString(), "Grilla",JOptionPane.INFORMATION_MESSAGE);
-        }  
-}
+        }
+    }
 
+    public void filtrarGrilla(JTable nombregrilla, String texto, int columna) {
+        DefaultTableModel modelo = (DefaultTableModel) nombregrilla.getModel();
+        TableRowSorter<DefaultTableModel> gridFiltrado = new TableRowSorter<>(modelo);
 
-public void filtrarGrilla(JTable nombregrilla, String texto, int columna) {
-    DefaultTableModel modelo = (DefaultTableModel) nombregrilla.getModel();
-    TableRowSorter<DefaultTableModel> gridFiltrado = new TableRowSorter<>(modelo);
-    String filtro = "(?i)" + Pattern.quote(texto);
-    gridFiltrado.setRowFilter(RowFilter.regexFilter(filtro, columna));
-    nombregrilla.setRowSorter(gridFiltrado);
-}
+        // Normalizar el texto de búsqueda una sola vez
+        final String textoNormalizado = normalizarTexto(texto);
 
+        // Crear un RowFilter personalizado para ignorar tildes y mayúsculas/minúsculas
+        RowFilter<Object, Object> rowFilter = new RowFilter<Object, Object>() {
+            @Override
+            public boolean include(Entry<? extends Object, ? extends Object> entry) {
+                
+                Object valorCeldaObj = entry.getValue(columna);
+                if (valorCeldaObj == null) {
+                    return false;
+                }
+                
+                String valorCelda = valorCeldaObj.toString();
+
+                // Normalizar el contenido de la celda
+                String celdaNormalizada = normalizarTexto(valorCelda);
+
+                // Comprobar si la celda normalizada contiene el texto de búsqueda normalizado
+                return celdaNormalizada.contains(textoNormalizado);
+            }
+        };
+
+        gridFiltrado.setRowFilter(rowFilter);
+        nombregrilla.setRowSorter(gridFiltrado);
+    }
 }

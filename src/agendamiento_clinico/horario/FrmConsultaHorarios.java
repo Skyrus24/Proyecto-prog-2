@@ -42,8 +42,9 @@ public class FrmConsultaHorarios extends javax.swing.JDialog {
         grdConsultaHorarios = new javax.swing.JTable();
         cmdAceptar = new javax.swing.JButton();
         cmdCancelar = new javax.swing.JButton();
-        cboMedicos1 = new javax.swing.JComboBox<>();
+        cboCriterio = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
+        txtBuscar = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -91,15 +92,21 @@ public class FrmConsultaHorarios extends javax.swing.JDialog {
             }
         });
 
-        cboMedicos1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mes de Inicio (MM)", "Estado (Activo/Inactivo)" }));
-        cboMedicos1.addActionListener(new java.awt.event.ActionListener() {
+        cboCriterio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Día" }));
+        cboCriterio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboMedicos1ActionPerformed(evt);
+                cboCriterioActionPerformed(evt);
             }
         });
 
         jLabel2.setFont(new java.awt.Font("Cambria", 3, 14)); // NOI18N
         jLabel2.setText("Filtrar por:");
+
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -121,9 +128,12 @@ public class FrmConsultaHorarios extends javax.swing.JDialog {
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cboMedicos, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cboMedicos1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cboCriterio, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtBuscar)))))
                 .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
@@ -135,8 +145,9 @@ public class FrmConsultaHorarios extends javax.swing.JDialog {
                     .addComponent(cboMedicos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cboMedicos1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboCriterio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -205,9 +216,26 @@ public class FrmConsultaHorarios extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_cmdAceptarActionPerformed
 
-    private void cboMedicos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMedicos1ActionPerformed
+    private void cboCriterioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCriterioActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cboMedicos1ActionPerformed
+    }//GEN-LAST:event_cboCriterioActionPerformed
+
+    private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
+        int criterioIndex = cboCriterio.getSelectedIndex();
+        // Las columnas en la tabla son: ID=0, Día=1
+        int columnaParaFiltrar;
+        switch (criterioIndex) {
+            case 0: // id
+                columnaParaFiltrar = 0;
+                break;
+            case 1: // dia
+                columnaParaFiltrar = 1;
+                break;
+            default:
+                columnaParaFiltrar = 0;
+        }
+        this.grilla.filtrarGrilla(grdConsultaHorarios, this.txtBuscar.getText(), columnaParaFiltrar);
+    }//GEN-LAST:event_txtBuscarKeyReleased
 
     /**
      * @param args the command line arguments
@@ -252,13 +280,14 @@ public class FrmConsultaHorarios extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<Object> cboCriterio;
     private javax.swing.JComboBox<Object> cboMedicos;
-    private javax.swing.JComboBox<Object> cboMedicos1;
     private javax.swing.JButton cmdAceptar;
     private javax.swing.JButton cmdCancelar;
     private javax.swing.JTable grdConsultaHorarios;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField txtBuscar;
     // End of variables declaration//GEN-END:variables
 }

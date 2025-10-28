@@ -1,5 +1,6 @@
 /JavaApplication9/nbproject/private/
 # Archivos y carpetas de NetBeans
+nbproject/project.properties
 nbproject/private/
 build/
 dist/
@@ -7,7 +8,7 @@ nbbuild/
 nbdist/
 nbactions.xml
 nb-configuration.xml
-
+lol.java
 # Archivos compilados
 *.class
 *.jar

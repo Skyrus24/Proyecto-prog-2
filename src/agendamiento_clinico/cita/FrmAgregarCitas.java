@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
 import java.sql.*;
-import com.toedter.calendar.JDateChooser;
 
 
 public class FrmAgregarCitas extends javax.swing.JDialog {
@@ -21,6 +20,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         cargarConsultorios();
         inicializarFiltroPacientes();
         inicializarFiltroMedicos();
+        cboEstado.setEnabled(false);
         cboFinHora.setEnabled(false);
         cboPacientes.setSelectedItem(null);
         cboMedicos.setSelectedItem(null);

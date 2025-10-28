@@ -250,26 +250,39 @@ public class FrmEliminarCitas extends javax.swing.JDialog {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         if (idCitaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar una cita antes de eliminarla.", "Atención", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                    "Debe seleccionar una cita antes de cancelarla.", 
+                    "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        int confirm = JOptionPane.showConfirmDialog(this,"¿Está seguro de que desea eliminar esta cita?","Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro de que desea cancelar esta cita?",
+                "Confirmar cancelación", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             try (Connection conexion = bd.miConexion()) {
-                PreparedStatement ps = conexion.prepareStatement("DELETE FROM citas WHERE id_cita = ?");
+                String sql = "UPDATE citas SET estado_cita = 'Cancelada' WHERE id_cita = ?";
+                PreparedStatement ps = conexion.prepareStatement(sql);
                 ps.setInt(1, idCitaSeleccionada);
                 int filas = ps.executeUpdate();
 
                 if (filas > 0) {
-                    JOptionPane.showMessageDialog(this, "Cita eliminada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, 
+                            "La cita ha sido cancelada correctamente.", 
+                            "Éxito", JOptionPane.INFORMATION_MESSAGE);
                     limpiarCampos();
                     idCitaSeleccionada = -1;
                 } else {
-                    JOptionPane.showMessageDialog(this, "No se pudo eliminar la cita.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, 
+                            "No se pudo cancelar la cita.", 
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
+
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Error al eliminar la cita: " + e.getMessage(), "Error SQL", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, 
+                        "Error al cancelar la cita: " + e.getMessage(), 
+                        "Error SQL", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnEliminarActionPerformed

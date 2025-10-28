@@ -50,7 +50,7 @@
                   <Component id="btnGuardar" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                   <Component id="btnBuscar" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="26" max="32767" attributes="0"/>
+              <EmptySpace pref="32" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -122,7 +122,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
@@ -165,7 +165,7 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="txtMotivo" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
@@ -300,13 +300,12 @@
         <Component class="javax.swing.JComboBox" name="cboEstado">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="6">
+              <StringArray count="5">
                 <StringItem index="0" value="Programada"/>
                 <StringItem index="1" value="Atendida"/>
-                <StringItem index="2" value="Cancelada"/>
-                <StringItem index="3" value="No asisti&#xf3;"/>
-                <StringItem index="4" value="Confirmada"/>
-                <StringItem index="5" value=" "/>
+                <StringItem index="2" value="No asisti&#xf3;"/>
+                <StringItem index="3" value="Confirmada"/>
+                <StringItem index="4" value=" "/>
               </StringArray>
             </Property>
           </Properties>

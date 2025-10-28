@@ -93,6 +93,8 @@ public class Main extends javax.swing.JFrame {
         jMenuItem9.setText("jMenuItem9");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 0, 255));
+        setFont(new java.awt.Font("Arial", 1, 10)); // NOI18N
 
         cmdSalir.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         cmdSalir.setText("Salir");
@@ -102,8 +104,11 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        itemMedico.setBorder(null);
         itemMedico.setText("Medico");
+        itemMedico.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
 
+        itemAgregarMedico.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemAgregarMedico.setText("Agregar ");
         itemAgregarMedico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -112,6 +117,7 @@ public class Main extends javax.swing.JFrame {
         });
         itemMedico.add(itemAgregarMedico);
 
+        itemModificarMedico.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemModificarMedico.setText("Modificar/Eliminar");
         itemModificarMedico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,6 +126,7 @@ public class Main extends javax.swing.JFrame {
         });
         itemMedico.add(itemModificarMedico);
 
+        itemListarMedico.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemListarMedico.setText("Listar");
         itemListarMedico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -131,7 +138,9 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(itemMedico);
 
         itemPacientes.setText("Pacientes");
+        itemPacientes.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
 
+        itemAgregarPaciente.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemAgregarPaciente.setText("Agregar");
         itemAgregarPaciente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,6 +149,7 @@ public class Main extends javax.swing.JFrame {
         });
         itemPacientes.add(itemAgregarPaciente);
 
+        itemPacientesGestionar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemPacientesGestionar.setText("Gestionar");
         itemPacientesGestionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -148,6 +158,7 @@ public class Main extends javax.swing.JFrame {
         });
         itemPacientes.add(itemPacientesGestionar);
 
+        itemPacientesListar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemPacientesListar.setText("Listar");
         itemPacientesListar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -159,7 +170,9 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(itemPacientes);
 
         itemCitas.setText("Citas");
+        itemCitas.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
 
+        itemAgregarCitas.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemAgregarCitas.setText("Agregar");
         itemAgregarCitas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,6 +181,7 @@ public class Main extends javax.swing.JFrame {
         });
         itemCitas.add(itemAgregarCitas);
 
+        itemCitasEliminar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemCitasEliminar.setText("Eliminar");
         itemCitasEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -176,6 +190,7 @@ public class Main extends javax.swing.JFrame {
         });
         itemCitas.add(itemCitasEliminar);
 
+        itemCitasModificar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemCitasModificar.setText("Modificar");
         itemCitasModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -184,6 +199,7 @@ public class Main extends javax.swing.JFrame {
         });
         itemCitas.add(itemCitasModificar);
 
+        itemCitasListar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemCitasListar.setText("Listar");
         itemCitasListar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -195,7 +211,9 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(itemCitas);
 
         itemHistorial.setText("Historial");
+        itemHistorial.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
 
+        itemGestionarHistorial.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemGestionarHistorial.setText("Gestionar Historiales");
         itemGestionarHistorial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -207,7 +225,9 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(itemHistorial);
 
         jMenu1.setText("Gestiones");
+        jMenu1.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
 
+        itemConsultorio.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemConsultorio.setText("Gestionar Consultorio");
         itemConsultorio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -216,6 +236,7 @@ public class Main extends javax.swing.JFrame {
         });
         jMenu1.add(itemConsultorio);
 
+        itemMedicamento.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemMedicamento.setText("Gestionar Medicamentos");
         itemMedicamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -224,6 +245,7 @@ public class Main extends javax.swing.JFrame {
         });
         jMenu1.add(itemMedicamento);
 
+        itemReceta.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemReceta.setText("Gestionar Receta");
         itemReceta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -235,7 +257,9 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Especialidades");
+        jMenu2.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
 
+        itemEspecialidades.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemEspecialidades.setText("Gestion Especialidades");
         itemEspecialidades.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -247,7 +271,9 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Horarios");
+        jMenu3.setFont(new java.awt.Font("Nirmala UI", 1, 12)); // NOI18N
 
+        itemHorario.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemHorario.setText("Gestionar Horario");
         itemHorario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -256,6 +282,7 @@ public class Main extends javax.swing.JFrame {
         });
         jMenu3.add(itemHorario);
 
+        itemVisualizar.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         itemVisualizar.setText("Visualizar");
         itemVisualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -273,15 +300,15 @@ public class Main extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(459, Short.MAX_VALUE)
-                .addComponent(cmdSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(471, Short.MAX_VALUE)
+                .addComponent(cmdSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(255, Short.MAX_VALUE)
-                .addComponent(cmdSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(262, Short.MAX_VALUE)
+                .addComponent(cmdSalir)
                 .addContainerGap())
         );
 

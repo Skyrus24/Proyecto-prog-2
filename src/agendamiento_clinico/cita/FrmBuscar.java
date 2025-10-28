@@ -26,6 +26,8 @@ public class FrmBuscar extends javax.swing.JDialog {
         inicializarEventos();
         btnAceptar.setEnabled(false);
         rdNombre.setSelected(true);
+        limpiarTabla();
+
     }
     private void configurarTabla() {
         grilla.configurarmodelo(grdCitas, columnas, anchos);

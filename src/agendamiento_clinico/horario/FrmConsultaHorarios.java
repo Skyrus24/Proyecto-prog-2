@@ -91,7 +91,7 @@ public class FrmConsultaHorarios extends javax.swing.JDialog {
             }
         });
 
-        cboMedicos1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nombre del Médico", "Mes de Inicio (MM)", "Estado (Activo/Inactivo)" }));
+        cboMedicos1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mes de Inicio (MM)", "Estado (Activo/Inactivo)" }));
         cboMedicos1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboMedicos1ActionPerformed(evt);

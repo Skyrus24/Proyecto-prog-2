@@ -7,6 +7,8 @@ package agendamiento_clinico;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 /**
  *
  * @author Usuario
@@ -27,10 +29,9 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         }
         
         this.setLocationRelativeTo(null);
+        this.txtCodigo.setEnabled(false);
         
-        String[] columnas = {"Código", "Especialidad", "Descripción"};
-        int[] anchos = {80, 200, 350};
-        grd.configurarmodelo(grdEspecialidades, columnas, anchos);
+
         
         this.actualizarGrilla();
         this.habilitarBotones(true);
@@ -38,7 +39,6 @@ public class FrmEspecialidades extends javax.swing.JDialog {
     }
 
     private void habilitarCampos(boolean estado) {
-        this.txtCodigo.setEnabled(estado);
         this.txtEspecialidad.setEnabled(estado);
         this.txtaDescripcion.setEnabled(estado);
     }
@@ -61,6 +61,43 @@ public class FrmEspecialidades extends javax.swing.JDialog {
     private void actualizarGrilla() {
         String campos[] = {"id_especialidad", "nombre_especialidad", "descripcion"};
         grd.cargarGrilla(grdEspecialidades, "especialidades", campos);
+    }
+    
+    private void generarNuevoCodigo() {
+        try {
+            // Consulta SQL para obtener el máximo ID actual y sumarle 1
+            String sql = "SELECT IFNULL(MAX(id_especialidad), 0) + 1 AS nuevo_id FROM especialidades";
+            ResultSet rs = bd.consultarRegistros(sql);
+            if (rs.next()) {
+                // Se establece el nuevo ID en el campo de texto
+                this.txtCodigo.setText(rs.getString("nuevo_id"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al generar el nuevo código: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+
+    private boolean nombreEspecialidadYaExiste(String nombre, String idActual) {
+        try {
+            // Se busca un registro con el mismo nombre, ignorando mayúsculas/minúsculas
+            String sql = "SELECT id_especialidad FROM especialidades WHERE LCASE(nombre_especialidad) = LCASE('" + nombre.replace("'", "''") + "')";
+            
+            // Si estamos actualizando, debemos excluir el registro actual de la búsqueda
+            // para que no se encuentre a sí mismo.
+            if (!idActual.isEmpty() && !idActual.equals("0")) {
+                sql += " AND id_especialidad != " + idActual;
+            }
+
+            ResultSet rs = bd.consultarRegistros(sql);
+            
+            // Si el ResultSet tiene al menos un resultado (rs.next() es true), significa que el nombre ya existe.
+            return rs.next(); 
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al verificar la especialidad: " + e.getMessage(), "Error de Verificación", JOptionPane.ERROR_MESSAGE);
+            return true; // En caso de error, se asume que existe para prevenir un registro duplicado.
+        }
     }
 
 
@@ -191,7 +228,7 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         });
         jScrollPane2.setViewportView(grdEspecialidades);
         if (grdEspecialidades.getColumnModel().getColumnCount() > 0) {
-            grdEspecialidades.getColumnModel().getColumn(0).setMaxWidth(30);
+            grdEspecialidades.getColumnModel().getColumn(0).setMaxWidth(55);
         }
 
         jPanel1.add(jScrollPane2);
@@ -292,11 +329,6 @@ public class FrmEspecialidades extends javax.swing.JDialog {
                 JOptionPane.INFORMATION_MESSAGE);
             this.actualizarGrilla();
             this.limpiarCampos();
-        } else {
-            JOptionPane.showMessageDialog(this, 
-                "No se puede eliminar esta especialidad porque hay médicos asociados a ella.", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnBorrarActionPerformed
 
@@ -309,7 +341,6 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         this.opc = 'A';
         this.habilitarBotones(false);
         this.habilitarCampos(true);
-        this.txtCodigo.setEnabled(false);
         this.txtEspecialidad.requestFocus();                                           
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -330,33 +361,35 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         String nombre = this.txtEspecialidad.getText().trim();
         String descripcion = this.txtaDescripcion.getText().trim();
 
-        if (codigoStr.isEmpty() || nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe completar el Código y el Nombre de la Especialidad.", "Atención", JOptionPane.WARNING_MESSAGE);
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe completar el Nombre de la Especialidad.", "Atención", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
-        int codigo;
-        try {
-            codigo = Integer.parseInt(codigoStr);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El código debe ser un número entero válido.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
-            return;
+        // Se verifica si el nombre ya existe antes de intentar guardar.
+        String idParaExcluir = (opc == 'A') ? codigoStr : "0";
+        if (nombreEspecialidadYaExiste(nombre, idParaExcluir)) {
+            JOptionPane.showMessageDialog(this, "Ya existe una especialidad con ese nombre.\nPor favor, ingrese un nombre diferente.", "Nombre Duplicado", JOptionPane.WARNING_MESSAGE);
+            return; // Se detiene la ejecución para no intentar guardar.
         }
 
         boolean exito = false;
+        // Se escapan las comillas para seguridad
+        nombre = nombre.replace("'", "''");
+        descripcion = descripcion.replace("'", "''");
+
         if (this.opc == 'N') {
-            String campos = "id_especialidad, nombre_especialidad, descripcion";
-            String valores = "'" + codigo + "', '" + nombre + "', '" + descripcion + "'";
+            String campos = "nombre_especialidad, descripcion";
+            String valores = "'" + nombre + "', '" + descripcion + "'";
             exito = bd.insertarRegistro("especialidades", campos, valores);
             
         } else if (this.opc == 'A') {
             String campos = "nombre_especialidad='" + nombre + "', descripcion='" + descripcion + "'";
-            String criterio = "id_especialidad='" + codigo + "'";
+            String criterio = "id_especialidad=" + codigoStr; 
             exito = bd.actualizarRegistro("especialidades", campos, criterio);
         }
 
         if (exito) {
-            JOptionPane.showMessageDialog(this, "Operación guardada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             this.actualizarGrilla();
             this.habilitarBotones(true);
             this.habilitarCampos(false);
@@ -377,8 +410,8 @@ public class FrmEspecialidades extends javax.swing.JDialog {
         this.limpiarCampos();
         this.habilitarBotones(false);
         this.habilitarCampos(true);
-        this.txtCodigo.requestFocus();
-        
+        this.generarNuevoCodigo();
+        this.txtEspecialidad.requestFocus();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     /**

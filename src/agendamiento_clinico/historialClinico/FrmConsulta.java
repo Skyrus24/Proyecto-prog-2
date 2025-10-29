@@ -1,0 +1,311 @@
+package agendamiento_clinico.historialClinico;
+
+import agendamiento_clinico.BaseDatos;
+import agendamiento_clinico.DatosCombo;
+import agendamiento_clinico.Grilla;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+// SUGERENCIA: Sería bueno renombrar este archivo/clase a "FrmGestionCitas.java" en el futuro
+// para que el nombre refleje mejor su nueva función.
+public class FrmConsulta extends javax.swing.JDialog {
+
+    private final BaseDatos bd = new BaseDatos();
+    private final Grilla grilla = new Grilla();
+
+    public FrmConsulta(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.setTitle("Gestión de Citas Programadas"); // Nuevo título para la ventana
+
+        if (bd.hayConexion()) {
+            configurarGrilla();
+            cargarFiltros();
+            // Por defecto, se cargan las citas del día actual al abrir
+            cargarCitasProgramadas();
+        } else {
+            JOptionPane.showMessageDialog(null, "Error de Conexión con la Base de Datos", "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+    }
+    
+    // MÉTODO NUEVO: Configura la apariencia de la grilla de citas
+    private void configurarGrilla() {
+        String[] columnas = {"ID Cita", "Fecha y Hora", "Paciente", "Médico", "Motivo Consulta", "Estado"};
+        int[] anchos = {40, 120, 220, 220, 200, 80};
+        grilla.configurarmodelo(grdCitas, columnas, anchos); // Renombramos grdHistoriales a grdCitas
+    }
+    
+    // MÉTODO NUEVO: Carga los combos que se usarán para filtrar
+    private void cargarFiltros() {
+        // Cargar combo de médicos para el filtro
+        // Se añade un item "Todos" al principio para ver citas de todos los médicos
+        cboMedicoFiltro.addItem(new DatosCombo(0, "Todos los médicos"));
+        bd.cargarCombo(cboMedicoFiltro, "id_medico, CONCAT(nombre, ' ', apellidos)", "medicos");
+        
+        // Establecer la fecha actual en el JDateChooser por defecto
+        jdcFechaFiltro.setDate(new Date());
+    }
+    
+    // MÉTODO MODIFICADO: Ahora carga las citas desde la tabla 'citas' en lugar de 'historial_clinico'
+    public void cargarCitasProgramadas() {
+        DefaultTableModel modelo = (DefaultTableModel) grdCitas.getModel();
+        modelo.setRowCount(0); 
+
+        // 1. Obtener valores de los filtros
+        DatosCombo medicoSeleccionado = (DatosCombo) cboMedicoFiltro.getSelectedItem();
+        Date fechaSeleccionada = jdcFechaFiltro.getDate();
+        
+        if (fechaSeleccionada == null) {
+            // Si no hay fecha, no se carga nada.
+            return;
+        }
+        
+        SimpleDateFormat formatoFechaSQL = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaSQL = formatoFechaSQL.format(fechaSeleccionada);
+
+        // 2. Construir la consulta SQL
+        // Esta consulta busca citas con estado 'Programada' o 'Confirmada'
+        String sql = "SELECT c.id_cita, c.fecha_hora_inicio, " +
+                     "CONCAT(p.nombre, ' ', p.apellidos) AS nombre_paciente, " +
+                     "CONCAT(m.nombre, ' ', m.apellidos) AS nombre_medico, " +
+                     "c.motivo_consulta, c.estado_cita " +
+                     "FROM citas c " +
+                     "JOIN pacientes p ON c.id_paciente = p.id_paciente " +
+                     "JOIN medicos m ON c.id_medico = m.id_medico " +
+                     "WHERE c.estado_cita IN ('Programada', 'Confirmada') " +
+                     "AND DATE(c.fecha_hora_inicio) = '" + fechaSQL + "'";
+
+        // Si se seleccionó un médico específico (ID > 0), se añade al filtro
+        if (medicoSeleccionado != null && medicoSeleccionado.getCodigo() > 0) {
+            sql += " AND c.id_medico = " + medicoSeleccionado.getCodigo();
+        }
+        
+        sql += " ORDER BY c.fecha_hora_inicio ASC";
+
+        // 3. Ejecutar y cargar resultados en la grilla
+        try {
+            ResultSet rs = bd.consultarRegistros(sql);
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getInt("id_cita"),
+                    rs.getString("fecha_hora_inicio"),
+                    rs.getString("nombre_paciente"),
+                    rs.getString("nombre_medico"),
+                    rs.getString("motivo_consulta"),
+                    rs.getString("estado_cita")
+                });
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al cargar las citas: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        cboMedicoFiltro = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jdcFechaFiltro = new com.toedter.calendar.JDateChooser();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        grdCitas = new javax.swing.JTable();
+        cmdFiltrar = new javax.swing.JButton();
+        cmdAtenderCita = new javax.swing.JButton();
+        cmdCerrar = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Citas Programadas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 3, 18))); // NOI18N
+        jPanel1.setLayout(null);
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        jLabel1.setText("Fecha:");
+        jPanel1.add(jLabel1);
+        jLabel1.setBounds(580, 40, 70, 24);
+
+        cboMedicoFiltro.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        jPanel1.add(cboMedicoFiltro);
+        cboMedicoFiltro.setBounds(90, 40, 360, 34);
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        jLabel2.setText("Médico:");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(10, 40, 70, 24);
+
+        jdcFechaFiltro.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.add(jdcFechaFiltro);
+        jdcFechaFiltro.setBounds(650, 40, 170, 30);
+
+        grdCitas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID Cita", "Fecha y Hora", "Paciente ", "Médico", "Motivo de consulta", "Estado"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(grdCitas);
+
+        jPanel1.add(jScrollPane1);
+        jScrollPane1.setBounds(16, 130, 1070, 406);
+
+        cmdFiltrar.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        cmdFiltrar.setText("Aplicar Filtros");
+        cmdFiltrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdFiltrarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cmdFiltrar);
+        cmdFiltrar.setBounds(870, 40, 150, 35);
+
+        cmdAtenderCita.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        cmdAtenderCita.setText("Atender Cita Seleccionada");
+        cmdAtenderCita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdAtenderCitaActionPerformed(evt);
+            }
+        });
+
+        cmdCerrar.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        cmdCerrar.setText("Cerrar");
+        cmdCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdCerrarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 778, Short.MAX_VALUE)
+                        .addComponent(cmdAtenderCita)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmdCerrar)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmdAtenderCita)
+                    .addComponent(cmdCerrar))
+                .addContainerGap())
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void cmdAtenderCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdAtenderCitaActionPerformed
+        int filaSeleccionada = grdCitas.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Primero debe seleccionar una cita de la lista.", "Atención", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Obtenemos el ID de la cita de la primera columna (columna 0)
+        int idCita = (int) grdCitas.getValueAt(filaSeleccionada, 0);
+        
+        // ----- AQUÍ ES DONDE LLAMAREMOS AL SEGUNDO MÓDULO -----
+        JOptionPane.showMessageDialog(this, "Se abrirá el formulario de atención para la CITA ID: " + idCita, "Próximo Paso", JOptionPane.INFORMATION_MESSAGE);
+        
+        // Próximamente, aquí crearemos y mostraremos el nuevo JDialog FrmAtencionCita.
+        FrmAtencionCitas frmAtencion = new FrmAtencionCitas(null, true, idCita, this);
+        frmAtencion.setVisible(true);
+    }//GEN-LAST:event_cmdAtenderCitaActionPerformed
+
+    private void cmdFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdFiltrarActionPerformed
+        cargarCitasProgramadas();
+    }//GEN-LAST:event_cmdFiltrarActionPerformed
+
+    private void cmdCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCerrarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cmdCerrarActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FrmConsulta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FrmConsulta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FrmConsulta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FrmConsulta.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                FrmConsulta dialog = new FrmConsulta(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<DatosCombo> cboMedicoFiltro;
+    private javax.swing.JButton cmdAtenderCita;
+    private javax.swing.JButton cmdCerrar;
+    private javax.swing.JButton cmdFiltrar;
+    private javax.swing.JTable grdCitas;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private com.toedter.calendar.JDateChooser jdcFechaFiltro;
+    // End of variables declaration//GEN-END:variables
+}

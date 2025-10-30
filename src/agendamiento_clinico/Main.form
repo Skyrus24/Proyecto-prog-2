@@ -120,20 +120,20 @@
             <Property name="text" type="java.lang.String" value="Historial"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="itemGestionarHistorial">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Modificar/Eliminar"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemGestionarHistorialActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemAgregarhisto">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Agregar Historial"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemAgregarhistoActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="itemGestionarHistorial">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Modificar/Eliminar"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itemGestionarHistorialActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemVisualizarHisto">

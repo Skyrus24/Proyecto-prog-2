@@ -75,8 +75,8 @@ public class Main extends javax.swing.JFrame {
         itemCitasModificar = new javax.swing.JMenuItem();
         itemCitasListar = new javax.swing.JMenuItem();
         menuHistorial = new javax.swing.JMenu();
-        itemGestionarHistorial = new javax.swing.JMenuItem();
         itemAgregarhisto = new javax.swing.JMenuItem();
+        itemGestionarHistorial = new javax.swing.JMenuItem();
         itemVisualizarHisto = new javax.swing.JMenuItem();
         menuEspecialidad = new javax.swing.JMenu();
         itemEspecialidades = new javax.swing.JMenuItem();
@@ -206,14 +206,6 @@ public class Main extends javax.swing.JFrame {
 
         menuHistorial.setText("Historial");
 
-        itemGestionarHistorial.setText("Modificar/Eliminar");
-        itemGestionarHistorial.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemGestionarHistorialActionPerformed(evt);
-            }
-        });
-        menuHistorial.add(itemGestionarHistorial);
-
         itemAgregarhisto.setText("Agregar Historial");
         itemAgregarhisto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -221,6 +213,14 @@ public class Main extends javax.swing.JFrame {
             }
         });
         menuHistorial.add(itemAgregarhisto);
+
+        itemGestionarHistorial.setText("Modificar/Eliminar");
+        itemGestionarHistorial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemGestionarHistorialActionPerformed(evt);
+            }
+        });
+        menuHistorial.add(itemGestionarHistorial);
 
         itemVisualizarHisto.setText("Visualizar Historial");
         itemVisualizarHisto.addActionListener(new java.awt.event.ActionListener() {

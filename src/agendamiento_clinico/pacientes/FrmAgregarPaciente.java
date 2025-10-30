@@ -1,7 +1,6 @@
 package agendamiento_clinico.pacientes;
 
 import agendamiento_clinico.BaseDatos;
-import agendamiento_clinico.FrmBromaSuscripcion;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;

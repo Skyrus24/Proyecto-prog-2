@@ -59,7 +59,6 @@ public class Main extends javax.swing.JFrame {
         jMenuItem9 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         cmdSalir = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuMedico = new javax.swing.JMenu();
         itemAgregarMedico = new javax.swing.JMenuItem();
@@ -107,10 +106,6 @@ public class Main extends javax.swing.JFrame {
         });
         jPanel1.add(cmdSalir);
         cmdSalir.setBounds(500, 490, 97, 39);
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icono/iconos/Screenshot 2025-10-28 190651.png"))); // NOI18N
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(0, 0, 610, 540);
 
         menuMedico.setText("Medico");
 
@@ -437,7 +432,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemReceta;
     private javax.swing.JMenuItem itemVisualizar;
     private javax.swing.JMenuItem itemVisualizarHisto;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem9;

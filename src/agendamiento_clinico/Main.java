@@ -1,19 +1,12 @@
 package agendamiento_clinico;
 
-import agendamiento_clinico.cita.FrmListar;
-import agendamiento_clinico.cita.FrmEliminarCitas;
-import agendamiento_clinico.cita.FrmModificarCitas;
-import agendamiento_clinico.cita.FrmAgregarCitas;
-import agendamiento_clinico.gestione.FrmRecetas;
-import agendamiento_clinico.gestione.FrmMedicamentos;
-import agendamiento_clinico.gestione.FrmConsultorios;
-import agendamiento_clinico.horario.FrmVisualizarHorarios;
-import agendamiento_clinico.horario.FrmHorarios;
-import agendamiento_clinico.medicos.FrmModificarMedico;
+import agendamiento_clinico.especialidades.*;
+import agendamiento_clinico.cita.*;
+import agendamiento_clinico.gestione.*;
+import agendamiento_clinico.horario.*;
+import agendamiento_clinico.medicos.*;
 import agendamiento_clinico.pacientes.*;
 import agendamiento_clinico.historialClinico.*;
-import agendamiento_clinico.medicos.FrmAgregarMedico;
-import agendamiento_clinico.medicos.FrmListarMedicos;
 
 public class Main extends javax.swing.JFrame {
     

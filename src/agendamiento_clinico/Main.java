@@ -49,8 +49,8 @@ public class Main extends javax.swing.JFrame {
                 menuMedico.setVisible(false);      // Oculta el menú "Medico"
                 menuMedicamento.setVisible(false); // Oculta solo el item de "Gestionar Medicamentos"
                 itemGestionarHistorial.setVisible(false); // Oculta solo el item de "Gestionar Historial"
-                itemAgregarhisto.setVisible(false);
-                menuRecetas.setVisible(false);// Oculta solo el item de "Agregar Historial"
+                itemAgregarhisto.setVisible(false);// Oculta solo el item de "Agregar Historial"
+                menuRecetas.setVisible(false); // Oculta solo el item de "Menu Recetas"
                 break;
             
             default: // Si el rol es Administrador o cualquier otro, no se oculta nada.
@@ -230,6 +230,11 @@ public class Main extends javax.swing.JFrame {
         menuHistorial.add(itemAgregarhisto);
 
         itemVisualizarHisto.setText("Visualizar Historial");
+        itemVisualizarHisto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemVisualizarHistoActionPerformed(evt);
+            }
+        });
         menuHistorial.add(itemVisualizarHisto);
 
         jMenuBar1.add(menuHistorial);
@@ -411,6 +416,11 @@ public class Main extends javax.swing.JFrame {
         FrmRecetas frm = new FrmRecetas(this,true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemRecetaActionPerformed
+
+    private void itemVisualizarHistoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemVisualizarHistoActionPerformed
+        FrmVisualisarHistorial frm = new FrmVisualisarHistorial(this,true);
+        frm.setVisible(true);
+    }//GEN-LAST:event_itemVisualizarHistoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

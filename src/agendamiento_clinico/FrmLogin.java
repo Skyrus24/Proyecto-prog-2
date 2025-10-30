@@ -1,17 +1,17 @@
 package agendamiento_clinico;
 
-// COMENTARIO 1: Se ha importado el Logger correcto.
+// --- INICIO DE IMPORTACIONES NECESARIAS ---
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-// COMENTARIO 2: Se ha importado la clase Color para la transparencia.
-import java.awt.Color;
-
-// COMENTARIO 3: Asegúrate de que estos imports sean correctos para tu versión de la librería.
-// He unificado los paquetes a "rojerusan" y "rojeru_san" que son los más comunes.
-// ¡Es posible que tengas que cambiar "rojerusan.componentes" a solo "rojerusan" o viceversa!
+import javax.swing.JOptionPane;
 import rojeru_san.RSPanelsSlider;
-import rojerusan.RSPanelImage;
-import rojerusan.componentes.RSProgressMaterial; // Verifica si es este o rojerusan.RSProgressMaterial
+// --- FIN DE IMPORTACIONES NECESARIAS ---
+
 
 /**
  *
@@ -19,20 +19,21 @@ import rojerusan.componentes.RSProgressMaterial; // Verifica si es este o rojeru
  */
 public class FrmLogin extends javax.swing.JFrame {
 
+    // --- NUEVO: Instancia de tu clase para la conexión a la base de datos ---
+    private final BaseDatos bd = new BaseDatos();
+
     /**
      * Creates new form FrmLoginn
      */
     public FrmLogin() {
         initComponents();
-        
-        // COMENTARIO 4: La línea "AWTUtilities.setWindowOpaque(this, false);" ha sido eliminada.
-        // Era una clase obsoleta y causaba un error.
-        // Para lograr un efecto de ventana sin fondo, primero debes hacerla no decorada
-        // y luego establecer un fondo transparente. Por ejemplo:
-        // this.setUndecorated(true); // Quita los bordes y botones de la ventana
-        // this.setBackground(new Color(0, 0, 0, 0)); // Hace el fondo transparente
-        
-        this.setLocationRelativeTo(null); // Usar 'null' es más estándar que 'this'
+        this.setLocationRelativeTo(null);
+
+        // --- NUEVO: Verificación de la conexión a la base de datos al iniciar ---
+        if (!bd.hayConexion()) {
+            JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos.", "Error de Conexión", JOptionPane.ERROR_MESSAGE);
+            System.exit(0); // Cierra la aplicación si no hay conexión
+        }
     }
 
     /**
@@ -74,10 +75,20 @@ public class FrmLogin extends javax.swing.JFrame {
         txtUser.setBordeColorNoFocus(new java.awt.Color(153, 153, 153));
         txtUser.setModoMaterial(true);
         txtUser.setPlaceholder("Nombre Usuario...");
+        txtUser.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUserKeyPressed(evt);
+            }
+        });
 
         txtPassword.setBordeColorNoFocus(new java.awt.Color(153, 153, 153));
         txtPassword.setModoMaterial(true);
         txtPassword.setPlaceholder("Contraseña...");
+        txtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPasswordKeyPressed(evt);
+            }
+        });
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icono/iconos/lbl-user.png"))); // NOI18N
@@ -135,9 +146,9 @@ public class FrmLogin extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(pnlSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pnlSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pnlSesionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -296,46 +307,24 @@ public class FrmLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSesionActionPerformed
-        String user = txtUser.getText();
-        // La forma correcta de obtener el texto de un JPasswordField o similar es con getPassword()
-        String password = new String(txtPassword.getPassword());
-
-        if (user.isEmpty() || password.isEmpty()) {
-            lblMensaje.setText("¡Ingresar usuario y contraseña!");
-        } else {
-            // Se recomienda usar .equals() para comparar Strings
-            if (user.equals("admin") && password.equals("1234")) {
-                // Mueve el panel al de "Cargando"
-                rSPanelsSlider1.setPanelSlider(pnlCargando, RSPanelsSlider.DIRECT.RIGHT);
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(2000); // Aumentado para que se vea la animación
-                            // Cierra la ventana de login
-                            dispose(); 
-                            
-                            // COMENTARIO 7: Asegúrate de que tienes una clase Main.java en tu proyecto
-                            // que sea un JFrame para que esta línea funcione.
-                            new Main().setVisible(true); 
-                            
-                        } catch (InterruptedException ex) {
-                            // COMENTARIO 8: Se ha corregido el Logger para que funcione.
-                            Logger.getLogger(FrmLogin.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }).start();
-            } else {
-                lblMensaje.setText("¡Usuario y/o contraseña incorrectos!");
-                txtUser.requestFocus();
-            }
-        }
+        iniciarSesionConBD();
     }//GEN-LAST:event_btnSesionActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnCerrarActionPerformed
+
+    private void txtUserKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUserKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtPassword.requestFocus();
+        }
+    }//GEN-LAST:event_txtUserKeyPressed
+
+    private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            iniciarSesionConBD();
+        }
+    }//GEN-LAST:event_txtPasswordKeyPressed
 
     /**
      * @param args the command line arguments
@@ -394,4 +383,60 @@ public class FrmLogin extends javax.swing.JFrame {
     private rojeru_san.RSMPassView txtPassword;
     private rojeru_san.RSMTextFull txtUser;
     // End of variables declaration//GEN-END:variables
+
+    private void iniciarSesionConBD() {
+        String usuario = txtUser.getText().trim();
+        String contrasena = new String(txtPassword.getPassword()).trim();
+
+        if (usuario.isEmpty() || contrasena.isEmpty()) {
+            lblMensaje.setText("¡Ingrese usuario y contraseña!");
+            return;
+        }
+
+        // Misma consulta SQL que en tu login antiguo
+        String sql = "SELECT r.nombre_rol FROM usuarios u " +
+                     "JOIN roles r ON u.id_rol = r.id_rol " +
+                     "WHERE u.nombre_usuario = ? AND u.contrasena = SHA2(?, 256)";
+
+        try {
+            PreparedStatement pst = bd.miConexion().prepareStatement(sql);
+            pst.setString(1, usuario);
+            pst.setString(2, contrasena);
+
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                // Si las credenciales son correctas, obtenemos el rol
+                String rol = rs.getString("nombre_rol");
+
+                // Iniciamos la animación de "Cargando..."
+                rSPanelsSlider1.setPanelSlider(pnlCargando, RSPanelsSlider.DIRECT.RIGHT);
+
+                // Creamos un hilo para la animación y para abrir la ventana principal
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(2000); // Esperamos 2 segundos para que se vea la animación
+                        dispose(); // Cerramos la ventana de login
+
+                        // --- ¡IMPORTANTE! ---
+                        // Creamos una instancia de Main y le pasamos el rol en el constructor.
+                        new Main(rol).setVisible(true);
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(FrmLogin.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }).start();
+
+            } else {
+                // Si las credenciales son incorrectas, mostramos el mensaje
+                lblMensaje.setText("¡Usuario y/o contraseña incorrectos!");
+                txtUser.requestFocus();
+            }
+
+        } catch (SQLException e) {
+            // En caso de un error de base de datos, lo mostramos
+            JOptionPane.showMessageDialog(this, "Ocurrió un error al intentar iniciar sesión: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
 }

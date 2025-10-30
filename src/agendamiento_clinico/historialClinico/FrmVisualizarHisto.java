@@ -1,0 +1,344 @@
+package agendamiento_clinico.historialClinico;
+
+import agendamiento_clinico.BaseDatos;
+import agendamiento_clinico.Grilla; // Asegúrate de que la importación es correcta
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+public class FrmVisualizarHisto extends javax.swing.JDialog {
+
+    // Tu clase Grilla es el miembro principal aquí
+    private final BaseDatos bd = new BaseDatos();
+    private final Grilla grilla = new Grilla(); // Instancia de tu clase
+
+    public FrmVisualizarHisto(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        this.setLocationRelativeTo(parent);
+        this.setTitle("Gestión de Historiales Clínicos");
+
+        if (bd.hayConexion()) {
+            cargarTodosLosHistoriales(); // Carga inicial de todos los datos
+            configurarFiltrosIniciales(); // Configura la visibilidad inicial
+        } else {
+            JOptionPane.showMessageDialog(this, "Error de Conexión con la Base de Datos", "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+        }
+    }
+
+    private void configurarFiltrosIniciales() {
+        jdcFechaFiltro.setVisible(false);
+        cmdBuscar.setVisible(false); // El botón buscar se oculta por defecto
+        jdcFechaFiltro.setDate(new Date());
+    }
+
+    // Renombramos el método para mayor claridad
+    public void cargarTodosLosHistoriales() {
+        DefaultTableModel modelo = (DefaultTableModel) grdHistoriales.getModel();
+        modelo.setRowCount(0);
+
+        String sql = "SELECT h.id_historial, h.fecha_registro, " +
+                     "CONCAT(p.nombre, ' ', p.apellidos) AS nombre_paciente, " +
+                     "CONCAT(m.nombre, ' ', m.apellidos) AS nombre_medico, " +
+                     "h.diagnostico " +
+                     "FROM historial_clinico h " +
+                     "JOIN pacientes p ON h.id_paciente = p.id_paciente " +
+                     "JOIN medicos m ON h.id_medico = m.id_medico " +
+                     "ORDER BY h.fecha_registro DESC";
+
+        try {
+            ResultSet rs = bd.consultarRegistros(sql);
+            while (rs.next()) {
+                // Aseguramos que todos los datos se añadan como String
+                modelo.addRow(new Object[]{
+                    rs.getString("id_historial"),
+                    rs.getString("fecha_registro"),
+                    rs.getString("nombre_paciente"),
+                    rs.getString("nombre_medico"),
+                    rs.getString("diagnostico")
+                });
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al cargar los historiales: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void buscarPorFecha() {
+        DefaultTableModel modelo = (DefaultTableModel) grdHistoriales.getModel();
+        modelo.setRowCount(0);
+
+        String sql = "SELECT h.id_historial, h.fecha_registro, " +
+                     "CONCAT(p.nombre, ' ', p.apellidos) AS nombre_paciente, " +
+                     "CONCAT(m.nombre, ' ', m.apellidos) AS nombre_medico, " +
+                     "h.diagnostico " +
+                     "FROM historial_clinico h " +
+                     "JOIN pacientes p ON h.id_paciente = p.id_paciente " +
+                     "JOIN medicos m ON h.id_medico = m.id_medico ";
+
+        Date fechaSeleccionada = jdcFechaFiltro.getDate();
+        if (fechaSeleccionada != null) {
+            SimpleDateFormat formatoFechaSQL = new SimpleDateFormat("yyyy-MM-dd");
+            String fechaSQL = formatoFechaSQL.format(fechaSeleccionada);
+            sql += "WHERE DATE(h.fecha_registro) = '" + fechaSQL + "' ORDER BY h.fecha_registro DESC";
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una fecha.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            ResultSet rs = bd.consultarRegistros(sql);
+            while (rs.next()) {
+                // Aseguramos que todos los datos se añadan como String
+                modelo.addRow(new Object[]{
+                    rs.getString("id_historial"),
+                    rs.getString("fecha_registro"),
+                    rs.getString("nombre_paciente"),
+                    rs.getString("nombre_medico"),
+                    rs.getString("diagnostico")
+                });
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al cargar los historiales por fecha: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        cboCriterio = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        grdHistoriales = new javax.swing.JTable();
+        cmdBuscar = new javax.swing.JButton();
+        txtBuscar = new javax.swing.JTextField();
+        jdcFechaFiltro = new com.toedter.calendar.JDateChooser();
+        cmdCerrar = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Búsqueda de Historiales Clínicos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 3, 18))); // NOI18N
+        jPanel1.setLayout(null);
+
+        cboCriterio.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        cboCriterio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Paciente", "Médico", "ID Historial", "Fecha" }));
+        cboCriterio.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboCriterioItemStateChanged(evt);
+            }
+        });
+        jPanel1.add(cboCriterio);
+        cboCriterio.setBounds(110, 40, 160, 34);
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        jLabel2.setText("Buscar por:");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(10, 40, 100, 24);
+
+        grdHistoriales.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID Hist.", "Fecha Reg.", "Paciente ", "Médico", "Diagnóstico Principal"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(grdHistoriales);
+
+        jPanel1.add(jScrollPane1);
+        jScrollPane1.setBounds(16, 96, 1070, 440);
+
+        cmdBuscar.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        cmdBuscar.setText("Buscar");
+        cmdBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdBuscarActionPerformed(evt);
+            }
+        });
+        cmdBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cmdBuscarKeyReleased(evt);
+            }
+        });
+        jPanel1.add(cmdBuscar);
+        cmdBuscar.setBounds(970, 40, 90, 35);
+
+        txtBuscar.setFont(new java.awt.Font("Segoe UI", 3, 16)); // NOI18N
+        jPanel1.add(txtBuscar);
+        txtBuscar.setBounds(290, 40, 650, 32);
+        jPanel1.add(jdcFechaFiltro);
+        jdcFechaFiltro.setBounds(290, 40, 190, 26);
+
+        cmdCerrar.setFont(new java.awt.Font("Segoe UI", 3, 17)); // NOI18N
+        cmdCerrar.setText("Cerrar");
+        cmdCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdCerrarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(1032, Short.MAX_VALUE)
+                .addComponent(cmdCerrar)
+                .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(572, Short.MAX_VALUE)
+                .addComponent(cmdCerrar)
+                .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(46, Short.MAX_VALUE)))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void cmdBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdBuscarActionPerformed
+        buscarPorFecha();
+    }//GEN-LAST:event_cmdBuscarActionPerformed
+
+    private void cmdCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCerrarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cmdCerrarActionPerformed
+
+    private void cboCriterioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboCriterioItemStateChanged
+        if (evt.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+            String seleccion = (String) evt.getItem();
+
+            if (seleccion.equals("Fecha")) {
+                txtBuscar.setVisible(false);
+                jdcFechaFiltro.setVisible(true);
+                cmdBuscar.setVisible(true);
+                // Cuando se cambia a Fecha, es buena idea recargar todos los datos
+                // y quitar cualquier filtro de texto previo.
+                cargarTodosLosHistoriales(); 
+            } else {
+                txtBuscar.setVisible(true);
+                jdcFechaFiltro.setVisible(false);
+                cmdBuscar.setVisible(false);
+                txtBuscar.setText("");
+                // Volvemos a cargar todo para que el filtro de texto parta de la lista completa
+                cargarTodosLosHistoriales();
+                txtBuscar.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_cboCriterioItemStateChanged
+
+    private void cmdBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmdBuscarKeyReleased
+        // ¡AQUÍ USAMOS TU MÉTODO!
+        int criterioIndex = cboCriterio.getSelectedIndex();
+        int columnaParaFiltrar;
+
+        // Las columnas en la tabla `grdHistoriales` son:
+        // 0: ID Hist.
+        // 1: Fecha Reg.
+        // 2: Paciente
+        // 3: Médico
+        // 4: Diagnóstico Principal
+        
+        switch (criterioIndex) {
+            case 0: // Criterio "Paciente"
+                columnaParaFiltrar = 2;
+                break;
+            case 1: // Criterio "Médico"
+                columnaParaFiltrar = 3;
+                break;
+            case 2: // Criterio "ID Historial"
+                columnaParaFiltrar = 0;
+                break;
+            default:
+                // Si por alguna razón hay otro criterio, no filtramos.
+                return; 
+        }
+        
+        // Llamada a tu método de la clase Grilla
+        this.grilla.filtrarGrilla(grdHistoriales, this.txtBuscar.getText(), columnaParaFiltrar);
+    }//GEN-LAST:event_cmdBuscarKeyReleased
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FrmVisualizarHisto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FrmVisualizarHisto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FrmVisualizarHisto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FrmVisualizarHisto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                FrmVisualizarHisto dialog = new FrmVisualizarHisto(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cboCriterio;
+    private javax.swing.JButton cmdBuscar;
+    private javax.swing.JButton cmdCerrar;
+    private javax.swing.JTable grdHistoriales;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private com.toedter.calendar.JDateChooser jdcFechaFiltro;
+    private javax.swing.JTextField txtBuscar;
+    // End of variables declaration//GEN-END:variables
+}

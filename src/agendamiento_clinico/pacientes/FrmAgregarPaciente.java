@@ -50,6 +50,12 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
             habilitarCampos(false);
             habilitarBotones(true);
         }
+        cboTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+            "Cédula de Identidad",
+            "Pasaporte",
+            "Carnet de Extranjería",
+            "Otro"
+        }));
     }
     
     private void cargarDatosPaciente() {
@@ -73,7 +79,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
 
                 cboGenero.setSelectedItem(rs.getString("genero"));
                 txtNumDocumento.setText(rs.getString("numero_documento"));
-                txtTipoDocumento.setText(rs.getString("tipo_documento"));
+                cboTipoDocumento.setSelectedItem(rs.getString("tipo_documento"));
                 txtDireccion.setText(rs.getString("direccion"));
                 txtTelefono.setText(rs.getString("telefono"));
                 txtEmail.setText(rs.getString("email"));
@@ -88,8 +94,8 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         txtApellidos.setEnabled(estado);
         dcFechaNacimiento.setEnabled(estado);
         cboGenero.setEnabled(estado);
+        cboTipoDocumento.setEnabled(estado);
         txtNumDocumento.setEnabled(estado);
-        txtTipoDocumento.setEnabled(estado);
         txtDireccion.setEnabled(estado);
         txtTelefono.setEnabled(estado);
         txtEmail.setEnabled(estado);
@@ -107,7 +113,6 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         dcFechaNacimiento.setDate(null);
         cboGenero.setSelectedIndex(0);
         txtNumDocumento.setText(null);
-        txtTipoDocumento.setText(null);
         txtDireccion.setText(null);
         txtTelefono.setText(null);
         txtEmail.setText(null);
@@ -133,7 +138,6 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JFormattedTextField();
         txtApellidos = new javax.swing.JFormattedTextField();
-        txtTipoDocumento = new javax.swing.JFormattedTextField();
         txtNumDocumento = new javax.swing.JFormattedTextField();
         cboGenero = new javax.swing.JComboBox<>();
         txtDireccion = new javax.swing.JFormattedTextField();
@@ -144,6 +148,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         cmdGuardar = new javax.swing.JButton();
         cmdCancelar = new javax.swing.JButton();
         cmdNuevo = new javax.swing.JButton();
+        cboTipoDocumento = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -193,14 +198,17 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         txtNombre.setBounds(30, 60, 270, 30);
         jPanel1.add(txtApellidos);
         txtApellidos.setBounds(320, 60, 300, 30);
-        jPanel1.add(txtTipoDocumento);
-        txtTipoDocumento.setBounds(320, 250, 300, 30);
 
         txtNumDocumento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
         jPanel1.add(txtNumDocumento);
         txtNumDocumento.setBounds(30, 250, 270, 30);
 
         cboGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Masculino", "Femenino", "Otros" }));
+        cboGenero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboGeneroActionPerformed(evt);
+            }
+        });
         jPanel1.add(cboGenero);
         cboGenero.setBounds(320, 160, 300, 30);
         jPanel1.add(txtDireccion);
@@ -215,7 +223,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         jPanel1.add(jLabel9);
         jLabel9.setBounds(320, 410, 70, 30);
         jPanel1.add(dcFechaNacimiento);
-        dcFechaNacimiento.setBounds(30, 160, 270, 26);
+        dcFechaNacimiento.setBounds(30, 160, 270, 22);
 
         cmdGuardar.setText("Guardar");
         cmdGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -243,6 +251,9 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         });
         jPanel1.add(cmdNuevo);
         cmdNuevo.setBounds(10, 530, 90, 40);
+
+        jPanel1.add(cboTipoDocumento);
+        cboTipoDocumento.setBounds(320, 250, 300, 30);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -284,7 +295,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
             String valores = String.format("'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'",
                 txtNombre.getText(), txtApellidos.getText(), fechaFormateada,
                 cboGenero.getSelectedItem().toString(), txtNumDocumento.getText(),
-                txtTipoDocumento.getText(), txtDireccion.getText(),
+                cboTipoDocumento.getSelectedItem().toString(), txtDireccion.getText(),
                 txtTelefono.getText(), txtEmail.getText()
             );
             String campos = "nombre, apellidos, fecha_nacimiento, genero, numero_documento, tipo_documento, direccion, telefono, email";
@@ -303,7 +314,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
                 "tipo_documento='%s', direccion='%s', telefono='%s', email='%s'",
                 txtNombre.getText(), txtApellidos.getText(), fechaFormateada,
                 cboGenero.getSelectedItem().toString(), txtNumDocumento.getText(),
-                txtTipoDocumento.getText(), txtDireccion.getText(),
+                cboTipoDocumento.getSelectedItem().toString(), txtDireccion.getText(),
                 txtTelefono.getText(), txtEmail.getText()
             );
             String condicion = "id_paciente=" + this.idPacienteModificar;
@@ -333,6 +344,10 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         habilitarBotones(false);
         txtNombre.requestFocus();
     }//GEN-LAST:event_cmdNuevoActionPerformed
+
+    private void cboGeneroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboGeneroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboGeneroActionPerformed
 
     /**
      * @param args the command line arguments
@@ -378,6 +393,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cboGenero;
+    private javax.swing.JComboBox<String> cboTipoDocumento;
     private javax.swing.JButton cmdCancelar;
     private javax.swing.JButton cmdGuardar;
     private javax.swing.JButton cmdNuevo;
@@ -398,6 +414,5 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
     private javax.swing.JFormattedTextField txtNombre;
     private javax.swing.JFormattedTextField txtNumDocumento;
     private javax.swing.JFormattedTextField txtTelefono;
-    private javax.swing.JFormattedTextField txtTipoDocumento;
     // End of variables declaration//GEN-END:variables
 }

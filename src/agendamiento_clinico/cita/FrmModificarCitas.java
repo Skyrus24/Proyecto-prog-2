@@ -13,6 +13,7 @@ public class FrmModificarCitas extends javax.swing.JDialog {
     public FrmModificarCitas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         cargarConsultorios();
         bloqueoInicio();
         cboPacientes.setSelectedItem(null);
@@ -68,6 +69,11 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         });
 
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -325,6 +331,10 @@ public class FrmModificarCitas extends javax.swing.JDialog {
             cargarDatosCita(idCita);
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void cargarDatosCita(int idCita) {
         Connection cn = null;

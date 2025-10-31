@@ -23,23 +23,18 @@ public class Main extends javax.swing.JFrame {
     }
     
     public Main(String rol) {
-        // 1. Establecemos el Look and Feel claro ANTES de crear componentes.
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception ex) {
             System.err.println("Falló la inicialización de FlatLaf.");
         }
         
-        // 2. Dejamos que NetBeans cree y coloque los componentes como siempre.
         initComponents();
         
-        // 3. Guardamos el rol.
         this.rolUsuario = rol;
         
-        // 4. ¡AQUÍ ESTÁ LA MAGIA! Aplicamos nuestras personalizaciones DESPUÉS.
         aplicarEstilosYLayout(); 
         
-        // 5. Configuramos la visibilidad según el rol.
         configurarSegunRol(); 
     }
     
@@ -111,7 +106,6 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void configurarSegunRol() {
-        // ... (La lógica de roles no cambia, es perfecta como está)
         switch (rolUsuario) {
             case "Medico":
                 menuMedico.setVisible(false);

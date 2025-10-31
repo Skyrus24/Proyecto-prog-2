@@ -233,7 +233,7 @@ public class FrmListar extends javax.swing.JDialog {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        dispose();
+        this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
 
     public static void main(String args[]) {

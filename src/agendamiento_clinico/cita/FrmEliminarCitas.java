@@ -13,6 +13,7 @@ public class FrmEliminarCitas extends javax.swing.JDialog {
     public FrmEliminarCitas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         cargarConsultorios();
         bloqueoInicio();
         cboPacientes.setSelectedItem(null);
@@ -52,6 +53,11 @@ public class FrmEliminarCitas extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -286,6 +292,10 @@ public class FrmEliminarCitas extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void cargarDatosCita(int idCita) {
         try (Connection cn = bd.miConexion();

@@ -17,6 +17,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
     public FrmAgregarCitas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
         cargarConsultorios();
         inicializarFiltroPacientes();
         inicializarFiltroMedicos();
@@ -123,6 +124,11 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         });
 
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -424,6 +430,10 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         frm.setVisible(true);
         int idSeleccionado = frm.getMedicoSeleccionadoId();
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
     
     private void inicializarFiltroEntidad(String tabla, JComboBox<String> comboBox,List<String> lista,String mensajeError) {
 

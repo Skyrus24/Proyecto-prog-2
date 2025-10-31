@@ -8,46 +8,200 @@ import agendamiento_clinico.medicos.*;
 import agendamiento_clinico.pacientes.*;
 import agendamiento_clinico.historialClinico.*;
 
+import com.formdev.flatlaf.*;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicMenuBarUI;
+
+
 public class Main extends javax.swing.JFrame {
-    
-    // 1. Añade una variable para guardar el rol del usuario
+
     private String rolUsuario;
 
-    // 2. Modifica tu constructor actual y crea uno nuevo
-    public Main() { // Este constructor ya no se usará, pero es bueno dejarlo
-        initComponents();
-        this.setLocationRelativeTo(null);
+    public Main() {
+        this("Administrador");
     }
-
-    // ¡ESTE ES EL NUEVO CONSTRUCTOR IMPORTANTE!
+    
     public Main(String rol) {
+        // 1. Establecemos el Look and Feel claro ANTES de crear componentes.
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception ex) {
+            System.err.println("Falló la inicialización de FlatLaf.");
+        }
+        
+        // 2. Dejamos que NetBeans cree y coloque los componentes como siempre.
         initComponents();
-        this.setLocationRelativeTo(null);
-        this.rolUsuario = rol; // Guardamos el rol
-        configurarSegunRol(); // Llamamos al método que habilita/deshabilita cosas
+        
+        // 3. Guardamos el rol.
+        this.rolUsuario = rol;
+        
+        // 4. ¡AQUÍ ESTÁ LA MAGIA! Aplicamos nuestras personalizaciones DESPUÉS.
+        aplicarEstilosYLayout(); 
+        
+        // 5. Configuramos la visibilidad según el rol.
+        configurarSegunRol(); 
+    }
+    
+    /**
+     * Este método centraliza todas las personalizaciones visuales y de layout.
+     * Se ejecuta DESPUÉS de initComponents(), por lo que puede modificar los
+     * componentes que NetBeans ya ha creado.
+     */
+    private void aplicarEstilosYLayout() {
+        setTitle("Sistema de Gestión Clínica - Bienvenido, " + rolUsuario);
+        setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(850, 650));
+
+        // Personaliza el menú usando nuestra clase de ayuda.
+        MenuCustomizer.customize(jMenuBar1);
+        
+        // --- Lógica para el Layout Responsivo ---
+        
+        // 1. Creamos un nuevo panel principal que SÍ es responsivo.
+        JPanel panelContenedor = new JPanel(new BorderLayout());
+        
+        // 2. Creamos el panel de bienvenida (puedes poner aquí una imagen, etc.)
+        JPanel welcomePanel = new JPanel(new GridBagLayout());
+        welcomePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.insets = new Insets(10, 0, 10, 0);
+
+        JLabel welcomeLabel = new JLabel("Bienvenido al Sistema de Gestión");
+        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        welcomeLabel.setForeground(new Color(40, 60, 80)); // Texto oscuro
+        welcomePanel.add(welcomeLabel, gbc);
+        
+        JLabel roleLabel = new JLabel("Rol de Usuario: " + this.rolUsuario);
+        roleLabel.setFont(new Font("Segoe UI", Font.ITALIC, 18));
+        roleLabel.setForeground(new Color(100, 120, 140)); // Texto gris
+        welcomePanel.add(roleLabel, gbc);
+
+        // 3. Añadimos el panel de bienvenida al centro del contenedor.
+        panelContenedor.add(welcomePanel, BorderLayout.CENTER);
+        
+        // 4. Creamos un panel inferior para el botón. FlowLayout(FlowLayout.RIGHT)
+        // empujará cualquier cosa que contenga hacia la derecha.
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 20, 10)); // Alineado a la derecha
+        
+        // 5. ¡IMPORTANTE! Tomamos el botón 'cmdSalir' que NetBeans ya creó en
+        // initComponents() y lo AÑADIMOS a nuestro nuevo panel inferior.
+        // No necesitamos crearlo de nuevo.
+        personalizarBotonSalir(); // Le damos un estilo más bonito
+        bottomPanel.add(cmdSalir);
+        
+        // 6. Añadimos el panel del botón al sur (abajo) del contenedor.
+        panelContenedor.add(bottomPanel, BorderLayout.SOUTH);
+        
+        // 7. Finalmente, reemplazamos el panel por defecto del JFrame con el nuestro.
+        this.setContentPane(panelContenedor);
+    }
+    
+    /**
+     * Da estilo al botón salir para que combine con el nuevo diseño.
+     */
+    private void personalizarBotonSalir() {
+        cmdSalir.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        cmdSalir.setBackground(new Color(220, 53, 69));
+        cmdSalir.setForeground(Color.WHITE);
+        cmdSalir.setFocusPainted(false);
+        cmdSalir.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
     }
 
-    // 3. Crea el método que contiene toda la lógica de los permisos
     private void configurarSegunRol() {
-        // Por defecto, un administrador puede ver todo, así que no hacemos nada para él.
+        // ... (La lógica de roles no cambia, es perfecta como está)
         switch (rolUsuario) {
             case "Medico":
-                // Un médico no debería poder gestionar otros médicos ni consultorios.
-                menuMedico.setVisible(false); // Oculta el menú "Medico" completo
+                menuMedico.setVisible(false);
                 menuConsultorio.setVisible(false);
                 break;
-
             case "Recepcionista":
-                // Un recepcionista no debería ver  gestionar médicos/medicamentos.
-                menuMedico.setVisible(false);      // Oculta el menú "Medico"
-                menuMedicamento.setVisible(false); // Oculta solo el item de "Gestionar Medicamentos"
-                itemGestionarHistorial.setVisible(false); // Oculta solo el item de "Gestionar Historial"
-                itemAgregarhisto.setVisible(false);// Oculta solo el item de "Agregar Historial"
-                menuRecetas.setVisible(false); // Oculta solo el item de "Menu Recetas"
+                menuMedico.setVisible(false);
+                menuMedicamento.setVisible(false);
+                itemGestionarHistorial.setVisible(false);
+                itemAgregarhisto.setVisible(false);
+                menuRecetas.setVisible(false);
                 break;
+            default:
+                break;
+        }
+    }
+    
+    /**
+     * Clase estática para personalizar el menú con una estética de clínica.
+     */
+    private static class MenuCustomizer {
+        // << NUEVA PALETA DE COLORES "CLÍNICA" >>
+        private static final Color MENU_BACKGROUND = new Color(245, 248, 251); // Blanco hueso
+        private static final Color MENU_FOREGROUND = new Color(50, 70, 90);    // Azul oscuro/gris para texto
+        private static final Color ITEM_HOVER_BACKGROUND = new Color(0, 123, 255); // Azul brillante (Bootstrap primary)
+        private static final Color ITEM_HOVER_FOREGROUND = Color.WHITE;
+        private static final Font MENU_FONT = new Font("Segoe UI", Font.BOLD, 14);
+        private static final Font MENU_ITEM_FONT = new Font("Segoe UI", Font.PLAIN, 13);
+
+        public static void customize(JMenuBar menuBar) {
+            menuBar.setUI(new BasicMenuBarUI() {
+                @Override
+                public void paint(Graphics g, JComponent c) {
+                    g.setColor(MENU_BACKGROUND);
+                    g.fillRect(0, 0, c.getWidth(), c.getHeight());
+                }
+            });
+            menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(210, 220, 230)));
             
-            default: // Si el rol es Administrador o cualquier otro, no se oculta nada.
-                break;
+            for (int i = 0; i < menuBar.getMenuCount(); i++) {
+                JMenu menu = menuBar.getMenu(i);
+                styleMenu(menu);
+                for (Component comp : menu.getMenuComponents()) {
+                    if (comp instanceof JMenuItem) {
+                        styleMenuItem((JMenuItem) comp);
+                    }
+                }
+            }
+        }
+        
+        private static void styleMenu(JMenu menu) {
+            menu.setFont(MENU_FONT);
+            menu.setForeground(MENU_FOREGROUND);
+            menu.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            menu.getPopupMenu().setBackground(Color.WHITE);
+            menu.getPopupMenu().setBorder(BorderFactory.createLineBorder(new Color(200, 210, 220), 1));
+        }
+        
+        private static void styleMenuItem(JMenuItem item) {
+            item.setFont(MENU_ITEM_FONT);
+            item.setForeground(MENU_FOREGROUND);
+            item.setBackground(Color.WHITE); // Fondo normal blanco
+            item.setOpaque(true);
+            item.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+            
+            item.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    item.setBackground(ITEM_HOVER_BACKGROUND);
+                    item.setForeground(ITEM_HOVER_FOREGROUND);
+                }
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    item.setBackground(Color.WHITE);
+                    item.setForeground(MENU_FOREGROUND);
+                }
+            });
+        }
+        
+        /**
+         * Método de ayuda para cargar íconos de forma segura.
+         * @param path La ruta del ícono desde la carpeta 'src'.
+         * @return Un ImageIcon o null si no se encuentra.
+         */
+        public static ImageIcon createImageIcon(String path) {
+            java.net.URL imgURL = Main.class.getResource(path);
+            if (imgURL != null) {
+                return new ImageIcon(imgURL);
+            } else {
+                System.err.println("No se pudo encontrar el archivo: " + path);
+                return null;
+            }
         }
     }
 
@@ -105,7 +259,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
         jPanel1.add(cmdSalir);
-        cmdSalir.setBounds(500, 490, 97, 39);
+        cmdSalir.setBounds(510, 490, 97, 39);
 
         menuMedico.setText("Medico");
 
@@ -301,11 +455,11 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 781, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
         );
 
         pack();

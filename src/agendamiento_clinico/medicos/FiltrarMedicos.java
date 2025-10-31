@@ -17,6 +17,7 @@ public class FiltrarMedicos extends javax.swing.JDialog {
     public FiltrarMedicos(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         cargarEspecialidades();
         cargarMedicos(null);
         cboEspecialidades.setSelectedItem(null);
@@ -107,6 +108,11 @@ public class FiltrarMedicos extends javax.swing.JDialog {
         });
 
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -152,6 +158,10 @@ public class FiltrarMedicos extends javax.swing.JDialog {
         medicoSeleccionadoId = (int) grdMedicos.getValueAt(fila, 0); // columna ID
         dispose(); // cerrar el diálogo
     }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
     
     public int getMedicoSeleccionadoId() {
         return medicoSeleccionadoId;

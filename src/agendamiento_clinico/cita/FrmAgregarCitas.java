@@ -17,7 +17,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
     public FrmAgregarCitas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+        setLocationRelativeTo(null);
         cargarConsultorios();
         inicializarFiltroPacientes();
         inicializarFiltroMedicos();

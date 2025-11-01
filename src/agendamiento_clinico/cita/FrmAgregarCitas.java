@@ -428,7 +428,41 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         FiltrarMedicos frm = new FiltrarMedicos(this, true);
         frm.setVisible(true);
+
+        // 1. Obtener el ID del médico seleccionado desde el diálogo de filtro.
         int idSeleccionado = frm.getMedicoSeleccionadoId();
+
+        // 2. Verificar si realmente se seleccionó un médico (asumiendo que un ID > 0 es válido).
+        if (idSeleccionado > 0) {
+            String nombreMedico = "";
+
+            // 3. Preparamos la consulta SQL para buscar el nombre del médico por su ID.
+            String sql = "SELECT CONCAT(nombre, ' ', apellidos) AS nombre_completo FROM medicos WHERE id_medico = ?";
+
+            // 4. Conectamos a la BD y ejecutamos la consulta.
+            try (Connection con = bd.miConexion();
+                 PreparedStatement ps = con.prepareStatement(sql)) {
+
+                ps.setInt(1, idSeleccionado);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        nombreMedico = rs.getString("nombre_completo");
+                    }
+                }
+
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error al buscar el médico: " + e.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+                return; // Salimos si hay un error.
+            }
+
+            // 5. Si encontramos el nombre, lo establecemos en el ComboBox.
+            if (nombreMedico != null && !nombreMedico.isEmpty()) {
+                cboMedicos.setSelectedItem(nombreMedico);
+            } else {
+                // Opcional: Un mensaje por si el ID es válido pero no se encuentra el médico.
+                JOptionPane.showMessageDialog(this, "No se pudo encontrar al médico con el ID seleccionado.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed

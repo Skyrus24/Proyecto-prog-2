@@ -176,6 +176,7 @@ public class FrmAgregarMedicos extends javax.swing.JDialog {
         cmdNuevo = new javax.swing.JButton();
         cmdGuardar = new javax.swing.JButton();
         cmdCancelar = new javax.swing.JButton();
+        cmdEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -434,6 +435,17 @@ public class FrmAgregarMedicos extends javax.swing.JDialog {
             }
         });
 
+        cmdEliminar.setBackground(new java.awt.Color(220, 53, 69));
+        cmdEliminar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cmdEliminar.setForeground(new java.awt.Color(255, 255, 255));
+        cmdEliminar.setText("Salir");
+        cmdEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cmdEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdEliminarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
         panelBotones.setLayout(panelBotonesLayout);
         panelBotonesLayout.setHorizontalGroup(
@@ -441,6 +453,8 @@ public class FrmAgregarMedicos extends javax.swing.JDialog {
             .addGroup(panelBotonesLayout.createSequentialGroup()
                 .addComponent(cmdNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cmdEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(cmdCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(cmdGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -450,7 +464,8 @@ public class FrmAgregarMedicos extends javax.swing.JDialog {
             .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(cmdNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(cmdGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(cmdCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(cmdCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmdEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
@@ -563,6 +578,10 @@ public class FrmAgregarMedicos extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_cmdCancelarActionPerformed
 
+    private void cmdEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEliminarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cmdEliminarActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -609,6 +628,7 @@ public class FrmAgregarMedicos extends javax.swing.JDialog {
     private javax.swing.JComboBox<Object> cboEspecialidad;
     private javax.swing.JComboBox<String> cboEstadoRegistro;
     private javax.swing.JButton cmdCancelar;
+    private javax.swing.JButton cmdEliminar;
     private javax.swing.JButton cmdGuardar;
     private javax.swing.JButton cmdNuevo;
     private com.toedter.calendar.JDateChooser dcFechaNacimiento;

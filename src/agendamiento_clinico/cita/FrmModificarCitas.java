@@ -39,9 +39,11 @@ public class FrmModificarCitas extends javax.swing.JDialog {
                  txtFinHora.setText("");
             }
         });
+        
+        // Esta línea soluciona el problema de que el formulario se estire
+        this.pack(); 
     }
 
-    // TUS MÉTODOS ORIGINALES SE MANTIENEN INTTACTOS
     private void cargarDatosCita(int idCita) {
         try (Connection cn = bd.miConexion()) {
             String sql = "SELECT c.id_cita, CONCAT(p.nombre, ' ', p.apellidos) AS paciente, " +
@@ -61,7 +63,6 @@ public class FrmModificarCitas extends javax.swing.JDialog {
                     if (rs.next()) {
                         idCitaSeleccionada = rs.getInt("id_cita");
 
-                        // Habilitar campos editables
                         cboConsultorios.setEnabled(true);
                         txtMotivo.setEnabled(true);
                         txtObservaciones.setEnabled(true);
@@ -69,7 +70,6 @@ public class FrmModificarCitas extends javax.swing.JDialog {
                         cboEstado.setEnabled(true);
                         btnGuardar.setEnabled(true);
 
-                        // Cargar y bloquear campos no editables
                         cboPacientes.removeAllItems();
                         cboPacientes.addItem(rs.getString("paciente"));
                         cboMedicos.removeAllItems();
@@ -79,7 +79,6 @@ public class FrmModificarCitas extends javax.swing.JDialog {
                         txtFinHora.setText(rs.getString("hora_fin"));
                         dcFecha.setDate(rs.getDate("fecha"));
 
-                        // Cargar datos en campos editables
                         String consultorioTexto = rs.getString("consultorio") + " - " + rs.getString("ubicacion");
                         cboConsultorios.setSelectedItem(consultorioTexto);
                         txtMotivo.setText(rs.getString("motivo_consulta"));
@@ -201,6 +200,7 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setUndecorated(true);
 
         panelPrincipal.setBackground(new java.awt.Color(248, 249, 250));
 
@@ -224,7 +224,7 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Haga clic en el bot\u00f3n para encontrar la cita que desea editar.");
+        jLabel1.setText("Haga clic en el botón para encontrar la cita que desea editar.");
 
         javax.swing.GroupLayout panelBusquedaLayout = new javax.swing.GroupLayout(panelBusqueda);
         panelBusqueda.setLayout(panelBusquedaLayout);
@@ -240,11 +240,10 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         panelBusquedaLayout.setVerticalGroup(
             panelBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBusquedaLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addContainerGap(10, Short.MAX_VALUE)
                 .addGroup(panelBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addContainerGap(10, Short.MAX_VALUE))
+                    .addComponent(jLabel1)))
         );
 
         panelDatosCita.setBackground(new java.awt.Color(255, 255, 255));
@@ -359,7 +358,7 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         lblEstado.setText("Estado de Cita:");
 
         cboEstado.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cboEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Programada", "Confirmada", "Cancelada", "No Asistió" }));
+        cboEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Programada", "Confirmada", "No Asistió" }));
 
         lblObservaciones.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblObservaciones.setText("Observaciones:");
@@ -394,7 +393,7 @@ public class FrmModificarCitas extends javax.swing.JDialog {
                         .addGap(30, 30, 30)
                         .addGroup(panelDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblMotivo)
-                            .addComponent(txtMotivo, 0, 427, Short.MAX_VALUE)))
+                            .addComponent(txtMotivo, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)))
                     .addGroup(panelDetallesLayout.createSequentialGroup()
                         .addComponent(lblObservaciones)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -431,7 +430,7 @@ public class FrmModificarCitas extends javax.swing.JDialog {
                 .addComponent(lblObservaciones)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelBotones.setBackground(new java.awt.Color(248, 249, 250));
@@ -470,9 +469,11 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         );
         panelBotonesLayout.setVerticalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(panelBotonesLayout.createSequentialGroup()
+                .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
@@ -493,19 +494,19 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addContainerGap(20, Short.MAX_VALUE)
                 .addComponent(lblTitulo)
                 .addGap(18, 18, 18)
                 .addComponent(panelBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelDatosCita, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelHorario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -516,18 +517,24 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // **CORRECCIÓN IMPORTANTE**
+        // Llama a tu formulario FrmBuscar, no a un FrmBuscarCitas inexistente.
         FrmBuscar buscador = new FrmBuscar(null, true);
         buscador.setVisible(true);
-        
-        int idCita = buscador.getcitaSeleccionada();
-        
+
+        // **CORRECCIÓN IMPORTANTE**
+        // Usa el método getCitaSeleccionada(), que es el que existe en tu FrmBuscar.
+        int idCita = buscador.getCitaSeleccionada();
+
         if (idCita > 0) {
             cargarDatosCita(idCita);
         }
@@ -544,13 +551,13 @@ public class FrmModificarCitas extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "El campo Consultorio es obligatorio.", "Campo Incompleto", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            
+
             String motivo = txtMotivo.getText().trim();
             String estado = cboEstado.getSelectedItem().toString();
             String tipo = cboTipo.getSelectedItem().toString();
             String observaciones = txtObservaciones.getText().trim();
             String consultorioSeleccionado = cboConsultorios.getSelectedItem().toString();
-            
+
             int idConsultorio = obtenerIdPorNombre(conexion, "consultorios", "id_consultorio", consultorioSeleccionado);
             if (idConsultorio == -1) {
                 JOptionPane.showMessageDialog(this, "Error al obtener el ID del consultorio seleccionado.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -566,7 +573,7 @@ public class FrmModificarCitas extends javax.swing.JDialog {
                 ps.setString(4, tipo);
                 ps.setString(5, observaciones);
                 ps.setInt(6, idCitaSeleccionada);
-                
+
                 int filasAfectadas = ps.executeUpdate();
 
                 if (filasAfectadas > 0) {
@@ -586,6 +593,46 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FrmModificarCitas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FrmModificarCitas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FrmModificarCitas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FrmModificarCitas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                FrmModificarCitas dialog = new FrmModificarCitas(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }    
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
@@ -616,8 +663,8 @@ public class FrmModificarCitas extends javax.swing.JDialog {
     private javax.swing.JPanel panelDetalles;
     private javax.swing.JPanel panelHorario;
     private javax.swing.JPanel panelPrincipal;
-    private javax.swing.JTextArea txtObservaciones;
     private javax.swing.JTextField txtFinHora;
     private javax.swing.JTextField txtMotivo;
+    private javax.swing.JTextArea txtObservaciones;
     // End of variables declaration//GEN-END:variables
 }

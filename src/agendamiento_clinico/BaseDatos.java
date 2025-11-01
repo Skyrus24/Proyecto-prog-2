@@ -1,4 +1,3 @@
-
 package agendamiento_clinico;
 
 import java.sql.*;
@@ -17,6 +16,7 @@ public class BaseDatos {
     public BaseDatos(){
         this.hayConexion();
     }
+    
     public boolean hayConexion() {
         try {
             if (conexion == null || conexion.isClosed()) {
@@ -33,34 +33,19 @@ public class BaseDatos {
         }
     }
 
-    /**
-    public boolean hayConexion(){
-        if (conexion != null){
-            return true;
-        try{
-            conexion = DriverManager.getConnection("jdbc:mysql://"+this.host+":3306/"+this.baseDatos+"?characterEncoding=utf8",this.usuBD,this.clave);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error de conexión"+e.getMessage());
-            return false;
-        }
-        return true;
-    }
- } 
- */
     public boolean borrarRegistro(String tabla, String condicion){
         try {
-            // Se crea un Statement, para realizar la consulta
             Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
-            // Se realiza la consulta.
             JOptionPane optionPane=new JOptionPane();
             Object[] opciones={"Si","No"};
 
             int ret=optionPane.showOptionDialog(null,"Esta seguro de ELIMINAR el REGISTRO? ","Pregunta",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,opciones,opciones[0]);
-            //Si la opcion escogida es Si
             if(ret==JOptionPane.YES_OPTION){
                 s.executeUpdate("delete from "+tabla+" where "+condicion);
+                s.close();
             }else{
+                s.close();
                 return false;
             }
         } catch (SQLException e) {
@@ -78,10 +63,10 @@ public class BaseDatos {
 
     public boolean borrarRegistroSinPreguntar(String tabla, String condicion){
         try {
-            // Se crea un Statement, para realizar la consulta
             Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
             s.executeUpdate("delete from "+tabla+" where "+condicion);
+            s.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "No se ha eliminado el registro seleccionado\nPuede estar usándose en otra tabla", "Atencion",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -92,11 +77,10 @@ public class BaseDatos {
 
     public boolean insertarRegistro(String tabla, String campos, String valores){
         try {
-            // Se crea un Statement, para realizar la consulta
             Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
-            // Se realiza la consulta.
             s.executeUpdate("insert into "+tabla+" ("+campos+") values ("+valores+")");
+            s.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio Un error al insertar \n"+ e.getMessage() , "Atencion",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -105,13 +89,12 @@ public class BaseDatos {
         return true;
     }
 
-    public boolean insertarRegistro(String tabla,  String valores){
+    public boolean insertarRegistro(String tabla, String valores){
         try {
-            // Se crea un Statement, para realizar la consulta
             Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
-            // Se realiza la consulta.
             s.executeUpdate("insert into "+tabla+" values ("+valores+")");
+            s.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio Un error al insertar \n"+ e.getMessage() , "Atencion",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -119,13 +102,13 @@ public class BaseDatos {
         }
         return true;
     }
+    
     public boolean actualizarRegistro(String tabla, String campos, String criterio){
         try {
-            // Se crea un Statement, para realizar la consulta
             Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
-            // Se realiza la consulta.
             s.executeUpdate("update "+tabla+" set "+campos+" where " +criterio);
+            s.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio Un error\n"+e.getMessage() , "Atencion",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -133,14 +116,13 @@ public class BaseDatos {
         }
         return true;
     }
+    
     public ResultSet consultarRegistros(String sql) {
         ResultSet rs = null;
         try {
-            // Se crea un Statement, para realizar la consulta
+            hayConexion(); // Garantizar que la conexión esté activa
             Statement s = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-
-            // Se realiza la consulta. Los resultados se guardan en el ResultSet rs
+                    ResultSet.CONCUR_READ_ONLY);
             rs = s.executeQuery(sql);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio Un error"+ e.getMessage() , "Atencion",
@@ -148,30 +130,24 @@ public class BaseDatos {
         }
         return rs;
     }
+    
     public void cargarCombo(JComboBox combo, String campos, String tabla){
          ResultSet rsC;
          try{
-             //Crear la sentencia para la consulta
-             sentencia = (Statement)conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-             //Se ejecuta la consulta
+             hayConexion();
+             sentencia = conexion.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
              rsC = sentencia.executeQuery("select " + campos + " from " + tabla);
-           //Se inicializa el arraylist
              ArrayList<DatosCombo> camposCombo;
              camposCombo = new ArrayList();
-             //Recorrer los registros
              while (rsC.next()) {
-                 //Agregar al arraylist datos del rsC
                  camposCombo.add(new DatosCombo(rsC.getInt(1), rsC.getString(2)));
              }
              for (DatosCombo nombre: camposCombo){
-                 //Agregar items al combo
                  combo.addItem(nombre);
              }
          }catch(Exception e) {
-             //Si ocurrio un error mostrar mensaje
              JOptionPane.showMessageDialog(null, "Error al llenar combo\n" + e.getMessage()  , "Llenar Combo - "  + combo.getName(), JOptionPane.ERROR_MESSAGE);
          }
-
      }
     
     public void seleccionarItemCombo(JComboBox<Object> combo, int idSeleccionar) {
@@ -180,27 +156,28 @@ public class BaseDatos {
                 DatosCombo item = (DatosCombo) combo.getItemAt(i);
                 if (item.getCodigo() == idSeleccionar) {
                     combo.setSelectedIndex(i);
-                    return; // Salir del método una vez encontrado
+                    return;
                 }
             }
         }
     }
     
-        /** Cierra la conexion con la base de datos */
     public void cierraConexion() {
         try {
-            conexion.close();
+            if (conexion != null && !conexion.isClosed()) {
+                conexion.close();
+            }
         } catch (Exception e) {
-
+            System.out.println("Error al cerrar conexión: " + e.getMessage());
         }
     }
+    
     public Connection miConexion() {
         try {
-            hayConexion(); // Garantiza que esté abierta
+            hayConexion();
         } catch (Exception e) {
             System.out.println("Error de conexión: " + e.getMessage());
         }
         return conexion;
     }
-
 }

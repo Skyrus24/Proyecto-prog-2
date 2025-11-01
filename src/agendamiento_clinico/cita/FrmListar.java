@@ -86,6 +86,7 @@ public class FrmListar extends javax.swing.JDialog {
         txtBuscar = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setUndecorated(true);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Listar Medicos"));
 
@@ -180,7 +181,7 @@ public class FrmListar extends javax.swing.JDialog {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
          String texto = txtBuscar.getText().trim();
         if (texto.isEmpty()) {
-            actualizarGrilla(); // 🔹 Si no hay texto, muestra todas las citas
+            actualizarGrilla();
             return;
         }
 

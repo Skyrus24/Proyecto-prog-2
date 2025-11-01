@@ -301,6 +301,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setUndecorated(true);
 
         panelPrincipal.setBackground(new java.awt.Color(248, 249, 250));
 
@@ -761,8 +762,8 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
     private javax.swing.JPanel panelDetalles;
     private javax.swing.JPanel panelHorario;
     private javax.swing.JPanel panelPrincipal;
-    private javax.swing.JTextArea txtObservaciones;
     private javax.swing.JTextField txtFinHora;
     private javax.swing.JTextField txtMotivo;
+    private javax.swing.JTextArea txtObservaciones;
     // End of variables declaration//GEN-END:variables
 }

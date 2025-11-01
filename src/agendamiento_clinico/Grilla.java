@@ -25,29 +25,21 @@ class DecimalRenderer extends DefaultTableCellRenderer {
 }
 
 public class Grilla {
-    BaseDatos bd =new BaseDatos();
+    BaseDatos bd = new BaseDatos();
 
-    /**
-     * Convierte una cadena acentuada en una cadena sin acentos y en minúsculas.
-     * Por ejemplo, "CAMIÓN" se convierte en "camion".
-     */
     private static String normalizarTexto(String texto) {
         if (texto == null) {
             return "";
         }
-        // 1. Convertir a minúsculas
         String lowerCaseText = texto.toLowerCase();
-        // 2. Descomponer la cadena en sus caracteres base y diacríticos (ej: 'é' -> 'e' + '´')
         String normalizado = Normalizer.normalize(lowerCaseText, Normalizer.Form.NFD);
-        // 3. Eliminar los caracteres diacríticos (tildes, etc.)
         return normalizado.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
     }
 
     public void configurarmodelo(JTable nombregrilla, String[] columnas, int [] ancho){
-        ResultSet rs;
         DefaultTableModel dm = new DefaultTableModel(){
             public boolean isCellEditable(int row, int col){
-            return false;
+                return false;
             }
         };
         dm.setDataVector(
@@ -58,7 +50,8 @@ public class Grilla {
         nombregrilla.getTableHeader().setReorderingAllowed(false);
         nombregrilla.setModel(dm);
         for (int cont2=0; cont2<=columnas.length-1;cont2++){
-            nombregrilla.getColumnModel().getColumn(cont2).setPreferredWidth(ancho[cont2]);}
+            nombregrilla.getColumnModel().getColumn(cont2).setPreferredWidth(ancho[cont2]);
+        }
     }
 
     public void alinear(JTable grilla, String columna){
@@ -67,7 +60,7 @@ public class Grilla {
     }
 
     public void cargarGrilla(JTable nombregrilla, String tabla, String[] campos){
-        String sql="Select ";
+        String sql="SELECT ";
         DefaultTableModel modelo = (DefaultTableModel) nombregrilla.getModel();
         nombregrilla.selectAll();
         int[] filas = nombregrilla.getSelectedRows();
@@ -81,8 +74,10 @@ public class Grilla {
             }
         }
         try{
-            sql=sql+" from "+tabla;
-            ResultSet rs =bd.consultarRegistros(sql);
+            sql=sql+" FROM "+tabla;
+            ResultSet rs = bd.consultarRegistros(sql);
+            if (rs == null) return;
+            
             String [] valores= new String[campos.length];
             int fila=0;
             while(rs.next()){
@@ -96,7 +91,7 @@ public class Grilla {
             }
             nombregrilla.setModel(modelo);
         }catch (Exception ex){
-            JOptionPane.showMessageDialog(null,"Error al intentar cargar la grilla"+ex.toString(), "Grilla",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Error al intentar cargar la grilla: "+ex.toString(), "Grilla",JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -104,10 +99,8 @@ public class Grilla {
         DefaultTableModel modelo = (DefaultTableModel) nombregrilla.getModel();
         TableRowSorter<DefaultTableModel> gridFiltrado = new TableRowSorter<>(modelo);
 
-        // Normalizar el texto de búsqueda una sola vez
         final String textoNormalizado = normalizarTexto(texto);
 
-        // Crear un RowFilter personalizado para ignorar tildes y mayúsculas/minúsculas
         RowFilter<Object, Object> rowFilter = new RowFilter<Object, Object>() {
             @Override
             public boolean include(Entry<? extends Object, ? extends Object> entry) {
@@ -118,11 +111,8 @@ public class Grilla {
                 }
                 
                 String valorCelda = valorCeldaObj.toString();
-
-                // Normalizar el contenido de la celda
                 String celdaNormalizada = normalizarTexto(valorCelda);
 
-                // Comprobar si la celda normalizada contiene el texto de búsqueda normalizado
                 return celdaNormalizada.contains(textoNormalizado);
             }
         };
@@ -133,42 +123,34 @@ public class Grilla {
   
     /**
      * Versión SOBRECARGADA de cargarGrilla que permite especificar títulos personalizados para las columnas.
-     * @param nombregrilla La JTable a llenar.
-     * @param tabla El nombre de la tabla en la base de datos.
-     * @param camposDB Un array con los nombres de las columnas a seleccionar de la base de datos.
-     * @param titulos Un array con los títulos que se mostrarán en la cabecera de la JTable.
      */
     public void cargarGrilla(JTable nombregrilla, String tabla, String[] camposDB, String[] titulos){
-        // Primero, configuramos el modelo con los títulos personalizados
         DefaultTableModel modelo = new DefaultTableModel(null, titulos) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Hacemos que todas las celdas no sean editables
                 return false;
             }
         };
         nombregrilla.setModel(modelo);
 
-        // Construimos la consulta SQL
         String sql = "SELECT " + String.join(", ", camposDB) + " FROM " + tabla;
         
         try {
             ResultSet rs = bd.consultarRegistros(sql);
-            if (rs == null) return; // Si la consulta falla, salimos.
+            if (rs == null) return;
 
-            // Creamos un array de objetos para almacenar los datos de cada fila
             Object[] fila = new Object[camposDB.length];
             
-            // Recorremos el resultado y añadimos las filas al modelo
             while(rs.next()){
                 for (int i = 0; i < camposDB.length; i++){
                     fila[i] = rs.getObject(i + 1);
                 }
-                modelo.addRow(fila);
+                modelo.addRow(fila.clone());
             }
+            
+            nombregrilla.setModel(modelo);
         } catch (SQLException ex){
             JOptionPane.showMessageDialog(null, "Error al intentar cargar la grilla: " + ex.getMessage(), "Error de Grilla", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 }

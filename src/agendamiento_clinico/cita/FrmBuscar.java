@@ -2,40 +2,37 @@ package agendamiento_clinico.cita;
 
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;
-import java.awt.event.*;
-import java.sql.*;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 
 public class FrmBuscar extends javax.swing.JDialog {
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmBuscar.class.getName());
+
     private final BaseDatos bd = new BaseDatos();
     private final Grilla grilla = new Grilla();
     private int citaSeleccionada = -1;
 
-    // columnas y anchos de la tabla
-    private final String[] columnas = {"ID Cita", "Paciente", "CI", "Médico", "Inicio", "Fin", "Estado", "Tipo"};
-    private final int[] anchos = {60, 140, 90, 140, 120, 120, 80, 100};
-    
     public FrmBuscar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setLocationRelativeTo(null);
-        configurarTabla();
+        configurarFormulario();
+    }
+
+    private void configurarFormulario() {
+        this.setTitle("Buscar Cita");
+        this.setLocationRelativeTo(null);
+        this.getContentPane().setBackground(new Color(248, 249, 250));
         inicializarEventos();
         btnAceptar.setEnabled(false);
         rdNombre.setSelected(true);
-        limpiarTabla();
-
-    }
-    private void configurarTabla() {
-        grilla.configurarmodelo(grdCitas, columnas, anchos);
+        buscarCitas(); // Cargar todas las citas al abrir
     }
     
-
     private void inicializarEventos() {
-        // buscar mientras se escribe
         txtBuscar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -43,249 +40,255 @@ public class FrmBuscar extends javax.swing.JDialog {
             }
         });
 
-        // selección de fila
         grdCitas.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-            boolean seleccionValida = grdCitas.getSelectedRow() != -1;
-            btnAceptar.setEnabled(seleccionValida);
-            if (seleccionValida) {
-                Object valor = grdCitas.getValueAt(grdCitas.getSelectedRow(), 0);
-                if (valor != null) {
-                    citaSeleccionada = Integer.parseInt(valor.toString());
-                }
+            if (!e.getValueIsAdjusting()) {
+                boolean seleccionValida = grdCitas.getSelectedRow() != -1;
+                btnAceptar.setEnabled(seleccionValida);
             }
         });
 
-        // doble clic en la fila para aceptar
         grdCitas.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2 && citaSeleccionada != -1) {
-                    dispose();
+                if (e.getClickCount() == 2 && grdCitas.getSelectedRow() != -1) {
+                    btnAceptar.doClick();
                 }
             }
         });
+        
+        // Agregar eventos para los RadioButtons
+        rdNombre.addActionListener(e -> buscarCitas());
+        rdCI.addActionListener(e -> buscarCitas());
     }
 
     private void buscarCitas() {
         String texto = txtBuscar.getText().trim();
-        if (texto.isEmpty()) {
-            limpiarTabla();
-            return;
+
+        String[] camposDB = {
+            "c.id_cita",
+            "CONCAT(p.nombre, ' ', p.apellidos)",
+            "p.numero_documento",
+            "CONCAT(m.nombre, ' ', m.apellidos)",
+            "DATE_FORMAT(c.fecha_hora_inicio, '%d/%m/%Y %H:%i')",
+            "c.estado_cita"
+        };
+        
+        String[] titulos = {"ID", "Paciente", "CI Paciente", "Médico", "Fecha y Hora", "Estado"};
+        
+        String tablaJoin = "citas c " +
+                           "JOIN pacientes p ON c.id_paciente = p.id_paciente " +
+                           "JOIN medicos m ON c.id_medico = m.id_medico";
+
+        String criterioBusqueda = rdNombre.isSelected() 
+                ? "CONCAT(p.nombre, ' ', p.apellidos)" 
+                : "p.numero_documento";
+        
+        String where = "";
+        if (!texto.isEmpty()) {
+            where = " WHERE " + criterioBusqueda + " LIKE '%" + texto + "%'";
         }
-
-        // Determinar campo de búsqueda según el radio seleccionado
-        String condicion = rdNombre.isSelected()
-                ? "CONCAT(p.nombre, ' ', p.apellidos) LIKE ?"
-                : "p.numero_documento LIKE ?";
-
-        String sql =
-            "SELECT c.id_cita, " +
-            "CONCAT(p.nombre, ' ', p.apellidos) AS paciente, " +
-            "p.numero_documento AS ci, " +
-            "CONCAT(m.nombre, ' ', m.apellidos) AS medico, " +
-            "DATE_FORMAT(c.fecha_hora_inicio, '%Y-%m-%d %H:%i') AS inicio, " +
-            "DATE_FORMAT(c.fecha_hora_fin, '%Y-%m-%d %H:%i') AS fin, " +
-            "c.estado_cita, " +
-            "c.tipo_cita " +
-            "FROM citas c " +
-            "INNER JOIN pacientes p ON c.id_paciente = p.id_paciente " +
-            "INNER JOIN medicos m ON c.id_medico = m.id_medico " +
-            "WHERE " + condicion + " " +
-            "ORDER BY c.fecha_hora_inicio DESC";
-
-        Connection cn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
+        
+        String sqlCompleto = tablaJoin + where + " ORDER BY c.fecha_hora_inicio DESC";
+        
         try {
-            cn = bd.miConexion();
-            ps = cn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            ps.setString(1, "%" + texto + "%");
-            rs = ps.executeQuery();
-
-            DefaultTableModel modelo = (DefaultTableModel) grdCitas.getModel();
-            modelo.setRowCount(0);
-
-            while (rs.next()) {
-                Object[] fila = new Object[columnas.length];
-                for (int i = 0; i < columnas.length; i++) {
-                    fila[i] = rs.getObject(i + 1);
-                }
-                modelo.addRow(fila);
-            }
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al buscar citas: " + ex.getMessage(),
-                    "Error SQL",
-                    JOptionPane.ERROR_MESSAGE);
-            logger.log(java.util.logging.Level.SEVERE, "Error al buscar citas", ex);
-        } finally {
-            // 🔹 Cerrar manualmente en orden inverso
-            try { if (rs != null && !rs.isClosed()) rs.close(); } catch (SQLException ignored) {}
-            try { if (ps != null && !ps.isClosed()) ps.close(); } catch (SQLException ignored) {}
-            try { if (cn != null && !cn.isClosed()) cn.close(); } catch (SQLException ignored) {}
+            grilla.cargarGrilla(grdCitas, sqlCompleto, camposDB, titulos);
+            btnAceptar.setEnabled(false);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error al cargar las citas: " + ex.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-
-    private void limpiarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) grdCitas.getModel();
-        modelo.setRowCount(0);
     }
 
     public int getCitaSeleccionada() {
         return citaSeleccionada;
     }
-
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        grdCitas = new javax.swing.JTable();
-        btnAceptar = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        panelPrincipal = new javax.swing.JPanel();
+        lblTitulo = new javax.swing.JLabel();
+        panelBusqueda = new javax.swing.JPanel();
+        lblBuscar = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
         rdNombre = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
         rdCI = new javax.swing.JRadioButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        grdCitas = new javax.swing.JTable();
+        panelBotones = new javax.swing.JPanel();
+        btnAceptar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setUndecorated(true);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        panelPrincipal.setBackground(new java.awt.Color(248, 249, 250));
 
+        lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(52, 58, 64));
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitulo.setText("Buscar Cita");
+
+        panelBusqueda.setBackground(new java.awt.Color(255, 255, 255));
+        panelBusqueda.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(222, 226, 230)), "Criterios de Búsqueda", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 14), new java.awt.Color(73, 80, 87))); // NOI18N
+
+        lblBuscar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblBuscar.setText("Buscar:");
+
+        txtBuscar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        buttonGroup1.add(rdNombre);
+        rdNombre.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        rdNombre.setText("Por Nombre del Paciente");
+
+        buttonGroup1.add(rdCI);
+        rdCI.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        rdCI.setText("Por CI del Paciente");
+
+        javax.swing.GroupLayout panelBusquedaLayout = new javax.swing.GroupLayout(panelBusqueda);
+        panelBusqueda.setLayout(panelBusquedaLayout);
+        panelBusquedaLayout.setHorizontalGroup(
+            panelBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBusquedaLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblBuscar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtBuscar)
+                .addGap(30, 30, 30)
+                .addComponent(rdNombre)
+                .addGap(18, 18, 18)
+                .addComponent(rdCI)
+                .addGap(20, 20, 20))
+        );
+        panelBusquedaLayout.setVerticalGroup(
+            panelBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBusquedaLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(panelBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblBuscar)
+                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rdNombre)
+                    .addComponent(rdCI))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        grdCitas.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         grdCitas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
-        grdCitas.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
+        grdCitas.setRowHeight(25);
+        grdCitas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(grdCitas);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        panelBotones.setBackground(new java.awt.Color(248, 249, 250));
 
+        btnAceptar.setBackground(new java.awt.Color(25, 135, 84));
+        btnAceptar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAceptar.setForeground(new java.awt.Color(255, 255, 255));
         btnAceptar.setText("Aceptar");
+        btnAceptar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAceptarActionPerformed(evt);
             }
         });
 
+        btnCancelar.setBackground(new java.awt.Color(108, 117, 125));
+        btnCancelar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
+        btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelarActionPerformed(evt);
             }
         });
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        buttonGroup1.add(rdNombre);
-        rdNombre.setText("Por Nombre");
-
-        jLabel1.setText("Buscar:");
-
-        buttonGroup1.add(rdCI);
-        rdCI.setText("Por CI");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(rdCI)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rdNombre)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBuscar)
-                        .addGap(23, 23, 23))))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+        javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
+        panelBotones.setLayout(panelBotonesLayout);
+        panelBotonesLayout.setHorizontalGroup(
+            panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBotonesLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rdCI)
-                    .addComponent(rdNombre))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        panelBotonesLayout.setVerticalGroup(
+            panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
+        panelPrincipal.setLayout(panelPrincipalLayout);
+        panelPrincipalLayout.setHorizontalGroup(
+            panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 840, Short.MAX_VALUE)
+                    .addComponent(panelBusqueda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addComponent(panelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
+        );
+        panelPrincipalLayout.setVerticalGroup(
+            panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblTitulo)
+                .addGap(18, 18, 18)
+                .addComponent(panelBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(panelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(14, Short.MAX_VALUE))
+            .addComponent(panelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                    .addComponent(btnAceptar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .addComponent(panelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        if (citaSeleccionada != -1) {
-            // 🔹 Aseguramos que los datos de la tabla ya estén en memoria antes de cerrar
-            grdCitas.clearSelection();
-            dispose();
+        if (grdCitas.getSelectedRow() != -1) {
+            Object valor = grdCitas.getValueAt(grdCitas.getSelectedRow(), 0);
+            if (valor != null) {
+                try {
+                    citaSeleccionada = Integer.parseInt(valor.toString());
+                    dispose();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Error al procesar la cita seleccionada.", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar una cita antes de continuar.", "Atención", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una cita antes de continuar.", 
+                "Atención", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
@@ -294,49 +297,18 @@ public class FrmBuscar extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                FrmBuscar dialog = new FrmBuscar(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JTable grdCitas;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblBuscar;
+    private javax.swing.JLabel lblTitulo;
+    private javax.swing.JPanel panelBotones;
+    private javax.swing.JPanel panelBusqueda;
+    private javax.swing.JPanel panelPrincipal;
     private javax.swing.JRadioButton rdCI;
     private javax.swing.JRadioButton rdNombre;
     private javax.swing.JTextField txtBuscar;

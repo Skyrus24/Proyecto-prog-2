@@ -323,7 +323,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
 
         cboMedicos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        btnBuscarMedico.setText("...");
+        btnBuscarMedico.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icono/iconos/busqueda-de-lupa.png"))); // NOI18N
         btnBuscarMedico.setToolTipText("Buscar Médico por Especialidad");
         btnBuscarMedico.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnBuscarMedico.addActionListener(new java.awt.event.ActionListener() {
@@ -582,7 +582,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
                 .addComponent(panelDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(panelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

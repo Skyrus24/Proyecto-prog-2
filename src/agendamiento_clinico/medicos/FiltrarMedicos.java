@@ -1,236 +1,304 @@
 package agendamiento_clinico.medicos;
 
-import agendamiento_clinico.Grilla;
-import java.sql.*;
 import agendamiento_clinico.BaseDatos;
+import java.awt.Color;
+import java.awt.Font;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-
 public class FiltrarMedicos extends javax.swing.JDialog {
-    BaseDatos bd = new BaseDatos();
-    Grilla grd = new Grilla();
-    private int medicoSeleccionadoId = -1;
+
+    private final BaseDatos bd = new BaseDatos();
+    private int medicoSeleccionadoId = -1; // Valor por defecto si no se selecciona nada
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FiltrarMedicos.class.getName());
+    public FiltrarMedicos(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        configurarFormulario();
+    }
     
     public FiltrarMedicos(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setLocationRelativeTo(null);
+        configurarFormulario();
+    }
+    
+    private void configurarFormulario() {
+        this.setLocationRelativeTo(null);
+        this.getContentPane().setBackground(new Color(248, 249, 250));
+        if (!bd.hayConexion()) {
+            JOptionPane.showMessageDialog(this, "Error de conexión con la base de datos.", "Error Crítico", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         cargarEspecialidades();
-        cargarMedicos(null);
-        cboEspecialidades.setSelectedItem(null);
-        
-        cboEspecialidades.addActionListener(e -> {
-            String especialidad = (String) cboEspecialidades.getSelectedItem();
-            cargarMedicos(especialidad);
-        });
+        actualizarGrilla();
+        btnAceptar.setEnabled(false); // Deshabilitado hasta que se seleccione una fila
     }
 
-    public FiltrarMedicos(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
-        cargarEspecialidades(); 
-        cargarMedicos(null); // carga todos inicialmente
-        cboEspecialidades.setSelectedItem(null);
+    private void cargarEspecialidades() {
+        cboEspecialidades.removeAllItems();
+        cboEspecialidades.addItem("Todas las especialidades"); // Opción para ver todos
         
-        cboEspecialidades.addActionListener(e -> {
-            String especialidad = (String) cboEspecialidades.getSelectedItem();
-            cargarMedicos(especialidad);
+        try (ResultSet rs = bd.consultarRegistros("SELECT nombre_especialidad FROM especialidades ORDER BY nombre_especialidad")) {
+            if (rs == null) return;
+            while (rs.next()) {
+                cboEspecialidades.addItem(rs.getString("nombre_especialidad"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar especialidades: " + e.getMessage());
+        }
+    }
+    
+    private void actualizarGrilla() {
+        DefaultTableModel modelo = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        modelo.setColumnIdentifiers(new String[]{
+            "ID", "Nombre", "Apellidos", "Especialidad", "Reg. Profesional"
         });
+        grdMedicos.setModel(modelo);
+
+        String especialidadSeleccionada = (String) cboEspecialidades.getSelectedItem();
+
+        String sql = 
+            "SELECT m.id_medico, m.nombre, m.apellidos, e.nombre_especialidad, m.registro_profesional " +
+            "FROM medicos m " +
+            "INNER JOIN especialidades e ON m.id_especialidad = e.id_especialidad";
+
+        // Agregar condición si se seleccionó una especialidad específica
+        if (especialidadSeleccionada != null && !"Todas las especialidades".equalsIgnoreCase(especialidadSeleccionada)) {
+            sql += " WHERE e.nombre_especialidad = '" + especialidadSeleccionada + "'";
+        }
+        sql += " ORDER BY m.apellidos, m.nombre";
+
+        try (ResultSet rs = bd.consultarRegistros(sql)) {
+            if (rs == null) return;
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getInt("id_medico"),
+                    rs.getString("nombre"),
+                    rs.getString("apellidos"),
+                    rs.getString("nombre_especialidad"),
+                    rs.getString("registro_profesional")
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar médicos: " + e.getMessage());
+        }
+    }
+    
+    public int getMedicoSeleccionadoId() {
+        return medicoSeleccionadoId;
     }
 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        panelPrincipal = new javax.swing.JPanel();
+        lblTitulo = new javax.swing.JLabel();
+        panelFiltro = new javax.swing.JPanel();
+        lblEspecialidad = new javax.swing.JLabel();
         cboEspecialidades = new javax.swing.JComboBox<>();
-        jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         grdMedicos = new javax.swing.JTable();
+        panelBotones = new javax.swing.JPanel();
         btnAceptar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Seleccionar Médico");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.setLayout(null);
+        panelPrincipal.setBackground(new java.awt.Color(248, 249, 250));
 
-        jLabel1.setText("Especialidad: ");
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(30, 20, 80, 16);
+        lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(52, 58, 64));
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTitulo.setText("Buscar y Seleccionar Médico");
 
-        cboEspecialidades.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(cboEspecialidades);
-        cboEspecialidades.setBounds(120, 20, 520, 20);
+        panelFiltro.setBackground(new java.awt.Color(255, 255, 255));
+        panelFiltro.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(222, 226, 230)));
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lblEspecialidad.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblEspecialidad.setText("Filtrar por Especialidad:");
 
+        cboEspecialidades.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cboEspecialidades.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboEspecialidadesActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelFiltroLayout = new javax.swing.GroupLayout(panelFiltro);
+        panelFiltro.setLayout(panelFiltroLayout);
+        panelFiltroLayout.setHorizontalGroup(
+            panelFiltroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelFiltroLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblEspecialidad)
+                .addGap(18, 18, 18)
+                .addComponent(cboEspecialidades, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(20, 20, 20))
+        );
+        panelFiltroLayout.setVerticalGroup(
+            panelFiltroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelFiltroLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(panelFiltroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEspecialidad)
+                    .addComponent(cboEspecialidades, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        grdMedicos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         grdMedicos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Nombre", "Apellidos", "Especialidad", "Reg. Profesional"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        grdMedicos.setRowHeight(25);
+        grdMedicos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        grdMedicos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                grdMedicosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(grdMedicos);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(167, 167, 167))
-        );
+        panelBotones.setBackground(new java.awt.Color(248, 249, 250));
 
+        btnAceptar.setBackground(new java.awt.Color(40, 167, 69));
+        btnAceptar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAceptar.setForeground(new java.awt.Color(255, 255, 255));
         btnAceptar.setText("Aceptar");
+        btnAceptar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAceptarActionPerformed(evt);
             }
         });
 
+        btnCancelar.setBackground(new java.awt.Color(108, 117, 125));
+        btnCancelar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
+        btnCancelar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelarActionPerformed(evt);
             }
         });
 
+        javax.swing.GroupLayout panelBotonesLayout = new javax.swing.GroupLayout(panelBotones);
+        panelBotones.setLayout(panelBotonesLayout);
+        panelBotonesLayout.setHorizontalGroup(
+            panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBotonesLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        panelBotonesLayout.setVerticalGroup(
+            panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
+        panelPrincipal.setLayout(panelPrincipalLayout);
+        panelPrincipalLayout.setHorizontalGroup(
+            panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
+                    .addComponent(panelFiltro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addComponent(panelBotones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
+        );
+        panelPrincipalLayout.setVerticalGroup(
+            panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lblTitulo)
+                .addGap(18, 18, 18)
+                .addComponent(panelFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(panelBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAceptar)
-                .addGap(46, 46, 46)
-                .addComponent(btnCancelar)
-                .addGap(42, 42, 42))
+            .addComponent(panelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAceptar)
-                    .addComponent(btnCancelar))
-                .addContainerGap(28, Short.MAX_VALUE))
+            .addComponent(panelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cboEspecialidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEspecialidadesActionPerformed
+        actualizarGrilla();
+        btnAceptar.setEnabled(false); // Cada vez que se filtra, se debe reseleccionar
+    }//GEN-LAST:event_cboEspecialidadesActionPerformed
+
+    private void grdMedicosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_grdMedicosMouseClicked
+        // Si hay una fila seleccionada, habilitar el botón Aceptar
+        if (grdMedicos.getSelectedRow() != -1) {
+            btnAceptar.setEnabled(true);
+        }
+    }//GEN-LAST:event_grdMedicosMouseClicked
+
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        int fila = grdMedicos.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un médico de la lista.");
+        int filaSeleccionada = grdMedicos.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            // Esta comprobación es redundante si el botón está deshabilitado, pero es una buena práctica
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un médico de la lista.", "Selección Requerida", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        medicoSeleccionadoId = (int) grdMedicos.getValueAt(fila, 0); // columna ID
-        dispose(); // cerrar el diálogo
+        // Obtener el ID de la primera columna (columna 0) de la fila seleccionada
+        this.medicoSeleccionadoId = (int) grdMedicos.getValueAt(filaSeleccionada, 0);
+        this.dispose(); // Cierra el diálogo para devolver el control
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.medicoSeleccionadoId = -1; // Asegurarse de que no se devuelva un ID si se cancela
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
-    
-    public int getMedicoSeleccionadoId() {
-        return medicoSeleccionadoId;
-    }
-    
-     
-    private void cargarEspecialidades(){
-        cboEspecialidades.removeAllItems();
-        try (Connection conexion = bd.miConexion();
-             Statement st = conexion.createStatement();
-             ResultSet rs = st.executeQuery("SELECT nombre_especialidad FROM especialidades ORDER BY nombre_especialidad")) {
 
-            //Cargar mientras existan especialidades
-            while (rs.next()) {
-                cboEspecialidades.addItem(rs.getString("nombre_especialidad"));
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar especialidades: " + e.getMessage());
-        }
-    }
-    
-    private void cargarMedicos(String especialidadSeleccionada) {
-        DefaultTableModel modelo = new DefaultTableModel();
-        modelo.setColumnIdentifiers(new String[]{
-            "ID", "Nombre", "Apellidos", "Especialidad", "Email", "Teléfono", "Licencia"
-        });
-
-        String sql = 
-            "SELECT m.id_medico, m.nombre, m.apellidos, e.nombre_especialidad, " +
-            "m.email, m.telefono, m.numero_licencia " +
-            "FROM medicos m " +
-            "INNER JOIN especialidades e ON m.id_especialidad = e.id_especialidad";
-
-        // agregar condición si se seleccionó una especialidad específica
-        if (especialidadSeleccionada != null && !"Todas".equalsIgnoreCase(especialidadSeleccionada)) {
-            sql += " WHERE e.nombre_especialidad = ?";
-        }
-
-        try (Connection conexion = bd.miConexion();
-             PreparedStatement ps = conexion.prepareStatement(sql)) {
-
-            if (especialidadSeleccionada != null && !"Todas".equalsIgnoreCase(especialidadSeleccionada)) {
-                ps.setString(1, especialidadSeleccionada);
-            }
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Object[] fila = {
-                    rs.getInt("id_medico"),
-                    rs.getString("nombre"),
-                    rs.getString("apellidos"),
-                    rs.getString("nombre_especialidad"),
-                    rs.getString("email"),
-                    rs.getString("telefono"),
-                    rs.getString("numero_licencia")
-                };
-                modelo.addRow(fila);
-            }
-
-            grdMedicos.setModel(modelo);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar médicos: " + e.getMessage());
-        }
-    }
-    
-    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -244,14 +312,20 @@ public class FiltrarMedicos extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FiltrarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FiltrarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FiltrarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FiltrarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
             public void run() {
                 FiltrarMedicos dialog = new FiltrarMedicos(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -263,17 +337,18 @@ public class FiltrarMedicos extends javax.swing.JDialog {
                 dialog.setVisible(true);
             }
         });
-    }
+    }    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cboEspecialidades;
     private javax.swing.JTable grdMedicos;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblEspecialidad;
+    private javax.swing.JLabel lblTitulo;
+    private javax.swing.JPanel panelBotones;
+    private javax.swing.JPanel panelFiltro;
+    private javax.swing.JPanel panelPrincipal;
     // End of variables declaration//GEN-END:variables
 }

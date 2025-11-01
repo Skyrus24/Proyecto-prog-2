@@ -173,6 +173,19 @@ public class BaseDatos {
          }
 
      }
+    
+    public void seleccionarItemCombo(JComboBox<Object> combo, int idSeleccionar) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if (combo.getItemAt(i) instanceof DatosCombo) {
+                DatosCombo item = (DatosCombo) combo.getItemAt(i);
+                if (item.getCodigo() == idSeleccionar) {
+                    combo.setSelectedIndex(i);
+                    return; // Salir del método una vez encontrado
+                }
+            }
+        }
+    }
+    
         /** Cierra la conexion con la base de datos */
     public void cierraConexion() {
         try {

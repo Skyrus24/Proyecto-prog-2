@@ -524,12 +524,12 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_itemListarMedicoActionPerformed
 
     private void itemModificarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemModificarMedicoActionPerformed
-        FrmModificarMedico frm = new FrmModificarMedico(this, true);
+        FrmGestionarMedicos frm = new FrmGestionarMedicos(this, true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemModificarMedicoActionPerformed
 
     private void itemAgregarMedicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAgregarMedicoActionPerformed
-        FrmAgregarMedico frm = new FrmAgregarMedico(this,true);
+        FrmAgregarMedicos frm = new FrmAgregarMedicos(this,true);
         frm.setVisible(true);
     }//GEN-LAST:event_itemAgregarMedicoActionPerformed
 

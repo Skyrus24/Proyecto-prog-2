@@ -1,6 +1,7 @@
 package agendamiento_clinico;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.Normalizer;
 import java.util.regex.Pattern;
@@ -129,4 +130,45 @@ public class Grilla {
         gridFiltrado.setRowFilter(rowFilter);
         nombregrilla.setRowSorter(gridFiltrado);
     }
+  
+    /**
+     * Versión SOBRECARGADA de cargarGrilla que permite especificar títulos personalizados para las columnas.
+     * @param nombregrilla La JTable a llenar.
+     * @param tabla El nombre de la tabla en la base de datos.
+     * @param camposDB Un array con los nombres de las columnas a seleccionar de la base de datos.
+     * @param titulos Un array con los títulos que se mostrarán en la cabecera de la JTable.
+     */
+    public void cargarGrilla(JTable nombregrilla, String tabla, String[] camposDB, String[] titulos){
+        // Primero, configuramos el modelo con los títulos personalizados
+        DefaultTableModel modelo = new DefaultTableModel(null, titulos) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Hacemos que todas las celdas no sean editables
+                return false;
+            }
+        };
+        nombregrilla.setModel(modelo);
+
+        // Construimos la consulta SQL
+        String sql = "SELECT " + String.join(", ", camposDB) + " FROM " + tabla;
+        
+        try {
+            ResultSet rs = bd.consultarRegistros(sql);
+            if (rs == null) return; // Si la consulta falla, salimos.
+
+            // Creamos un array de objetos para almacenar los datos de cada fila
+            Object[] fila = new Object[camposDB.length];
+            
+            // Recorremos el resultado y añadimos las filas al modelo
+            while(rs.next()){
+                for (int i = 0; i < camposDB.length; i++){
+                    fila[i] = rs.getObject(i + 1);
+                }
+                modelo.addRow(fila);
+            }
+        } catch (SQLException ex){
+            JOptionPane.showMessageDialog(null, "Error al intentar cargar la grilla: " + ex.getMessage(), "Error de Grilla", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 }

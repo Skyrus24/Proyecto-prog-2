@@ -523,13 +523,10 @@ public class FrmModificarCitas extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // 🔹 NOTA: Necesitas un FrmBuscarCitas que devuelva un ID.
-        // Asumo que tienes uno similar a FrmBuscar que mencionaste.
-        // Aquí simulo que existe un FrmBuscarCitas.
-        FrmBuscarCitas buscador = new FrmBuscarCitas(null, true);
+        FrmBuscar buscador = new FrmBuscar(null, true);
         buscador.setVisible(true);
         
-        int idCita = buscador.getCitaSeleccionadaId();
+        int idCita = buscador.getcitaSeleccionada();
         
         if (idCita > 0) {
             cargarDatosCita(idCita);

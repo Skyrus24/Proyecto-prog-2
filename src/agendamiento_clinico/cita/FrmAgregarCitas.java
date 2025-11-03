@@ -5,18 +5,10 @@ import agendamiento_clinico.medicos.FiltrarMedicos;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import java.util.*;
+import javax.swing.*;
 
 public class FrmAgregarCitas extends javax.swing.JDialog {
 

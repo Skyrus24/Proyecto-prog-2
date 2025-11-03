@@ -3,10 +3,7 @@ package agendamiento_clinico.cita;
 import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;
 import java.awt.Color;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 

@@ -3,10 +3,7 @@ package agendamiento_clinico.cita;
 
 import agendamiento_clinico.BaseDatos;
 import java.awt.Color;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import javax.swing.JOptionPane;
 
 public class FrmEliminarCitas extends javax.swing.JDialog {

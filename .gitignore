@@ -8,7 +8,7 @@ nbbuild/
 nbdist/
 nbactions.xml
 nb-configuration.xml
-lol.java
+
 # Archivos compilados
 *.class
 *.jar

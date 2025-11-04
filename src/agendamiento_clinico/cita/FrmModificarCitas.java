@@ -21,7 +21,7 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         this.getContentPane().setBackground(new Color(248, 249, 250));
         
         cargarConsultorios();
-        bloqueoInicio(); // Tu método original para deshabilitar campos
+        bloqueoInicio();
         
         cboInicioHora.addActionListener(e -> {
             if (cboInicioHora.getSelectedItem() != null) {
@@ -227,19 +227,19 @@ public class FrmModificarCitas extends javax.swing.JDialog {
         panelBusquedaLayout.setHorizontalGroup(
             panelBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBusquedaLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
         panelBusquedaLayout.setVerticalGroup(
             panelBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBusquedaLayout.createSequentialGroup()
-                .addContainerGap(10, Short.MAX_VALUE)
                 .addGroup(panelBusquedaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)))
+                    .addComponent(jLabel1))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
 
         panelDatosCita.setBackground(new java.awt.Color(255, 255, 255));
@@ -522,13 +522,8 @@ public class FrmModificarCitas extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // **CORRECCIÓN IMPORTANTE**
-        // Llama a tu formulario FrmBuscar, no a un FrmBuscarCitas inexistente.
         FrmBuscar buscador = new FrmBuscar(null, true);
         buscador.setVisible(true);
-
-        // **CORRECCIÓN IMPORTANTE**
-        // Usa el método getCitaSeleccionada(), que es el que existe en tu FrmBuscar.
         int idCita = buscador.getCitaSeleccionada();
 
         if (idCita > 0) {

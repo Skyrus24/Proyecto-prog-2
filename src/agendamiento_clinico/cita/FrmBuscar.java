@@ -69,9 +69,9 @@ public class FrmBuscar extends javax.swing.JDialog {
             "DATE_FORMAT(c.fecha_hora_inicio, '%d/%m/%Y %H:%i')",
             "c.estado_cita"
         };
-        
+
         String[] titulos = {"ID", "Paciente", "CI Paciente", "Médico", "Fecha y Hora", "Estado"};
-        
+
         String tablaJoin = "citas c " +
                            "JOIN pacientes p ON c.id_paciente = p.id_paciente " +
                            "JOIN medicos m ON c.id_medico = m.id_medico";
@@ -79,14 +79,15 @@ public class FrmBuscar extends javax.swing.JDialog {
         String criterioBusqueda = rdNombre.isSelected() 
                 ? "CONCAT(p.nombre, ' ', p.apellidos)" 
                 : "p.numero_documento";
-        
-        String where = "";
+
+        String where = " WHERE c.estado_cita != 'Atendida'";
+
         if (!texto.isEmpty()) {
-            where = " WHERE " + criterioBusqueda + " LIKE '%" + texto + "%'";
+            where += " AND " + criterioBusqueda + " LIKE '%" + texto + "%'";
         }
-        
+
         String sqlCompleto = tablaJoin + where + " ORDER BY c.fecha_hora_inicio DESC";
-        
+
         try {
             grilla.cargarGrilla(grdCitas, sqlCompleto, camposDB, titulos);
             btnAceptar.setEnabled(false);

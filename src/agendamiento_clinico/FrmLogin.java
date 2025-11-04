@@ -1,6 +1,5 @@
 package agendamiento_clinico;
 
-// --- INICIO DE IMPORTACIONES NECESARIAS ---
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
@@ -11,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import rojeru_san.RSPanelsSlider;
-// --- FIN DE IMPORTACIONES NECESARIAS ---
 
 
 /**
@@ -408,7 +406,7 @@ public class FrmLogin extends javax.swing.JFrame {
                         new Main(rol).setVisible(true);
 
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(FrmLogin.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }).start();
 

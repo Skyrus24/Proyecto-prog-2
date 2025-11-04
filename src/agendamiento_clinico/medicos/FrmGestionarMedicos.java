@@ -4,52 +4,42 @@ import agendamiento_clinico.BaseDatos;
 import agendamiento_clinico.Grilla;
 import java.awt.Color;
 import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 import javax.swing.JOptionPane;
+import javax.swing.LayoutStyle;
 import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
-public class FrmListarMedicos extends javax.swing.JDialog {
+public class FrmGestionarMedicos extends javax.swing.JDialog {
 
     private final BaseDatos bd = new BaseDatos();
     private final Grilla grd = new Grilla();
     
-    public FrmListarMedicos(java.awt.Frame parent, boolean modal) {
+    public FrmGestionarMedicos(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        configurarFormulario();
-    }
-    
-    private void configurarFormulario() {
-        this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(248, 249, 250));
         if(!bd.hayConexion()){
             JOptionPane.showMessageDialog(this, "Error de conexión con la base de datos", "Error Crítico", JOptionPane.ERROR_MESSAGE);
-            return;
         }
-        actualizarGrilla();
-    }
-
-    private void actualizarGrilla() {
-        // 1. Nombres de las columnas en la Base de Datos (con alias para la unión)
-        String columnasDB[] = {
-            "m.id_medico",
-            "m.nombre",
-            "m.apellidos",
-            "e.nombre_especialidad",
-            "m.telefono",
-            "m.registro_profesional"
-        };
-
-        // 2. Títulos amigables para mostrar en la cabecera de la tabla
-        String titulosColumnas[] = {
-            "ID", "Nombre", "Apellidos", "Especialidad", "Teléfono", "Reg. Profesional"
-        };
         
-        // 3. La "tabla" ahora es una consulta con JOIN
-        String tablaJoin = "medicos m INNER JOIN especialidades e ON m.id_especialidad = e.id_especialidad";
-
-        // 4. Llama a la versión sobrecargada de cargarGrilla
-        this.grd.cargarGrilla(grdMedicos, tablaJoin, columnasDB, titulosColumnas);
+        this.setLocationRelativeTo(null);
+        this.getContentPane().setBackground(new Color(248, 249, 250));
+        actualizarGrilla();
+        actualizarBotones(); // Asegura que los botones estén deshabilitados al inicio
+    }
+    
+    private void actualizarGrilla(){
+        String campos[] = {"ID", "Nombre", "Apellidos", "Reg. Profesional", "Teléfono"};
+        String columnasDB[] = {"id_medico", "nombre", "apellidos", "registro_profesional", "telefono"};
+        this.grd.cargarGrilla(grdMedicos, "medicos", columnasDB, campos);
+    }
+    
+    private void actualizarBotones() {
+        boolean haySeleccion = grdMedicos.getSelectedRow() != -1;
+        cmdModificar.setEnabled(haySeleccion);
+        cmdEliminar.setEnabled(haySeleccion);
     }
 
     /**
@@ -70,18 +60,18 @@ public class FrmListarMedicos extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         grdMedicos = new javax.swing.JTable();
         panelBotones = new javax.swing.JPanel();
-        cmdCerrar = new javax.swing.JButton();
+        cmdModificar = new javax.swing.JButton();
+        cmdEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Listado de Médicos");
-        setMinimumSize(new java.awt.Dimension(800, 600));
+        setTitle("Gestionar Médicos");
 
         panelPrincipal.setBackground(new java.awt.Color(248, 249, 250));
 
         lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblTitulo.setForeground(new java.awt.Color(52, 58, 64));
         lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTitulo.setText("Listado Completo de Médicos");
+        lblTitulo.setText("Gestión de Médicos");
 
         panelBusqueda.setBackground(new java.awt.Color(255, 255, 255));
         panelBusqueda.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(222, 226, 230)));
@@ -90,7 +80,7 @@ public class FrmListarMedicos extends javax.swing.JDialog {
         lblBuscarPor.setText("Buscar por:");
 
         cboCriterio.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cboCriterio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nombre", "Apellido", "Especialidad", "Registro Profesional" }));
+        cboCriterio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nombre", "Apellido", "Registro Profesional" }));
 
         txtBuscar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -129,11 +119,11 @@ public class FrmListarMedicos extends javax.swing.JDialog {
 
             },
             new String [] {
-                "ID", "Nombre", "Apellidos", "Especialidad", "Teléfono", "Reg. Profesional"
+                "ID", "Nombre", "Apellidos", "Reg. Profesional", "Teléfono"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -142,18 +132,34 @@ public class FrmListarMedicos extends javax.swing.JDialog {
         });
         grdMedicos.setRowHeight(25);
         grdMedicos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        grdMedicos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                grdMedicosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(grdMedicos);
 
         panelBotones.setBackground(new java.awt.Color(248, 249, 250));
 
-        cmdCerrar.setBackground(new java.awt.Color(108, 117, 125));
-        cmdCerrar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cmdCerrar.setForeground(new java.awt.Color(255, 255, 255));
-        cmdCerrar.setText("Cerrar");
-        cmdCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        cmdCerrar.addActionListener(new java.awt.event.ActionListener() {
+        cmdModificar.setBackground(new java.awt.Color(255, 193, 7));
+        cmdModificar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cmdModificar.setForeground(new java.awt.Color(0, 0, 0));
+        cmdModificar.setText("Modificar");
+        cmdModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cmdModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdCerrarActionPerformed(evt);
+                cmdModificarActionPerformed(evt);
+            }
+        });
+
+        cmdEliminar.setBackground(new java.awt.Color(220, 53, 69));
+        cmdEliminar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        cmdEliminar.setForeground(new java.awt.Color(255, 255, 255));
+        cmdEliminar.setText("Eliminar");
+        cmdEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cmdEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdEliminarActionPerformed(evt);
             }
         });
 
@@ -163,11 +169,15 @@ public class FrmListarMedicos extends javax.swing.JDialog {
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBotonesLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cmdCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(cmdModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(cmdEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         panelBotonesLayout.setVerticalGroup(
             panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cmdCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(panelBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(cmdModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmdEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
@@ -211,34 +221,42 @@ public class FrmListarMedicos extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void grdMedicosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_grdMedicosMouseClicked
+        actualizarBotones();
+    }//GEN-LAST:event_grdMedicosMouseClicked
+
+    private void cmdModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdModificarActionPerformed
+        int filaSeleccionada = grdMedicos.getSelectedRow();
+        int idMedico = Integer.parseInt(grdMedicos.getValueAt(filaSeleccionada, 0).toString());
+
+        // Llama al formulario AgregarMedico en MODO MODIFICAR
+        FrmAgregarMedicos frmEditar = new FrmAgregarMedicos(null, true, idMedico);
+        frmEditar.setVisible(true);
+
+        // Cuando se cierre el formulario de edición, actualizamos la tabla
+        actualizarGrilla();
+        actualizarBotones();
+    }//GEN-LAST:event_cmdModificarActionPerformed
+
+    private void cmdEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdEliminarActionPerformed
+        int filaSeleccionada = grdMedicos.getSelectedRow();
+        String idMedico = grdMedicos.getValueAt(filaSeleccionada, 0).toString();
+        if (bd.borrarRegistro("medicos", "id_medico=" + idMedico)) {
+            actualizarGrilla();
+            actualizarBotones();
+        }
+    }//GEN-LAST:event_cmdEliminarActionPerformed
+
     private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
         int criterioIndex = cboCriterio.getSelectedIndex();
-        int columnaParaFiltrar;
-
-        // Mapeo del criterio a la columna correspondiente en la JTable
-        switch (criterioIndex) {
-            case 0: // Nombre
-                columnaParaFiltrar = 1;
-                break;
-            case 1: // Apellido
-                columnaParaFiltrar = 2;
-                break;
-            case 2: // Especialidad
-                columnaParaFiltrar = 3;
-                break;
-            case 3: // Registro Profesional
-                columnaParaFiltrar = 5;
-                break;
-            default:
-                return; // No hacer nada si no hay criterio seleccionado
-        }
+        // Mapeo del criterio a la columna correspondiente en la JTable:
+        // 0: Nombre -> columna 1
+        // 1: Apellido -> columna 2
+        // 2: Registro Profesional -> columna 3
+        int columnaParaFiltrar = criterioIndex + 1;
         
         grd.filtrarGrilla(grdMedicos, txtBuscar.getText(), columnaParaFiltrar);
     }//GEN-LAST:event_txtBuscarKeyReleased
-
-    private void cmdCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCerrarActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_cmdCerrarActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -254,13 +272,13 @@ public class FrmListarMedicos extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmListarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmGestionarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmListarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmGestionarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmListarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmGestionarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmListarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmGestionarMedicos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -268,7 +286,7 @@ public class FrmListarMedicos extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                FrmListarMedicos dialog = new FrmListarMedicos(new javax.swing.JFrame(), true);
+                FrmGestionarMedicos dialog = new FrmGestionarMedicos(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -282,7 +300,8 @@ public class FrmListarMedicos extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cboCriterio;
-    private javax.swing.JButton cmdCerrar;
+    private javax.swing.JButton cmdEliminar;
+    private javax.swing.JButton cmdModificar;
     private javax.swing.JTable grdMedicos;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblBuscarPor;

@@ -50,12 +50,6 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
             habilitarCampos(false);
             habilitarBotones(true);
         }
-        cboTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
-            "Cédula de Identidad",
-            "Pasaporte",
-            "Carnet de Extranjería",
-            "Otro"
-        }));
     }
     
     private void cargarDatosPaciente() {
@@ -94,8 +88,8 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         txtApellidos.setEnabled(estado);
         dcFechaNacimiento.setEnabled(estado);
         cboGenero.setEnabled(estado);
-        cboTipoDocumento.setEnabled(estado);
         txtNumDocumento.setEnabled(estado);
+        cboTipoDocumento.setEnabled(estado);
         txtDireccion.setEnabled(estado);
         txtTelefono.setEnabled(estado);
         txtEmail.setEnabled(estado);
@@ -113,6 +107,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         dcFechaNacimiento.setDate(null);
         cboGenero.setSelectedIndex(0);
         txtNumDocumento.setText(null);
+        cboTipoDocumento.setSelectedIndex(0);
         txtDireccion.setText(null);
         txtTelefono.setText(null);
         txtEmail.setText(null);
@@ -223,7 +218,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         jPanel1.add(jLabel9);
         jLabel9.setBounds(320, 410, 70, 30);
         jPanel1.add(dcFechaNacimiento);
-        dcFechaNacimiento.setBounds(30, 160, 270, 22);
+        dcFechaNacimiento.setBounds(30, 160, 270, 26);
 
         cmdGuardar.setText("Guardar");
         cmdGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -252,6 +247,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         jPanel1.add(cmdNuevo);
         cmdNuevo.setBounds(10, 530, 90, 40);
 
+        cboTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cedula de identidad", "Pasaporte", "Documento de Identidad", "Otro" }));
         jPanel1.add(cboTipoDocumento);
         cboTipoDocumento.setBounds(320, 250, 300, 30);
 
@@ -295,7 +291,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
             String valores = String.format("'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'",
                 txtNombre.getText(), txtApellidos.getText(), fechaFormateada,
                 cboGenero.getSelectedItem().toString(), txtNumDocumento.getText(),
-                cboTipoDocumento.getSelectedItem().toString(), txtDireccion.getText(),
+                cboTipoDocumento.getSelectedItem(), txtDireccion.getText(),
                 txtTelefono.getText(), txtEmail.getText()
             );
             String campos = "nombre, apellidos, fecha_nacimiento, genero, numero_documento, tipo_documento, direccion, telefono, email";
@@ -314,7 +310,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
                 "tipo_documento='%s', direccion='%s', telefono='%s', email='%s'",
                 txtNombre.getText(), txtApellidos.getText(), fechaFormateada,
                 cboGenero.getSelectedItem().toString(), txtNumDocumento.getText(),
-                cboTipoDocumento.getSelectedItem().toString(), txtDireccion.getText(),
+                cboTipoDocumento.getSelectedItem(), txtDireccion.getText(),
                 txtTelefono.getText(), txtEmail.getText()
             );
             String condicion = "id_paciente=" + this.idPacienteModificar;

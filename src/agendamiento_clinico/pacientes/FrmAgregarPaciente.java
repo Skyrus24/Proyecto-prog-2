@@ -247,7 +247,7 @@ public class FrmAgregarPaciente extends javax.swing.JDialog {
         jPanel1.add(cmdNuevo);
         cmdNuevo.setBounds(10, 530, 90, 40);
 
-        cboTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cedula de identidad", "Pasaporte", "Documento de Identidad", "Otro" }));
+        cboTipoDocumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cédula de Identidad (CI)", "Pasaporte", "Cédula Extranjera", "Carnet de Migraciones", "Sin Documento (NN)", "Otro" }));
         jPanel1.add(cboTipoDocumento);
         cboTipoDocumento.setBounds(320, 250, 300, 30);
 

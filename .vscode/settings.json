@@ -1,0 +1,14 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "dist/lib/AbsoluteLayout.jar",
+        "dist/lib/flatlaf-3.6.2.jar",
+        "dist/lib/jcalendar-1.4.jar",
+        "dist/lib/miglayout-core-11.0.jar",
+        "dist/lib/miglayout-swing-11.0.jar",
+        "dist/lib/mysql-connector-j-9.4.0.jar",
+        "dist/lib/RojeruSan.lib.jar",
+        "dist/lib/RojeruSan.parte1.jar",
+        "dist/lib/RSProgressBar.jar"
+    ]
+}

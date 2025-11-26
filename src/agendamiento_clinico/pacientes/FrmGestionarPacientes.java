@@ -74,7 +74,7 @@ public class FrmGestionarPacientes extends javax.swing.JDialog {
             }
         });
         jPanel1.add(txtBuscar);
-        txtBuscar.setBounds(230, 50, 340, 30);
+        txtBuscar.setBounds(230, 50, 560, 30);
 
         grdPacientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -103,7 +103,7 @@ public class FrmGestionarPacientes extends javax.swing.JDialog {
         jScrollPane1.setViewportView(grdPacientes);
 
         jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(16, 90, 550, 370);
+        jScrollPane1.setBounds(16, 90, 780, 370);
 
         cmdEliminar.setText("Eliminar");
         cmdEliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -124,13 +124,14 @@ public class FrmGestionarPacientes extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(352, 352, 352)
-                .addComponent(cmdModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(cmdEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 808, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(cmdModificar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmdEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

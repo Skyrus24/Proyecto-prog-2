@@ -1,6 +1,5 @@
 package agendamiento_clinico;
 
-// Importa todas las clases de tus formularios (FrmAgregarPaciente, FrmLogin, etc.)
 import agendamiento_clinico.cita.*;
 import agendamiento_clinico.especialidades.FrmEspecialidades;
 import agendamiento_clinico.gestione.*;
@@ -22,7 +21,6 @@ public class Main extends javax.swing.JFrame {
     private JPanel panelContenido;
     private CardLayout cardLayout;
 
-    // Componentes que podríamos necesitar ocultar según el rol
     private JButton btnMedicos;
     private JPanel panelSubMenuPacientes;
     private JPanel panelSubMenuMedicos;
@@ -36,9 +34,12 @@ public class Main extends javax.swing.JFrame {
     private JButton btnMedicamentos;
     private JButton btnRecetas;
     private JButton btnGestionarHorarios;
-    // MODIFICADO: Añadidas variables para los botones del submenú de Médicos
     private JButton btnAgregarMedico;
     private JButton btnGestionarMedicos;
+    // MODIFICADO: Añadidas variables para los botones del submenú de Citas
+    private JButton btnAgendarCita;
+    private JButton btnModificarCita;
+    private JButton btnCancelarCita;
 
     // Paleta de colores
     private final Color COLOR_SIDEBAR = new Color(45, 52, 71);
@@ -98,7 +99,6 @@ public class Main extends javax.swing.JFrame {
         btnPacientes.addActionListener(e -> toggleSubMenu(panelSubMenuPacientes));
         
         // --- 2. Médicos ---
-        // MODIFICADO: Se construye el submenú de Médicos manualmente para tener control sobre sus botones
         btnMedicos = crearBotonMenu("Médicos");
         panelSidebar.add(btnMedicos, "h 50!, growx");
         panelSubMenuMedicos = new JPanel(new MigLayout("wrap, fillx, insets 0", "[grow]"));
@@ -113,9 +113,19 @@ public class Main extends javax.swing.JFrame {
         btnMedicos.addActionListener(e -> toggleSubMenu(panelSubMenuMedicos));
 
         // --- 3. Citas ---
+        // MODIFICADO: Se construye el submenú de Citas manualmente para tener control sobre sus botones
         JButton btnCitas = crearBotonMenu("Citas");
         panelSidebar.add(btnCitas, "h 50!, growx");
-        panelSubMenuCitas = crearPanelSubMenu(new String[]{"Agendar Cita", "Modificar Cita", "Cancelar Cita", "Listar Citas"});
+        panelSubMenuCitas = new JPanel(new MigLayout("wrap, fillx, insets 0", "[grow]"));
+        panelSubMenuCitas.setBackground(COLOR_SUBMENU_BACKGROUND);
+        btnAgendarCita = crearBotonSubMenu("Agendar Cita");
+        btnModificarCita = crearBotonSubMenu("Modificar Cita");
+        btnCancelarCita = crearBotonSubMenu("Cancelar Cita");
+        panelSubMenuCitas.add(btnAgendarCita, "h 40!, growx");
+        panelSubMenuCitas.add(btnModificarCita, "h 40!, growx");
+        panelSubMenuCitas.add(btnCancelarCita, "h 40!, growx");
+        panelSubMenuCitas.add(crearBotonSubMenu("Listar Citas"), "h 40!, growx");
+        panelSubMenuCitas.setVisible(false);
         panelSidebar.add(panelSubMenuCitas, "growx, hidemode 3");
         btnCitas.addActionListener(e -> toggleSubMenu(panelSubMenuCitas));
 
@@ -192,9 +202,14 @@ public class Main extends javax.swing.JFrame {
 
         switch (rolUsuario) {
             case "Medico":
-                // MODIFICADO: Ahora el médico puede ver el menú de médicos, pero solo para listar.
+                // El médico puede ver el menú de médicos, pero solo para listar.
                 removerComponenteSubMenu(panelSubMenuMedicos, btnAgregarMedico);
                 removerComponenteSubMenu(panelSubMenuMedicos, btnGestionarMedicos);
+                
+                // MODIFICADO: El Medico solo puede ver/listar las citas, no gestionarlas.
+                removerComponenteSubMenu(panelSubMenuCitas, btnAgendarCita);
+                removerComponenteSubMenu(panelSubMenuCitas, btnModificarCita);
+                removerComponenteSubMenu(panelSubMenuCitas, btnCancelarCita);
                 
                 // Se mantienen las otras restricciones
                 removerComponenteSubMenu(panelSubMenuConfiguracion, btnConsultorios);

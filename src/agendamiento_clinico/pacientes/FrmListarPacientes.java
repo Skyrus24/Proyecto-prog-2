@@ -73,7 +73,7 @@ public class FrmListarPacientes extends javax.swing.JDialog {
             }
         });
         jPanel1.add(txtBuscar);
-        txtBuscar.setBounds(230, 50, 340, 30);
+        txtBuscar.setBounds(230, 50, 720, 30);
 
         grdPacientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -102,7 +102,7 @@ public class FrmListarPacientes extends javax.swing.JDialog {
         jScrollPane1.setViewportView(grdPacientes);
 
         jPanel1.add(jScrollPane1);
-        jScrollPane1.setBounds(16, 90, 550, 370);
+        jScrollPane1.setBounds(16, 90, 930, 370);
 
         cmdCerrar.setText("Cerrar");
         cmdCerrar.addActionListener(new java.awt.event.ActionListener() {
@@ -116,11 +116,11 @@ public class FrmListarPacientes extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(480, 480, 480)
-                .addComponent(cmdCerrar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmdCerrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

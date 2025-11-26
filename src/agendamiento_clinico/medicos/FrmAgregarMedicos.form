@@ -552,7 +552,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="cmdNuevo" min="-2" pref="120" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="cmdEliminar" min="-2" pref="120" max="-2" attributes="0"/>
+                      <Component id="cmdSalir" min="-2" pref="120" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="cmdCancelar" min="-2" pref="120" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -566,7 +566,7 @@
                       <Component id="cmdNuevo" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                       <Component id="cmdGuardar" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                       <Component id="cmdCancelar" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="cmdEliminar" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="cmdSalir" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -632,7 +632,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdCancelarActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="cmdEliminar">
+            <Component class="javax.swing.JButton" name="cmdSalir">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="45" green="35" red="dc" type="rgb"/>
@@ -649,7 +649,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdEliminarActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdSalirActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

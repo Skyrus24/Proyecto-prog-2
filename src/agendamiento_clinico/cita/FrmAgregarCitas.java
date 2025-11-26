@@ -250,6 +250,34 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
         }
         return id;
     }
+    
+    /**
+     * Verifica si ya existe una cita de "Primera Vez" para un paciente y médico específicos.
+     * Se excluyen las citas que hayan sido "Cancelada".
+     * @param idPaciente El ID del paciente.
+     * @param idMedico El ID del médico.
+     * @return true si ya existe una cita de "Primera Vez", false en caso contrario.
+     */
+    private boolean verificarCitaPrimeraVezExistente(int idPaciente, int idMedico) {
+        String sql = "SELECT COUNT(*) FROM citas WHERE id_paciente = ? AND id_medico = ? AND tipo_cita = 'Primera Vez' AND estado_cita != 'Cancelada'";
+        try (Connection conexion = bd.miConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setInt(1, idPaciente);
+            ps.setInt(2, idMedico);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Si el conteo es mayor a 0, significa que ya existe una cita.
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al verificar citas existentes: " + e.getMessage(), "Error de Verificación", JOptionPane.ERROR_MESSAGE);
+        }
+        // Por defecto, si hay un error o no se encuentran, se asume que no existe para no bloquear el registro.
+        return false;
+    }
 
 
     /**
@@ -634,7 +662,7 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
             Object consultorio = cboConsultorios.getSelectedItem();
             String motivo = txtMotivo.getText().trim();
             String estado = cboEstado.getSelectedItem().toString();
-            String tipo = cboTipo.getSelectedItem().toString();
+            String tipo = cboTipo.getSelectedItem().toString(); // Obtenemos el tipo de cita
             String observaciones = txtObservaciones.getText().trim();
 
             java.time.LocalDate fecha = dcFecha.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
@@ -659,10 +687,24 @@ public class FrmAgregarCitas extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, "No se pudo encontrar el paciente, médico o consultorio seleccionado. Verifique los datos.", "Error de Datos", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
+            // --- INICIO DE LA NUEVA VALIDACIÓN ---
+            // Verificamos solo si el tipo de cita es "Primera Vez"
+            if ("Primera Vez".equals(tipo)) {
+                if (verificarCitaPrimeraVezExistente(idPaciente, idMedico)) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Este paciente ya tiene una cita de 'Primera Vez' registrada con este médico.\n" +
+                        "Por favor, seleccione otro tipo de cita (ej: Seguimiento).", 
+                        "Validación de Cita", 
+                        JOptionPane.WARNING_MESSAGE);
+                    return; // Detenemos el proceso de guardado
+                }
+            }
+            // --- FIN DE LA NUEVA VALIDACIÓN ---
+
             String tabla = "citas";
             String campos = "id_paciente, id_medico, id_consultorio, fecha_hora_inicio, fecha_hora_fin, motivo_consulta, estado_cita, tipo_cita, observaciones";
-            
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String fechaInicioSQL = sdf.format(java.util.Date.from(fechaHoraInicio.atZone(java.time.ZoneId.systemDefault()).toInstant()));
             String fechaFinSQL = sdf.format(java.util.Date.from(fechaHoraFin.atZone(java.time.ZoneId.systemDefault()).toInstant()));
